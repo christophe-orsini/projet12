@@ -23,6 +23,8 @@ import com.ocdev.hangar.entities.Aircraft;
 import com.ocdev.hangar.errors.AlreadyExistsException;
 import com.ocdev.hangar.errors.EntityNotFoundException;
 import com.ocdev.hangar.services.AircraftService;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -33,6 +35,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/aircrafts")
 @RestController
 @Validated
+@Api(tags = {"API d'accès au hangar aéronefs"})
 public class AircraftController
 {
 	@Autowired 

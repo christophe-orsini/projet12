@@ -7,12 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
 /**
  * Aircraft représente la classe d'un aéronef.
  * @author PC_ASUS
  *
  */
 @Entity
+@Hidden
 public class Aircraft implements Serializable
 {
 	@Id
