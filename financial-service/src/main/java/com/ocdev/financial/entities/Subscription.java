@@ -1,7 +1,7 @@
 package com.ocdev.financial.entities;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,5 +98,12 @@ public class Subscription implements Serializable
 	public void setValidityDate(Date validityDate)
 	{
 		this.validityDate = validityDate;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Subscription [memberId=" + memberId + ", paymentDate=" + paymentDate + ", amount="
+				+ amount + ", validityDate=" + validityDate + "]";
 	}
 }

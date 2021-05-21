@@ -158,4 +158,11 @@ public class Flight implements Serializable
 	{
 		this.closed = closed;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Flight [memberId=" + memberId + ", aircraft=" + aircraft + ", lineItem=" + lineItem + ", flightDate="
+				+ flightDate + ", flightHours=" + flightHours + "]";
+	}
 }
