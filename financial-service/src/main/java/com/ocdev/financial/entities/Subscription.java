@@ -1,6 +1,7 @@
 package com.ocdev.financial.entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -103,7 +104,8 @@ public class Subscription implements Serializable
 	@Override
 	public String toString()
 	{
-		return "Subscription [memberId=" + memberId + ", paymentDate=" + paymentDate + ", amount="
-				+ amount + ", validityDate=" + validityDate + "]";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return "Subscription [memberId=" + memberId + ", paymentDate=" + sdf.format(paymentDate) + ", amount="
+				+ amount + ", validityDate=" + sdf.format(validityDate) + "]";
 	}
 }

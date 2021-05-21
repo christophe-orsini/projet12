@@ -1,6 +1,7 @@
 package com.ocdev.financial.entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -162,7 +163,8 @@ public class Flight implements Serializable
 	@Override
 	public String toString()
 	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return "Flight [memberId=" + memberId + ", aircraft=" + aircraft + ", lineItem=" + lineItem + ", flightDate="
-				+ flightDate + ", flightHours=" + flightHours + "]";
+				+ sdf.format(flightDate) + ", flightHours=" + flightHours + "]";
 	}
 }
