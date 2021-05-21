@@ -7,21 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ocdev.financial.dao.FlightRepository;
-import com.ocdev.financial.dao.MembershipRepository;
+import com.ocdev.financial.dao.SubscriptionRepository;
 import com.ocdev.financial.entities.Flight;
-import com.ocdev.financial.entities.Membership;
+import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.EntityNotFoundException;
 
 @Service
 public class FinancialServiceImpl implements FinancialService
 {
 	private FlightRepository _flightRepository;
-	private MembershipRepository _membershipRepository;
+	private SubscriptionRepository _subscriptionRepository;
 	
-	public FinancialServiceImpl(@Autowired FlightRepository flightRepository, @Autowired MembershipRepository membershipRepository)
+	public FinancialServiceImpl(@Autowired FlightRepository flightRepository, @Autowired SubscriptionRepository subscriptionRepository)
 	{
 		_flightRepository = flightRepository;
-		_membershipRepository = membershipRepository;
+		_subscriptionRepository = subscriptionRepository;
 	}
 
 	@Override
@@ -33,13 +33,13 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Membership getMembership(long memberId) throws EntityNotFoundException
+	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException
 	{
 		// TODO check if memberId exists
 		
-		Optional<Membership> membership = _membershipRepository.findLastMembershipByMemberId(memberId);
-		if (!membership.isPresent()) throw new EntityNotFoundException("Ce membre n'a pas d'adhésion en cours");
+		Optional<Subscription> subscription = _subscriptionRepository.findLastSubscriptionByMemberId(memberId);
+		if (!subscription.isPresent()) throw new EntityNotFoundException("Ce membre n'a pas d'adhésion en cours");
 		
-		return membership.get();
+		return subscription.get();
 	}
 }

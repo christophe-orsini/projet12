@@ -3,7 +3,7 @@ package com.ocdev.financial.services;
 import java.util.Collection;
 
 import com.ocdev.financial.entities.Flight;
-import com.ocdev.financial.entities.Membership;
+import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.EntityNotFoundException;
 
 public interface FinancialService
@@ -17,11 +17,11 @@ public interface FinancialService
 	 */
 	public Collection<Flight> getAllFlights(long memberId);
 	/**
-	 * Cette méthode retourne l'adhésion d'un membre.
+	 * Cette méthode retourne la dernière cotisation d'un membre.
 	 * 
 	 * @param memberId : Id du membre
-	 * @return
-	 * @throws EntityNotFoundException
+	 * @return La dernière cotisation
+	 * @throws EntityNotFoundException levée si le membre n'existe pas ou s'il n'a jamais payé de cotisation
 	 */
-	public Membership getMembership(long memberId) throws EntityNotFoundException;
+	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException;
 }

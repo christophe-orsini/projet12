@@ -12,13 +12,13 @@ import javax.persistence.Id;
 import io.swagger.v3.oas.annotations.Hidden;
 
 /**
- * Finance représente la classe d'une adhésion à l'aéroclub.
+ * Subscription représente la classe de paiement de la cotisation pour un membre.
  * @author PC_ASUS
  *
  */
 @Entity
 @Hidden
-public class Membership implements Serializable
+public class Subscription implements Serializable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +32,13 @@ public class Membership implements Serializable
 	@Column(nullable=false)
 	private Date validityDate;
 	
-	public Membership()
+	public Subscription()
 	{
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Membership(long memberId, Date paymentDate, double amount)
+	public Subscription(long memberId, Date paymentDate, double amount)
 	{
 		super();
 		this.memberId = memberId;
