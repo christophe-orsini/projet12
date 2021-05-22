@@ -2,6 +2,7 @@ package com.ocdev.financial.services;
 
 import java.util.Collection;
 
+import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
@@ -26,12 +27,14 @@ public interface FinancialService
 	 */
 	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException;
 	/**
-	 * Cette méthode enregistre le paiement d'une cotisation pour un membre
-	 * @param memberId : Id du membre
-	 * @param amount : Montant de la cotisation. Si négatif alors le montant forfaitaire sera enregistré
+	 * Cette méthode enregistre le paiement d'une cotisation pour un membre.
+	 * <p>Si le champs amount est négatif, le montant forfaitaire de la cotisation est utilisé.</p>
+	 * 
+	 * @param subscriptionDto : Id du membre
 	 * @return La nouvelle cotisation
 	 * @throws EntityNotFoundException levée si le membre n'existe pas
 	 * @throws AlreadyExistsException levée si le membre est déja à jour de cotisation
 	 */
-	public Subscription recordSubscription(long memberId, double amount) throws EntityNotFoundException, AlreadyExistsException;
+	public Subscription recordSubscription(SubscriptionDto subscriptionDto) throws EntityNotFoundException, AlreadyExistsException;
+	public void recordFlight();
 }

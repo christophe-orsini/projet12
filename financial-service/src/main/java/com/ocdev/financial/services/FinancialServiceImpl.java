@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ocdev.financial.dao.FlightRepository;
 import com.ocdev.financial.dao.SubscriptionRepository;
+import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
@@ -21,7 +22,7 @@ import com.ocdev.financial.errors.EntityNotFoundException;
 public class FinancialServiceImpl implements FinancialService
 {
 	@Value("${financial.subscription.amount}")
-	private double charge;
+	private double _charge;
 	
 	private FlightRepository _flightRepository;
 	private SubscriptionRepository _subscriptionRepository;
@@ -52,30 +53,28 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Subscription recordSubscription(long memberId, double amount) throws EntityNotFoundException, AlreadyExistsException
+	public Subscription recordSubscription(SubscriptionDto subscriptionDto) throws EntityNotFoundException, AlreadyExistsException
 	{
 		// TODO check if memberId exists
-		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (subscriptionDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
-		Optional<Subscription> activeSubscription = _subscriptionRepository.findLastSubscriptionByMemberId(memberId);
+		Optional<Subscription> activeSubscription = _subscriptionRepository.findLastSubscriptionByMemberId(subscriptionDto.getMemberId());
 		if (activeSubscription.isPresent() && activeSubscription.get().getValidityDate() != null && activeSubscription.get().getValidityDate().after(new Date()))
 		{
 			throw new AlreadyExistsException("Ce membre a déjà une cotisation valide");
 		}
 		
-		double value = amount;
-		if (value < 0)
-		{
-			value = charge;
-		}
+		double value = subscriptionDto.getAmount();
+		if (value < 0) value = _charge;
+		
 		Calendar today = Calendar.getInstance();
 		Calendar validity = new GregorianCalendar(today.get(Calendar.YEAR), 11, 31);
 		
-		Subscription subscription = new Subscription(memberId, today.getTime(), value);
+		Subscription subscription = new Subscription(subscriptionDto.getMemberId(), today.getTime(), value);
 		subscription.setValidityDate(validity.getTime());
 		
-		return _subscriptionRepository.save(subscription);
+		_subscriptionRepository.save(subscription);
+		return subscription;
 	}
-	
-	
+	}
 }
