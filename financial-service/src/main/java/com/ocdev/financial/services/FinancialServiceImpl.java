@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.ocdev.financial.converters.IDtoConverter;
 import com.ocdev.financial.dao.FlightRepository;
 import com.ocdev.financial.dao.SubscriptionRepository;
+import com.ocdev.financial.dto.FlightRecordDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
@@ -26,11 +28,16 @@ public class FinancialServiceImpl implements FinancialService
 	
 	private FlightRepository _flightRepository;
 	private SubscriptionRepository _subscriptionRepository;
+	private IDtoConverter<Flight, FlightRecordDto> _flightRecordDtoConverter;
 	
-	public FinancialServiceImpl(@Autowired FlightRepository flightRepository, @Autowired SubscriptionRepository subscriptionRepository)
+	public FinancialServiceImpl(
+			@Autowired FlightRepository flightRepository, 
+			@Autowired SubscriptionRepository subscriptionRepository,
+			@Autowired IDtoConverter<Flight, FlightRecordDto> flightRecordDtoConverter)
 	{
 		_flightRepository = flightRepository;
 		_subscriptionRepository = subscriptionRepository;
+		_flightRecordDtoConverter = flightRecordDtoConverter;
 	}
 
 	@Override
@@ -76,5 +83,16 @@ public class FinancialServiceImpl implements FinancialService
 		_subscriptionRepository.save(subscription);
 		return subscription;
 	}
+
+	@Override
+	public Flight recordFlight(FlightRecordDto flightDto) throws EntityNotFoundException
+	{
+		// TODO check if memberId exists
+		if (flightDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		
+		Flight flight = _flightRecordDtoConverter.convertDtoToEntity(flightDto);
+		
+		_flightRepository.save(flight);
+		return flight;
 	}
 }

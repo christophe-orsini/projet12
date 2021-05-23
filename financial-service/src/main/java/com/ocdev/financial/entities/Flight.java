@@ -50,7 +50,7 @@ public class Flight implements Serializable
 		// TODO Auto-generated constructor stub
 	}
 
-	public Flight(long memberId, String aircraft, String lineItem, Date flightDate, double flightHours)
+	public Flight(long memberId, String aircraft, String lineItem, Date flightDate, double flightHours, double amount)
 	{
 		super();
 		this.memberId = memberId;
@@ -58,6 +58,7 @@ public class Flight implements Serializable
 		this.lineItem = lineItem;
 		this.flightDate = flightDate;
 		this.flightHours = flightHours;
+		this.amount = amount;
 	}
 
 	public long getId()

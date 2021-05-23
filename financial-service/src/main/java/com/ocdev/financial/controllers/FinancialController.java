@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ocdev.financial.dto.FlightRecordDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
@@ -37,6 +38,20 @@ public class FinancialController
 {
 	@Autowired 
 	private FinancialService _financialService;
+	
+	@ApiOperation(value = "Enregistrement d'un vol", notes = "Enregsitrement d'un nouveau vol")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Le vol est enregistré"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas")
+			})
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@PostMapping(value = "/flights", produces = "application/json")
+	public  ResponseEntity<Flight> recordFlight(@Valid @RequestBody final FlightRecordDto flightRecordDto) throws EntityNotFoundException
+	{
+		Flight flight = _financialService.recordFlight(flightRecordDto);
+		return new ResponseEntity<Flight>(flight, HttpStatus.CREATED);
+	}
 	
 	@ApiOperation(value = "Obtenir l'encours d'un membre", notes = "Obtenir la liste des vols dûs par un membre")
 	@ApiResponses(value = {
@@ -75,8 +90,7 @@ public class FinancialController
 			@ApiResponse(code = 460, message = "Le membre a déjà une cotisation valide")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PostMapping(value = {"/subscriptions"},
-		produces = "application/json")
+	@PostMapping(value = "/subscriptions", produces = "application/json")
 	public ResponseEntity<Subscription> recordSubscription(@Valid @RequestBody final SubscriptionDto subscriptionDto)
 			throws EntityNotFoundException, AlreadyExistsException
 	{
