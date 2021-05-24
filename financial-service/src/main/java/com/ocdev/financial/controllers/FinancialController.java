@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
