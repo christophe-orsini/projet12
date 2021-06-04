@@ -60,6 +60,23 @@ public class ReservationController
 	{
 		return _reservationService.isAircaftAvailable(registration, startTime, duration);
 	}
+	
+	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une dheure et une durée")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
+			})
+	@GetMapping(value = "/aircrafts/available", produces = "application/json")
+	public Collection<Aircraft> availableAircrafts(
+			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
+			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final Date startTime,
+			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
+			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
+			) throws ProxyException
+	{
+		return _reservationService.availableAircrafts(startTime, duration);
+	}
 	{
 		return _hangarProxy.getAircraft(registration);
 	}

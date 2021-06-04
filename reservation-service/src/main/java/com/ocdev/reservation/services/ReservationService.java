@@ -10,5 +10,27 @@ import com.ocdev.reservation.errors.EntityNotFoundException;
 
 public interface ReservationService
 {
+	/**
+	 * Cette vérifie si un aéronef est disponible à une heure donnée et pour une durée determinée.
+	 * <p>Un aéronef est disponible s'il n'est pas déjà réservé pour la période 
+	 * et s'il n'est pas techniquement indisponible</p>
+	 * 
+	 * @param registration : Immatriculation de l'aéronef
+	 * @param startTime : Date et heure du départ prévue
+	 * @param duration: Date et heure du départ prévue
+	 * @return : true si l'aéronef est disponible, false sinon
+	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas 
+	 */
 	public boolean isAircaftAvailable(String registration, Date startTime, double duration) throws EntityNotFoundException;
+	/**
+	 * Cette méthode retourne la liste des aéronefs ({@link Aircraft}) disponible à une heure donnée et pour une durée déterminée.
+	 * <p>Un aéronef est disponible s'il n'est pas déjà réservé pour la période 
+	 * et s'il n'est pas techniquement indisponible</p>
+	 * 
+	 * @param startTime : Date et heure du départ prévue
+	 * @param duration : Date et heure du départ prévue
+	 * @return :La liste des aéronefs disponibles
+	 * @see Aircraft
+	 */
+	public Collection<Aircraft> availableAircrafts(Date startTime, double duration);
 }

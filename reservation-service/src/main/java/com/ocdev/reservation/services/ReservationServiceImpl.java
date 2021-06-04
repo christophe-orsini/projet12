@@ -43,4 +43,33 @@ public class ReservationServiceImpl implements ReservationService
 		
 		return reservations.size() == 0;
 	}
+
+	@Override
+	public Collection<Aircraft> availableAircrafts(Date startTime, double duration)
+	{
+		Collection<Aircraft> results = new ArrayList<Aircraft>();
+		Collection<Aircraft> aircrafts = _hangarProxy.getAircrafts();
+		
+		int hours = (int)duration;
+		int minutes = (int)((duration - hours) * 60);
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startTime);
+        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        calendar.add(Calendar.MINUTE, minutes);
+		Date arrivalTime = calendar.getTime();
+		
+		for (Aircraft aircraft : aircrafts)
+		{
+			if (aircraft.isAvailable())
+			{
+				Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
+				if (reservations.size() == 0)
+				{
+					results.add(aircraft);
+				}
+			}
+		}
+		
+		return results;
+	}
 }
