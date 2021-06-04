@@ -12,12 +12,9 @@ public class CustomErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String invoker, Response response)
     {
-    	switch (response.status())
+    	if (response.status() != HttpStatus.SC_OK || response.status() != HttpStatus.SC_CREATED)
     	{
-    		case HttpStatus.SC_NOT_FOUND:
-    			return new EntityNotFoundException("Non trouvé");
-    		case 460:
-    			return new AlreadyExistsException("Déjà existant");
+    		return new ProxyException("Erreur générale d'accès au service partenaire");
     	}
     	
         return defaultErrorDecoder.decode(invoker, response);
