@@ -1,47 +1,65 @@
 package com.ocdev.reservation.controllers;
 
+import java.util.Collection;
+import java.util.Date;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ocdev.reservation.beans.Aircraft;
+import com.ocdev.reservation.dto.BookingCreateDto;
+import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
-import com.ocdev.reservation.proxies.HangarProxy;
+import com.ocdev.reservation.errors.ProxyException;
+import com.ocdev.reservation.services.ReservationService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
+ 
 @RefreshScope
-@RequestMapping("/reservations")
 @RestController
 @Validated
 @Api(tags = {"API de gestion des reservations"})
 public class ReservationController
 {
-	@Autowired
-	private HangarProxy _hangarProxy;
+	@Autowired 
+	private ReservationService _reservationService;
 	
-	@ApiOperation(value = "Obtenir un aéronef", notes = "Obtenir un aéronef à partir de son immatriculation")
+	@ApiOperation(value = "Obtenir la disponibilité d'un aéronef", notes = "Obtenir la disponibilité d'un aéronef pour une heure et une durée")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "L'aéronef est retourné dans le corps de la réponse"),
+			@ApiResponse(code = 200, message = "L'aéronef est disponible"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
-			@ApiResponse(code = 404, message = "L'aéronef n'existe pas")
+			@ApiResponse(code = 404, message = "L'aéronef n'existe pas"),
+			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
-	@GetMapping(value = "/aircrafts/{registration}", produces = "application/json")
-	public ResponseEntity<Aircraft> getAircraft(
+	@GetMapping(value = "/aircrafts/available/{registration}", produces = "application/json")
+	public boolean isAircraftAvailable(
 			@ApiParam(value = "Immatriculation de l'aéronef", required = true, example = "F-HAAA") 
-			@PathVariable @NotBlank final String registration)
-			throws EntityNotFoundException
+			@PathVariable @NotBlank final String registration,
+			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
+			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final Date startTime,
+			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
+			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
+			) throws EntityNotFoundException, ProxyException
+	{
+		return _reservationService.isAircaftAvailable(registration, startTime, duration);
+	}
 	{
 		return _hangarProxy.getAircraft(registration);
 	}
