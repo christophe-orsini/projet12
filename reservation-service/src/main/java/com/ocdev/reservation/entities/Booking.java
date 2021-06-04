@@ -34,6 +34,7 @@ public class Booking implements Serializable
 	@Column(nullable=false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date arrivalTime;
+	private boolean closed;
 	
 	public Booking()
 	{
@@ -115,5 +116,15 @@ public class Booking implements Serializable
 	public void setArrivalTime(Date arrivalTime)
 	{
 		this.arrivalTime = arrivalTime;
+	}
+
+	public boolean isClosed()
+	{
+		return closed;
+	}
+
+	public void setClosed(boolean closed)
+	{
+		this.closed = closed;
 	}
 }
