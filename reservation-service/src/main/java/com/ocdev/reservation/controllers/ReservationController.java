@@ -90,7 +90,7 @@ public class ReservationController
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@PostMapping(value = "/reservations", produces = "application/json")
-	public Booking addBooking(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
+	public Booking addReservation(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
 			throws AlreadyExistsException, EntityNotFoundException, ProxyException
 	{
 		return _reservationService.createBooking(bookingCreateDto);
@@ -106,7 +106,7 @@ public class ReservationController
 	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "1") 
 	@PathVariable @Positive final long memberId) throws EntityNotFoundException
 	{
-		return _reservationService.getAllReservations(memberId);
+		return _reservationService.getAllBookings(memberId);
 	}
 	
 	@ApiOperation(value = "Annuler une réservation", notes = "Annuler une réservation en cours")
@@ -119,7 +119,7 @@ public class ReservationController
 	public void deleteReservation(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
 	@PathVariable @Positive final long reservationId) throws EntityNotFoundException
 	{
-		_reservationService.deleteReservation(reservationId);
+		_reservationService.deleteBooking(reservationId);
 	}
 
 	// Cloturer une réservation

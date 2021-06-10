@@ -117,7 +117,7 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Booking> getAllReservations(long memberId) throws EntityNotFoundException
+	public Collection<Booking> getAllBookings(long memberId) throws EntityNotFoundException
 	{
 		// TODO check if memberId exists
 		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
@@ -126,7 +126,7 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public void deleteReservation(long reservationId) throws EntityNotFoundException
+	public void deleteBooking(long reservationId) throws EntityNotFoundException
 	{
 		Optional<Booking> reservation = _reservationRepository.findById(reservationId);
 		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");

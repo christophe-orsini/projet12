@@ -11,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Booking représente la classe DTO pour la création d'une réservation.
+ * BookingCreateDto représente la classe DTO pour la création d'une réservation.
  * @author PC_ASUS
  *
  */
