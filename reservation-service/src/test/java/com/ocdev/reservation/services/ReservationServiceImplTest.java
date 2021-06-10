@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -310,5 +311,48 @@ public class ReservationServiceImplTest
 		// assert
 		assertThat(actual).size().isEqualTo(1);
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed(9, false);
+	}
+	
+	@Test
+	public void deleteReservation_ShouldRaiseEntityNotFoundException_WhenReservationNotExists()
+	{
+		//arrange
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			_systemUnderTest.deleteReservation(999);
+		}).withMessage("Cette réservation n'existe pas");
+	}
+	
+	@Test
+	public void deleteReservation_ShouldRaiseEntityNotFoundException_WhenReservationIsClosed()
+	{
+		//arrange
+		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		reservation.setClosed(true);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			_systemUnderTest.deleteReservation(9);
+		}).withMessage("Cette réservation est cloturée");
+	}
+	
+	@Test
+	public void deleteReservation_ShouldSuccess_WhenReservationIsActive() throws EntityNotFoundException
+	{
+		//arrange
+		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
+		Mockito.doNothing().when(_reservationRepositoryMock).delete(Mockito.any(Booking.class));
+		
+		// act
+		_systemUnderTest.deleteReservation(9);
+		
+		// assert
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).delete(reservation);
 	}
 }

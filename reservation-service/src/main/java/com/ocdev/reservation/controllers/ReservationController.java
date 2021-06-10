@@ -12,6 +12,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -102,13 +103,25 @@ public class ReservationController
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
 	@GetMapping(value = "/reservations/{memberId}", produces = "application/json")
-	public Collection<Booking> getAll( @ApiParam(value = "Id du membre", required = true, example = "1") 
+	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "1") 
 	@PathVariable @Positive final long memberId) throws EntityNotFoundException
 	{
 		return _reservationService.getAllReservations(memberId);
 	}
 	
+	@ApiOperation(value = "Annuler une réservation", notes = "Annuler une réservation en cours")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La réservation est annulée"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "La réservation n'existe pas ou elle est cloturée"),
+			})
+	@DeleteMapping(value = "/reservations/{reservationId}", produces = "application/json")
+	public void deleteReservation(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
+	@PathVariable @Positive final long reservationId) throws EntityNotFoundException
+	{
+		_reservationService.deleteReservation(reservationId);
+	}
 
 	// Cloturer une réservation
-	// Annuler une réservation
+	
 }

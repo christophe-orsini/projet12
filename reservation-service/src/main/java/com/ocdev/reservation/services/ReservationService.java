@@ -54,9 +54,15 @@ public interface ReservationService
 	 * 
 	 * @param memberId : Id du membre
 	 * @return : La liste des réservations
-	 * @throws EntityNotFoundException 
+	 * @throws EntityNotFoundException levée si le membre n'existe pas
 	 * @see Booking
 	 */
 	public Collection<Booking> getAllReservations(long memberId) throws EntityNotFoundException;
-	
+	/***
+	 * Cette méthode supprime une réservation existante et non cloturée.
+	 * 
+	 * @param reservationId : Id de la réservation
+	 * @throws EntityNotFoundException levée si la réservation n'existe pas
+	 */
+	public void deleteReservation(long reservationId) throws EntityNotFoundException;
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,6 +123,17 @@ public class ReservationServiceImpl implements ReservationService
 		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
 		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);
+	}
+
+	@Override
+	public void deleteReservation(long reservationId) throws EntityNotFoundException
+	{
+		Optional<Booking> reservation = _reservationRepository.findById(reservationId);
+		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");
+		
+		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est cloturée");
+		
+		_reservationRepository.delete(reservation.get());
 	}
 	
 	
