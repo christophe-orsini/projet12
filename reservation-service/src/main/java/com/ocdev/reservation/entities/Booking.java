@@ -1,6 +1,7 @@
 package com.ocdev.reservation.entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Column;
@@ -127,4 +128,12 @@ public class Booking implements Serializable
 	{
 		this.closed = closed;
 	}
+
+	@Override
+	public String toString()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		return "Booking [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description=" + description
+				+ ", departureTime=" + sdf.format(departureTime) + ", arrivalTime=" + sdf.format(arrivalTime) + "]";
+	}	
 }
