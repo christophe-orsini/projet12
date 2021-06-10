@@ -11,6 +11,6 @@ import com.ocdev.reservation.entities.Booking;
 @Repository
 public interface ReservationRepository extends JpaRepository<Booking, Long>
 {
-	@Query(value = "SELECT * FROM booking WHERE aircraft_id = ?1 AND departure_time >= ?2 AND arrival_time <= ?3 AND closed = 0", nativeQuery = true)
-	public List<Booking> findAllBookingForAircraftId(long aircraftId, Date departureTime, Date arrivalTime);
+	@Query(value = "select b from Booking b where aircraft_id = :acftId AND closed = 0 AND (departure_time between :departure and :arrival or arrival_time between :departure and :arrival)")
+	public List<Booking> findAllBookingForAircraftId(@Param("acftId") long aircraftId, @Param("departure") Date departureTime, @Param("arrival") Date arrivalTime);
 }
