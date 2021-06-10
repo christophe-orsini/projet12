@@ -12,6 +12,7 @@ import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.EntityNotFoundException;
+import com.ocdev.reservation.errors.ProxyException;
 import com.ocdev.reservation.proxies.HangarProxy;
 
 @Service
@@ -27,7 +28,7 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public boolean isAircaftAvailable(String registration, Date startTime, double duration) throws EntityNotFoundException
+	public boolean isAircaftAvailable(String registration, Date startTime, double duration) throws EntityNotFoundException, ProxyException
 	{
 		Aircraft aircraft = _hangarProxy.getAircraft(registration);
 		if (!aircraft.isAvailable()) return false;
@@ -45,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Aircraft> availableAircrafts(Date startTime, double duration)
+	public Collection<Aircraft> availableAircrafts(Date startTime, double duration) throws ProxyException
 	{
 		Collection<Aircraft> results = new ArrayList<Aircraft>();
 		Collection<Aircraft> aircrafts = _hangarProxy.getAircrafts();

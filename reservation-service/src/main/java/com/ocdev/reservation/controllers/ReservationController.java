@@ -65,6 +65,7 @@ public class ReservationController
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar"),
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@GetMapping(value = "/aircrafts/available", produces = "application/json")

@@ -20,6 +20,7 @@ import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.EntityNotFoundException;
+import com.ocdev.reservation.errors.ProxyException;
 import com.ocdev.reservation.proxies.HangarProxy;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +47,7 @@ public class ReservationServiceImplTest
     }
 	
 	@Test
-	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsNotAvailable() throws EntityNotFoundException
+	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsNotAvailable() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
 		Aircraft aircraft = new Aircraft();
@@ -62,7 +63,7 @@ public class ReservationServiceImplTest
 	}
 	
 	@Test
-	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsBooked() throws EntityNotFoundException
+	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsBooked() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
 		Aircraft aircraft = new Aircraft();
@@ -87,7 +88,7 @@ public class ReservationServiceImplTest
 	}
 	
 	@Test
-	void isAircaftAvailable_ShouldReturnTrue_WhenAircraftIsNotBooked() throws EntityNotFoundException
+	void isAircaftAvailable_ShouldReturnTrue_WhenAircraftIsNotBooked() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
 		Aircraft aircraft = new Aircraft();
@@ -109,7 +110,7 @@ public class ReservationServiceImplTest
 	}
 	
 	@Test
-	void availableAircrafts_ShouldReturnEmptyList_WhenNoAircraftsAvailable()
+	void availableAircrafts_ShouldReturnEmptyList_WhenNoAircraftsAvailable() throws ProxyException
 	{
 		//arrange
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
@@ -125,7 +126,7 @@ public class ReservationServiceImplTest
 	}
 	
 	@Test
-	void availableAircrafts_ShouldReturnEmpty_WhenAircraftIsBooked()
+	void availableAircrafts_ShouldReturnEmpty_WhenAircraftIsBooked() throws ProxyException
 	{
 		//arrange
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
@@ -153,7 +154,7 @@ public class ReservationServiceImplTest
 	}
 	
 	@Test
-	void availableAircrafts_ShouldReturnOne_WhenAircraftIsAvailableAndNotBooked()
+	void availableAircrafts_ShouldReturnOne_WhenAircraftIsAvailableAndNotBooked() throws ProxyException
 	{
 		//arrange
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
