@@ -65,7 +65,6 @@ public class ReservationController
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
-			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar"),
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@GetMapping(value = "/aircrafts/available", produces = "application/json")
@@ -83,12 +82,14 @@ public class ReservationController
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "L'aéronef est réservé"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
-			@ApiResponse(code = 460, message = "Cet aéronef est déjà réservé pour la même période")
+			@ApiResponse(code = 404, message = "L'aéronef ou le membre n'existe pas"),
+			@ApiResponse(code = 460, message = "Cet aéronef est déjà réservé pour la même période"),
+			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@PostMapping(value = "/reservations", produces = "application/json")
 	public Booking addBooking(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
-			throws AlreadyExistsException, EntityNotFoundException
+			throws AlreadyExistsException, EntityNotFoundException, ProxyException
 	{
 		return _reservationService.createBooking(bookingCreateDto);
 	}

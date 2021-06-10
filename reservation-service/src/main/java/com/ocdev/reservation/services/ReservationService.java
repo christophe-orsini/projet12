@@ -6,6 +6,7 @@ import java.util.Date;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
 
@@ -42,8 +43,10 @@ public interface ReservationService
 	 * @param bookingCreateDto : DTO ({@link BookingCreateDto}) de création de la réservation 
 	 * @return : La réservation ({@link Booking}) crée
 	 * @throws EntityNotFoundException levée si le membre ou l'aéronef n'existe pas
+	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
+	 * @throws AlreadyExistsException levée si l'aéronef est déja réservé pour la période
 	 * @see BookingCreateDto
 	 * @see Booking
 	 */
-	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException;
+	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException, ProxyException, AlreadyExistsException;
 }
