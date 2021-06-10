@@ -36,6 +36,14 @@ public class AircraftServiceImpl implements AircraftService
 	}
 
 	@Override
+	public Aircraft getById(long id) throws EntityNotFoundException
+	{
+		Optional<Aircraft> aircraft = _aircraftRepository.findById(id);
+		if (!aircraft.isPresent()) throw new EntityNotFoundException("Cet aéronef n'existe pas");
+		
+		return aircraft.get();
+	}
+	@Override
 	public Aircraft getByRegistration(String registration) throws EntityNotFoundException
 	{
 		Optional<Aircraft> aircraft = _aircraftRepository.findByRegistration(registration);
