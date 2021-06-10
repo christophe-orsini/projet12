@@ -36,4 +36,14 @@ public interface ReservationService
 	 * @see Aircraft
 	 */
 	public Collection<Aircraft> availableAircrafts(Date startTime, double duration) throws ProxyException;
+	/**
+	 * Cette méthode crée une nouvelle réservation.
+	 * 
+	 * @param bookingCreateDto : DTO ({@link BookingCreateDto}) de création de la réservation 
+	 * @return : La réservation ({@link Booking}) crée
+	 * @throws EntityNotFoundException levée si le membre ou l'aéronef n'existe pas
+	 * @see BookingCreateDto
+	 * @see Booking
+	 */
+	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException;
 }

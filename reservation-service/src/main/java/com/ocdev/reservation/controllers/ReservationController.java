@@ -78,13 +78,21 @@ public class ReservationController
 	{
 		return _reservationService.availableAircrafts(startTime, duration);
 	}
+	
+	@ApiOperation(value = "Réserver un aéronef", notes = "Réserver une aéronef pour une heure et une durée")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "L'aéronef est réservé"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 460, message = "Cet aéronef est déjà réservé pour la même période")
+			})
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@PostMapping(value = "/reservations", produces = "application/json")
+	public Booking addBooking(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
+			throws AlreadyExistsException, EntityNotFoundException
 	{
-		return _hangarProxy.getAircraft(registration);
+		return _reservationService.createBooking(bookingCreateDto);
 	}
 	
-	// Obtenir les dispos d'un aéronef
-	// Obtenir les aéronefs dispi d'une date
-	// Reserver une aéronef
 	// Lister ses réservations
 	// Cloturer une réservation
 	// Annuler une réservation
