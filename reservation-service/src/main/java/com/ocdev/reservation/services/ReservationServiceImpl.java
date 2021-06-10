@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
+import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
@@ -131,10 +132,34 @@ public class ReservationServiceImpl implements ReservationService
 		Optional<Booking> reservation = _reservationRepository.findById(reservationId);
 		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");
 		
-		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est cloturée");
+		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
 		
 		_reservationRepository.delete(reservation.get());
 	}
-	
-	
+
+	@Override
+	public Booking closeBooking(BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException
+	{
+		Optional<Booking> reservation = _reservationRepository.findById(bookingCloseDto.getReservationId());
+		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");
+		
+		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
+		
+		Aircraft aircraft = _hangarProxy.getAircraftById(reservation.get().getAircraftId());
+		// TODO enregistrer le vol dans hangar et finance
+		
+		int hours = (int)bookingCloseDto.getDuration();
+		int minutes = (int)((bookingCloseDto.getDuration() - hours) * 60);
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(bookingCloseDto.getDepartureTime());
+        calendar.add(Calendar.HOUR_OF_DAY, hours);
+        calendar.add(Calendar.MINUTE, minutes);
+		reservation.get().setDepartureTime(bookingCloseDto.getDepartureTime());
+		reservation.get().setArrivalTime(calendar.getTime());
+		reservation.get().setDescription(bookingCloseDto.getDescription());
+		reservation.get().setClosed(true);
+		
+		_reservationRepository.save(reservation.get());
+		return reservation.get();
+	}
 }

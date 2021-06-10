@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
+import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
@@ -338,7 +339,7 @@ public class ReservationServiceImplTest
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
 			_systemUnderTest.deleteBooking(9);
-		}).withMessage("Cette réservation est cloturée");
+		}).withMessage("Cette réservation est clôturée");
 	}
 	
 	@Test
@@ -354,5 +355,60 @@ public class ReservationServiceImplTest
 		
 		// assert
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).delete(reservation);
+	}
+	
+	@Test
+	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationNotExists()
+	{
+		//arrange
+		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.5);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			_systemUnderTest.closeBooking(bookingCloseDto);
+		}).withMessage("Cette réservation n'existe pas");
+	}
+	
+	@Test
+	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationIsClosed()
+	{
+		//arrange
+		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.5); 
+		
+		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		reservation.setClosed(true);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			_systemUnderTest.closeBooking(bookingCloseDto);
+		}).withMessage("Cette réservation est clôturée");
+	}
+	
+	@Test
+	public void closeBooking_ShouldReturnReservation_WhenAllOK() throws EntityNotFoundException, ProxyException
+	{
+		//arrange
+		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.3);
+		
+		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
+		
+		Aircraft aircraft = new Aircraft();
+		aircraft.setId(1);
+		aircraft.setAvailable(true);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
+		
+		Mockito.when(_reservationRepositoryMock.save(Mockito.any(Booking.class))).thenReturn(new Booking());
+		
+		// act
+		Booking actual = _systemUnderTest.closeBooking(bookingCloseDto);
+		
+		// assert
+		assertThat(actual.isClosed()).isTrue();
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).save(Mockito.any(Booking.class));
 	}
 }

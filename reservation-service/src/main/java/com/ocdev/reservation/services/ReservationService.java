@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import com.ocdev.reservation.beans.Aircraft;
+import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
@@ -65,4 +66,13 @@ public interface ReservationService
 	 * @throws EntityNotFoundException levée si la réservation n'existe pas
 	 */
 	public void deleteBooking(long reservationId) throws EntityNotFoundException;
+	/***
+	 * Cette méthode clôture et enregistre un vol.
+	 * 
+	 * @param bookingCloseDto : Dto de clôture du vol
+	 * @return : La réservation clôturée
+	 * @throws EntityNotFoundException levée si la réservation n'existe pas
+	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
+	 */
+	public Booking closeBooking(BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException;
 }

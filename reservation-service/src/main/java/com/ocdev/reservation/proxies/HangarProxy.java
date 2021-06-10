@@ -15,6 +15,9 @@ public interface HangarProxy
 	@GetMapping( value = "/aircrafts/{registration}")
 	public Aircraft getAircraft(@PathVariable final String registration) throws ProxyException;
 	
+	@GetMapping( value = "/aircrafts/id/{aircraftId}")
+	public Aircraft getAircraftById(@PathVariable final long aircraftId) throws ProxyException;
+	
 	@GetMapping( value = "/aircrafts")
 	public Collection<Aircraft> getAircrafts() throws ProxyException;
 }

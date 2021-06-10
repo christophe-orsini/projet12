@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.ocdev.reservation.beans.Aircraft;
+import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
@@ -113,7 +115,7 @@ public class ReservationController
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La réservation est annulée"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
-			@ApiResponse(code = 404, message = "La réservation n'existe pas ou elle est cloturée"),
+			@ApiResponse(code = 404, message = "La réservation n'existe pas ou elle est clôturée"),
 			})
 	@DeleteMapping(value = "/reservations/{reservationId}", produces = "application/json")
 	public void deleteReservation(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
@@ -122,6 +124,19 @@ public class ReservationController
 		_reservationService.deleteBooking(reservationId);
 	}
 
-	// Cloturer une réservation
+	@ApiOperation(value = "Clôturer une réservation", notes = "Clôturer une réservation et enregistrer le vol")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "La réservation est clôturée"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "L'aéronef ou le membre n'existe pas"),
+			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
+			})
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@PutMapping(value = "/reservations", produces = "application/json")
+	public Booking closeReservation(@Valid @RequestBody final BookingCloseDto bookingCloseDto) 
+			throws EntityNotFoundException, ProxyException
+	{
+		return _reservationService.closeBooking(bookingCloseDto);
+	}
 	
 }
