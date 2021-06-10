@@ -32,7 +32,7 @@ public interface ReservationService
 	 * 
 	 * @param startTime : Date et heure du départ prévue
 	 * @param duration : Date et heure du départ prévue
-	 * @return :La liste des aéronefs disponibles
+	 * @return : La liste des aéronefs disponibles
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 * @see Aircraft
 	 */
@@ -49,4 +49,14 @@ public interface ReservationService
 	 * @see Booking
 	 */
 	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException, ProxyException, AlreadyExistsException;
+	/**
+	 * Cette méthode retourne la liste des réservations en cours pour un membre.
+	 * 
+	 * @param memberId : Id du membre
+	 * @return : La liste des réservations
+	 * @throws EntityNotFoundException 
+	 * @see Booking
+	 */
+	public Collection<Booking> getAllReservations(long memberId) throws EntityNotFoundException;
+	
 }

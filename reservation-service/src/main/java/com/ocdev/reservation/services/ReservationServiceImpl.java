@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,4 +114,15 @@ public class ReservationServiceImpl implements ReservationService
 		_reservationRepository.save(booking);
 		return booking;
 	}
+
+	@Override
+	public Collection<Booking> getAllReservations(long memberId) throws EntityNotFoundException
+	{
+		// TODO check if memberId exists
+		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+				
+		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);
+	}
+	
+	
 }

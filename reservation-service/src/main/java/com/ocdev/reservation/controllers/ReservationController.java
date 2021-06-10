@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -94,7 +95,20 @@ public class ReservationController
 		return _reservationService.createBooking(bookingCreateDto);
 	}
 	
-	// Lister ses réservations
+	@ApiOperation(value = "Lister les réservations d'un membre", notes = "Obtenir la liste des réservations d'un membre")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
+			})
+	@GetMapping(value = "/reservations/{memberId}", produces = "application/json")
+	public Collection<Booking> getAll( @ApiParam(value = "Id du membre", required = true, example = "1") 
+	@PathVariable @Positive final long memberId) throws EntityNotFoundException
+	{
+		return _reservationService.getAllReservations(memberId);
+	}
+	
+
 	// Cloturer une réservation
 	// Annuler une réservation
 }

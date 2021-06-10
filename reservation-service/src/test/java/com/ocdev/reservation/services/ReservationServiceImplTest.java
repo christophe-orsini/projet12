@@ -267,4 +267,48 @@ public class ReservationServiceImplTest
 		assertThat(actual.getArrivalTime()).isEqualTo(arrivalTime.getTime());
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).save(Mockito.any(Booking.class));
 	}
+	
+	@Test
+	public void getAllReservations_ShouldRaiseEntityNotFoundException_WhenMemberNotExists()
+	{
+		//arrange
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			_systemUnderTest.getAllReservations(-1);
+		}).withMessage("Ce membre n'existe pas");
+	}
+	
+	@Test
+	public void getAllReservations_ShouldReturnsEmpty_WhenNoReservations() throws EntityNotFoundException
+	{
+		//arrange
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyLong(), Mockito.anyBoolean())).
+			thenReturn(new ArrayList<Booking>());
+		
+		// act
+		Collection<Booking> actual = _systemUnderTest.getAllReservations(9);
+		
+		// assert
+		assertThat(actual).size().isEqualTo(0);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed(9, false);
+	}
+	
+	@Test
+	public void getAllReservations_ShouldReturnsList_WhenReservationsExist() throws EntityNotFoundException
+	{
+		//arrange
+		Collection<Booking> reservations = new ArrayList<Booking>();
+		Booking booking = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		reservations.add(booking);
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyLong(), Mockito.anyBoolean())).thenReturn(reservations);
+		
+		// act
+		Collection<Booking> actual = _systemUnderTest.getAllReservations(9);
+		
+		// assert
+		assertThat(actual).size().isEqualTo(1);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed(9, false);
+	}
 }
