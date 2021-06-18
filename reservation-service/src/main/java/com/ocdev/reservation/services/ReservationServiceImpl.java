@@ -13,6 +13,7 @@ import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
+import com.ocdev.reservation.dto.FlightDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
@@ -24,7 +25,10 @@ public class ReservationServiceImpl implements ReservationService
 {
 	private ReservationRepository _reservationRepository;
 	private HangarProxy _hangarProxy;
-	IDtoConverter<Booking, BookingCreateDto> _bookingCreateDtoConverter;
+	private IDtoConverter<Booking, BookingCreateDto> _bookingCreateDtoConverter;
+	
+	@Autowired
+	RabbitMQSender rabbitMQSender;
 	
 	public ReservationServiceImpl(@Autowired ReservationRepository repository, 
 			@Autowired HangarProxy hangarProxy,
@@ -146,8 +150,17 @@ public class ReservationServiceImpl implements ReservationService
 		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
 		
 		Aircraft aircraft = _hangarProxy.getAircraftById(reservation.get().getAircraftId());
-		// TODO enregistrer le vol dans hangar et finance
+				
+		FlightDto flight = new FlightDto(
+				reservation.get().getMemberId(),
+				aircraft.getId(),
+				bookingCloseDto.getDescription(),
+				bookingCloseDto.getDepartureTime(),
+				bookingCloseDto.getDuration(),
+				aircraft.getHourlyRate());
+		rabbitMQSender.registerFlight(flight);
 		
+		// Cloturer la réservation
 		int hours = (int)bookingCloseDto.getDuration();
 		int minutes = (int)((bookingCloseDto.getDuration() - hours) * 60);
 		Calendar calendar = Calendar.getInstance();
@@ -159,7 +172,7 @@ public class ReservationServiceImpl implements ReservationService
 		reservation.get().setDescription(bookingCloseDto.getDescription());
 		reservation.get().setClosed(true);
 		
-		_reservationRepository.save(reservation.get());
+		//_reservationRepository.save(reservation.get());
 		return reservation.get();
 	}
 }
