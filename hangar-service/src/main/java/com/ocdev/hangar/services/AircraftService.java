@@ -20,6 +20,15 @@ public interface AircraftService
 	 */
 	public Aircraft create(AircraftDto aircraftDto) throws AlreadyExistsException;
 	/**
+	 * Cette méthode retrouve un aéronef ({@link com.ocdev.hangar.entities.Aircraft}) à partir de son id.
+	 * 
+	 * @param id : Id de l'aéronef
+	 * @return L'aéronef trouvé
+	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas
+	 * @See {@link com.ocdev.hangar.entities.Aircraft}
+	 */
+	public Aircraft getById(long id) throws EntityNotFoundException;
+	/**
 	 * Cette méthode retrouve un aéronef ({@link com.ocdev.hangar.entities.Aircraft}) à partir de son immatriculation.
 	 * 
 	 * @param registration : Immatriculation de l'aéronef

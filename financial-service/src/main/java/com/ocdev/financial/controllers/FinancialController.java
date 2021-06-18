@@ -75,7 +75,7 @@ public class FinancialController
 			@ApiResponse(code = 404, message = "Pas de cotisation pour ce membre")
 			})
 	@GetMapping(value = "/subscriptions/{memberId}", produces = "application/json")
-	public ResponseEntity<Subscription> getMembership(
+	public ResponseEntity<Subscription> getSubscription(
 			@ApiParam(value = "Id du membre", required = true, example = "1") @PathVariable @Min(1) final long memberId)
 			throws EntityNotFoundException
 	{
