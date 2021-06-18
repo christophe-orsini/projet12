@@ -3,8 +3,8 @@ package com.ocdev.reservation.config;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -19,12 +19,6 @@ public class RabbitMQConfig
 	@Value("${reservation.rabbitmq.exchange}")
 	private String exchange;
 	
-	@Value("${airclub.rabbitmq.queue}")
-	private String airclubQueueName;
-	
-	@Value("${airclub.rabbitmq.routingkey}")
-	private String airclubRoutingkey;
-	
 	@Value("${hangar.rabbitmq.queue}")
 	private String hangarQueueName;
 	
@@ -38,15 +32,9 @@ public class RabbitMQConfig
 	private String financeRoutingkey;
 
 	@Bean
-	TopicExchange topicExchange()
+	DirectExchange directExchange()
 	{
-		return new TopicExchange(exchange);
-	}
-	
-	@Bean
-	Queue airclubQueue()
-	{
-		return new Queue(airclubQueueName, false);
+		return new DirectExchange(exchange);
 	}
 	
 	@Bean
@@ -62,23 +50,16 @@ public class RabbitMQConfig
 	}
 
 	@Bean
-	Binding airclubBinding(Queue airclubQueue, TopicExchange topicExchange)
+	Binding hangarBinding(Queue hangarQueue, DirectExchange directExchange)
 	{
-		return BindingBuilder.bind(airclubQueue).to(topicExchange).with(airclubRoutingkey);
+		return BindingBuilder.bind(hangarQueue).to(directExchange).with(hangarRoutingkey);
 	}
 	
 	@Bean
-	Binding hangarBinding(Queue hangarQueue, TopicExchange topicExchange)
+	Binding financeBinding(Queue financeQueue, DirectExchange directExchange)
 	{
-		return BindingBuilder.bind(hangarQueue).to(topicExchange).with(hangarRoutingkey);
+		return BindingBuilder.bind(financeQueue).to(directExchange).with(financeRoutingkey);
 	}
-	
-	@Bean
-	Binding financeBinding(Queue financeQueue, TopicExchange topicExchange)
-	{
-		return BindingBuilder.bind(financeQueue).to(topicExchange).with(financeRoutingkey);
-	}
-	
 
 	@Bean
 	public MessageConverter jsonMessageConverter()
@@ -86,7 +67,6 @@ public class RabbitMQConfig
 		return new Jackson2JsonMessageConverter();
 	}
 
-	
 	@Bean
 	public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory)
 	{

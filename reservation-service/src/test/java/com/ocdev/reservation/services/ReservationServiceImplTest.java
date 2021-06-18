@@ -44,7 +44,10 @@ public class ReservationServiceImplTest
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 _systemUnderTest = new ReservationServiceImpl(_reservationRepositoryMock, _hangarProxyMock, _bookingDtoConverterMock);
+		 _systemUnderTest = new ReservationServiceImpl(
+				 _reservationRepositoryMock,
+				 _hangarProxyMock, 
+				 _bookingDtoConverterMock, null);
 	}
 	
 	@AfterEach public void releaseMocks() throws Exception
