@@ -3,6 +3,7 @@ package com.ocdev.hangar.services;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ocdev.hangar.converters.IDtoConverter;
@@ -11,6 +12,7 @@ import com.ocdev.hangar.dto.AircraftDto;
 import com.ocdev.hangar.entities.Aircraft;
 import com.ocdev.hangar.errors.AlreadyExistsException;
 import com.ocdev.hangar.errors.EntityNotFoundException;
+import com.ocdev.hangar.messages.AircraftTotalTimeMessage;
 
 @Service
 public class AircraftServiceImpl implements AircraftService
@@ -112,5 +114,16 @@ public class AircraftServiceImpl implements AircraftService
 		if (!aircraft.isPresent()) throw new EntityNotFoundException("Cet aéronef n'existe pas");
 		
 		return aircraft.get().getNextMaintenanceSchedule() - aircraft.get().getTotalTime();
+	}
+	
+	@RabbitListener(queues = "${hangar.rabbitmq.queue}")
+	public void updateFlightHours(AircraftTotalTimeMessage message)
+	{
+		Optional<Aircraft> aircraft = _aircraftRepository.findById(message.getAircraftId());
+		if (aircraft.isPresent())
+		{
+			aircraft.get().setTotalTime(aircraft.get().getTotalTime() + message.getDuration());
+			_aircraftRepository.save(aircraft.get());
+		}
 	}
 }
