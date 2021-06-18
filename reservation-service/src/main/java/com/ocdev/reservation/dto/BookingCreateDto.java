@@ -35,7 +35,6 @@ public class BookingCreateDto implements Serializable
 	public BookingCreateDto()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public BookingCreateDto(long memberId, String aircraft, String description, Date departureTime, double duration)

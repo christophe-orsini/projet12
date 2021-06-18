@@ -32,7 +32,6 @@ public class BookingCloseDto implements Serializable
 	public BookingCloseDto()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public BookingCloseDto(@Positive(message = "L'id de la réservation est obligatoire") long reservationId,

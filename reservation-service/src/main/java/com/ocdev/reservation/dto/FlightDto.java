@@ -24,7 +24,6 @@ public class FlightDto implements Serializable
 	public FlightDto()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public FlightDto(long memberId, long aircraftId, String description, Date flightDate, double duration, int hourlyRate)

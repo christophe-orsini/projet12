@@ -149,17 +149,6 @@ public class ReservationServiceImpl implements ReservationService
 		
 		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
 		
-		Aircraft aircraft = _hangarProxy.getAircraftById(reservation.get().getAircraftId());
-				
-		FlightDto flight = new FlightDto(
-				reservation.get().getMemberId(),
-				aircraft.getId(),
-				bookingCloseDto.getDescription(),
-				bookingCloseDto.getDepartureTime(),
-				bookingCloseDto.getDuration(),
-				aircraft.getHourlyRate());
-		rabbitMQSender.registerFlight(flight);
-		
 		// Cloturer la réservation
 		int hours = (int)bookingCloseDto.getDuration();
 		int minutes = (int)((bookingCloseDto.getDuration() - hours) * 60);
@@ -172,7 +161,28 @@ public class ReservationServiceImpl implements ReservationService
 		reservation.get().setDescription(bookingCloseDto.getDescription());
 		reservation.get().setClosed(true);
 		
-		//_reservationRepository.save(reservation.get());
+		// check if aircraft exists
+		Aircraft aircraft;
+		try
+		{
+			aircraft = _hangarProxy.getAircraftById(reservation.get().getAircraftId());
+		} catch (Exception e)
+		{
+			throw new EntityNotFoundException("Cet aéronef n'existe pas");
+		}
+		
+		// TODO comment pour essais _reservationRepository.save(reservation.get());
+		
+		// Enregistrer le vol dans les autres micro-services
+		FlightDto flight = new FlightDto(
+				reservation.get().getMemberId(),
+				aircraft.getId(),
+				bookingCloseDto.getDescription(),
+				bookingCloseDto.getDepartureTime(),
+				bookingCloseDto.getDuration(),
+				aircraft.getHourlyRate());
+		rabbitMQSender.registerFlight(flight);
+		
 		return reservation.get();
 	}
 }

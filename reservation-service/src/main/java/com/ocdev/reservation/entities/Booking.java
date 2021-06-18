@@ -40,7 +40,6 @@ public class Booking implements Serializable
 	public Booking()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Booking(long memberId, long aircraftId, String description, Date departureTime, double duration)
