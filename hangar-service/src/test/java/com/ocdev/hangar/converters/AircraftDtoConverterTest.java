@@ -1,6 +1,8 @@
 package com.ocdev.hangar.converters;
 
 import static org.assertj.core.api.Assertions.*;
+
+import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.ocdev.hangar.dto.AircraftDto;
@@ -8,12 +10,12 @@ import com.ocdev.hangar.entities.Aircraft;
 
 public class AircraftDtoConverterTest
 {
-	private IDtoConverter<Aircraft, AircraftDto> dtoUnderTest;
+	private IDtoConverter<Aircraft, AircraftDto> converterUnderTest;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		  dtoUnderTest = new AircraftDtoConverter();
+		  converterUnderTest = new AircraftDtoConverter();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -46,9 +48,22 @@ public class AircraftDtoConverterTest
 		expected.setFuelType("100LL");
 				
 		// act
-		Aircraft actual = dtoUnderTest.convertDtoToEntity(dto);
+		Aircraft actual = converterUnderTest.convertDtoToEntity(dto);
 		
 		// assert
 		assertThat(actual).isEqualToComparingFieldByField(expected);
+	}
+	
+	@Test
+	void convertDtoToEntity_raiseNotYetImplementedException()
+	{
+		// 	arrange
+		Aircraft entity = new Aircraft();
+	
+		// act & assert
+		assertThatExceptionOfType(NotYetImplementedException.class).isThrownBy(() ->
+		{
+			converterUnderTest.convertEntityToDto(entity);
+		}).withMessage("Not yet implemented!");
 	}
 }
