@@ -47,7 +47,6 @@ public class Flight implements Serializable
 	public Flight()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Flight(long memberId, String aircraft, String lineItem, Date flightDate, double flightHours, double amount)

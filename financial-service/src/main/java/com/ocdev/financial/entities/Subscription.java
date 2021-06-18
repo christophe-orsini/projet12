@@ -40,7 +40,6 @@ public class Subscription implements Serializable
 	public Subscription()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Subscription(long memberId, Date paymentDate, double amount)
