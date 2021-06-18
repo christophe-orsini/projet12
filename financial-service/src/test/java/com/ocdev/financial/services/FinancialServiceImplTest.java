@@ -132,7 +132,7 @@ public class FinancialServiceImplTest
 	void recordFlight_ShouldRaiseEntityNotFoundException_WhenMemberNotExists()
 	{
 		//arrange
-		// TODO refactor whhen User defined
+		// TODO refactor when User defined
 		FlightRecordDto dto = new FlightRecordDto();
 		dto.setMemberId(-1);
 			
@@ -147,7 +147,7 @@ public class FinancialServiceImplTest
 	void recordSubscription_ShouldSuccess_WhenOK() throws EntityNotFoundException
 	{
 		//arrange
-		// TODO refactor when User and Hanger endpoint defined
+		// TODO refactor when User and Hangar endpoint defined
 		Calendar today = Calendar.getInstance();
 		FlightRecordDto dto = new FlightRecordDto();
 		dto.setMemberId(9);
