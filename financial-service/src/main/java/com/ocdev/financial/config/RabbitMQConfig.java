@@ -9,9 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig
 {
-	@Value("${airclub.rabbitmq.queue}")
-	String airclubQueueName;
-	
 	@Value("${finance.rabbitmq.queue}")
 	String financeQueueName;
 
@@ -21,12 +18,6 @@ public class RabbitMQConfig
 	@Value("${spring.rabbitmq.password}")
 	private String password;
 
-	@Bean
-	Queue airclubQueue()
-	{
-		return new Queue(airclubQueueName, false);
-	}
-	
 	@Bean
 	Queue hangarQueue()
 	{

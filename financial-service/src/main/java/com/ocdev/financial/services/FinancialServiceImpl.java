@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
 import com.ocdev.financial.errors.EntityNotFoundException;
+import com.ocdev.financial.messages.RegisterFlightMessage;
 
 @Service
 public class FinancialServiceImpl implements FinancialService
@@ -94,5 +96,12 @@ public class FinancialServiceImpl implements FinancialService
 		
 		_flightRepository.save(flight);
 		return flight;
+	}
+	
+	@RabbitListener(queues = "${finance.rabbitmq.queue}")
+	public void recievedAircraft(RegisterFlightMessage message)
+	{
+		// TODO
+		System.out.println("Recieved Message From RabbitMQ: " + message);
 	}
 }
