@@ -27,6 +27,6 @@ public class FlightRecordDtoConverter implements IDtoConverter<Flight, FlightRec
 	@Override
 	public FlightRecordDto convertEntityToDto(Flight entity)
 	{
-		throw new NotYetImplementedException(); // TODO créer une exception
+		throw new NotYetImplementedException();
 	}
 }

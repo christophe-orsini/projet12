@@ -130,8 +130,7 @@ public class ReservationServiceImpl implements ReservationService
         calendar.add(Calendar.MINUTE, minutes);
 		booking.setArrivalTime(calendar.getTime());
 		
-		_reservationRepository.save(booking);
-		return booking;
+		return _reservationRepository.save(booking);
 	}
 
 	@Override
@@ -198,8 +197,7 @@ public class ReservationServiceImpl implements ReservationService
 				aircraft.getHourlyRate());
 		registerFlightInFinance(flight);
 		
-		// TODO comment pour essais return _reservationRepository.save(reservation.get());
-		return reservation.get();
+		return _reservationRepository.save(reservation.get());
 	}
 	
 	private void updateAircraftTotalTime(AircraftTotalTimeMessage message)
