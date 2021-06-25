@@ -155,9 +155,9 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Booking closeBooking(BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException
+	public Booking closeBooking(long reservationId, BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException
 	{
-		Optional<Booking> reservation = _reservationRepository.findById(bookingCloseDto.getReservationId());
+		Optional<Booking> reservation = _reservationRepository.findById(reservationId);
 		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");
 		
 		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
@@ -207,8 +207,8 @@ public class ReservationServiceImpl implements ReservationService
 		_rabbitTemplate.convertAndSend(exchange, hangarRoutingkey, message);
 	}
 	
-	private void registerFlightInFinance(RegisterFlightMessage flight)
+	private void registerFlightInFinance(RegisterFlightMessage message)
 	{
-		_rabbitTemplate.convertAndSend(exchange, financeRoutingkey, flight);
+		_rabbitTemplate.convertAndSend(exchange, financeRoutingkey, message);
 	}
 }
