@@ -23,6 +23,6 @@ public class ReservationCreateDtoConverter implements IDtoConverter<Booking, Boo
 	@Override
 	public BookingCreateDto convertEntityToDto(Booking entity)
 	{
-		throw new NotYetImplementedException(); // TODO créer une exception
+		throw new NotYetImplementedException();
 	}
 }

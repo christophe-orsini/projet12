@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.AmqpTemplate;
 
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
@@ -28,6 +29,8 @@ import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
+import com.ocdev.reservation.messages.AircraftTotalTimeMessage;
+import com.ocdev.reservation.messages.RegisterFlightMessage;
 import com.ocdev.reservation.proxies.HangarProxy;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,12 +42,17 @@ public class ReservationServiceImplTest
 	@Mock private ReservationRepository _reservationRepositoryMock;
 	@Mock private HangarProxy _hangarProxyMock;
 	@Mock private IDtoConverter<Booking, BookingCreateDto> _bookingDtoConverterMock;
+	@Mock private AmqpTemplate _rabbitTemplateMock;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 _systemUnderTest = new ReservationServiceImpl(_reservationRepositoryMock, _hangarProxyMock, _bookingDtoConverterMock);
+		 _systemUnderTest = new ReservationServiceImpl(
+				 _reservationRepositoryMock,
+				 _hangarProxyMock, 
+				 _bookingDtoConverterMock,
+				 _rabbitTemplateMock);
 	}
 	
 	@AfterEach public void releaseMocks() throws Exception
@@ -361,13 +369,13 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationNotExists()
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.5);
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 		
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			_systemUnderTest.closeBooking(bookingCloseDto);
+			_systemUnderTest.closeBooking(9, bookingCloseDto);
 		}).withMessage("Cette réservation n'existe pas");
 	}
 	
@@ -375,7 +383,7 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationIsClosed()
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.5); 
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.5); 
 		
 		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
 		reservation.setClosed(true);
@@ -384,7 +392,7 @@ public class ReservationServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			_systemUnderTest.closeBooking(bookingCloseDto);
+			_systemUnderTest.closeBooking(9, bookingCloseDto);
 		}).withMessage("Cette réservation est clôturée");
 	}
 	
@@ -392,7 +400,7 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldReturnReservation_WhenAllOK() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto(9, "Dummy", new Date(), 1.3);
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.3);
 		
 		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
@@ -403,9 +411,13 @@ public class ReservationServiceImplTest
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		Mockito.when(_reservationRepositoryMock.save(Mockito.any(Booking.class))).thenReturn(new Booking());
+		Mockito.doNothing().when(_rabbitTemplateMock)
+			.convertAndSend(Mockito.any(), Mockito.any(), Mockito.any(AircraftTotalTimeMessage.class));
+		Mockito.doNothing().when(_rabbitTemplateMock)
+		.convertAndSend(Mockito.any(), Mockito.any(), Mockito.any(RegisterFlightMessage.class));
 		
 		// act
-		Booking actual = _systemUnderTest.closeBooking(bookingCloseDto);
+		Booking actual = _systemUnderTest.closeBooking(9, bookingCloseDto);
 		
 		// assert
 		assertThat(actual.isClosed()).isTrue();

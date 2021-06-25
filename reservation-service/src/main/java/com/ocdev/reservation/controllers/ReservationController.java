@@ -132,11 +132,14 @@ public class ReservationController
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PutMapping(value = "/reservations", produces = "application/json")
-	public Booking closeReservation(@Valid @RequestBody final BookingCloseDto bookingCloseDto) 
+	@PutMapping(value = "/reservations/{reservationId}", produces = "application/json")
+	public Booking closeReservation(
+			@ApiParam(value = "Id de la réservation", required = true, example = "1") 
+			@PathVariable @Positive final long reservationId,
+			@Valid @RequestBody final BookingCloseDto bookingCloseDto) 
 			throws EntityNotFoundException, ProxyException
 	{
-		return _reservationService.closeBooking(bookingCloseDto);
+		return _reservationService.closeBooking(reservationId, bookingCloseDto);
 	}
 	
 }

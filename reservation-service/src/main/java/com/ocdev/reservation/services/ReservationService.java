@@ -69,10 +69,11 @@ public interface ReservationService
 	/***
 	 * Cette méthode clôture et enregistre un vol.
 	 * 
+	 * @param reservationId : Id de la réservation à clôturer
 	 * @param bookingCloseDto : Dto de clôture du vol
 	 * @return : La réservation clôturée
 	 * @throws EntityNotFoundException levée si la réservation n'existe pas
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 */
-	public Booking closeBooking(BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException;
+	public Booking closeBooking(long reservationId, BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException;
 }

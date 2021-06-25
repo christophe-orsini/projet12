@@ -30,6 +30,6 @@ public class AircraftDtoConverter implements IDtoConverter<Aircraft, AircraftDto
 	@Override
 	public AircraftDto convertEntityToDto(Aircraft entity)
 	{
-		throw new NotYetImplementedException(); // TODO créer une exception
+		throw new NotYetImplementedException();
 	}
 }

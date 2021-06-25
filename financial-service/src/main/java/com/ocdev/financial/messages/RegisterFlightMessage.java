@@ -1,4 +1,4 @@
-package com.ocdev.financial.dto;
+package com.ocdev.financial.messages;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -8,12 +8,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
- * FlightDto représente la classe d'un vol à enregistrer.
+ * RegisterFlightMessage représente la classe d'un vol à enregistrer.
  * @author PC_ASUS
  *
  */
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = FlightDto.class)
-public class FlightDto implements Serializable
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = RegisterFlightMessage.class)
+public class RegisterFlightMessage implements Serializable
 {
 	private long memberId;
 	private long aircraftId;
@@ -22,12 +22,13 @@ public class FlightDto implements Serializable
 	private double duration;
 	private int hourlyRate;
 	
-	public FlightDto()
+	public RegisterFlightMessage()
 	{
 		super();
 	}
 
-	public FlightDto(long memberId, long aircraftId, String description, Date flightDate, double duration, int hourlyRate)
+	public RegisterFlightMessage(long memberId, long aircraftId, String description, Date flightDate, 
+			double duration, int hourlyRate)
 	{
 		super();
 		this.memberId = memberId;
@@ -102,7 +103,7 @@ public class FlightDto implements Serializable
 	public String toString()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		return "FlightDto [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description=" + description
+		return "RegisterFlightMessage [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description=" + description
 				+ ", flightDate=" + sdf.format(flightDate) + ", duration=" + duration + ", hourlyRate=" + hourlyRate + "]";
 	}
 }

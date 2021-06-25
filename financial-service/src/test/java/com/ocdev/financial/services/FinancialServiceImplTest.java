@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.ocdev.financial.beans.Aircraft;
 import com.ocdev.financial.converters.IDtoConverter;
 import com.ocdev.financial.dao.FlightRepository;
 import com.ocdev.financial.dao.SubscriptionRepository;
@@ -24,6 +25,9 @@ import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
 import com.ocdev.financial.errors.EntityNotFoundException;
+import com.ocdev.financial.errors.ProxyException;
+import com.ocdev.financial.messages.RegisterFlightMessage;
+import com.ocdev.financial.proxies.HangarProxy;
 
 @ExtendWith(MockitoExtension.class)
 public class FinancialServiceImplTest
@@ -34,12 +38,13 @@ public class FinancialServiceImplTest
 	@Mock private FlightRepository _flightRepositoryMock;
 	@Mock private SubscriptionRepository _subscriptionRepositoryMock;
 	@Mock private IDtoConverter<Flight, FlightRecordDto> _flightDtoConverterMock;
+	@Mock private HangarProxy _hangarProxyMock;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock);
+		 systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock, _hangarProxyMock);
 	}
 	
 	@AfterEach public void releaseMocks() throws Exception
@@ -97,12 +102,9 @@ public class FinancialServiceImplTest
 		dto.setAmount(123.45);
 		
 		// act
-		Subscription actual = systemUnderTest.recordSubscription(dto);
+		systemUnderTest.recordSubscription(dto);
 		
 		// assert
-		assertThat(actual.getAmount()).isEqualTo(123.45);
-		assertThat(actual.getValidityDate()).hasDayOfMonth(31);
-		assertThat(actual.getValidityDate()).hasMonth(12);
 		Mockito.verify(_subscriptionRepositoryMock, Mockito.times(1)).save(Mockito.any(Subscription.class));
 	}
 	
@@ -113,18 +115,17 @@ public class FinancialServiceImplTest
 		// TODO refactor when User defined
 		Calendar today = Calendar.getInstance();
 		Subscription subscription = new Subscription(9, today.getTime(), 123.45);
+		subscription.setId(99);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
-		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
+		
 		SubscriptionDto dto = new SubscriptionDto();
 		dto.setMemberId(9);
+		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		
 		// act
-		Subscription actual = systemUnderTest.recordSubscription(dto);
+		systemUnderTest.recordSubscription(dto);
 		
 		// assert
-		assertThat(actual.getAmount()).isEqualTo(0.0);
-		assertThat(actual.getValidityDate()).hasDayOfMonth(31);
-		assertThat(actual.getValidityDate()).hasMonth(12);
 		Mockito.verify(_subscriptionRepositoryMock, Mockito.times(1)).save(Mockito.any(Subscription.class));
 	}
 	
@@ -144,7 +145,7 @@ public class FinancialServiceImplTest
 	}
 	
 	@Test
-	void recordSubscription_ShouldSuccess_WhenOK() throws EntityNotFoundException
+	void recordFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException
 	{
 		//arrange
 		// TODO refactor when User and Hangar endpoint defined
@@ -156,7 +157,8 @@ public class FinancialServiceImplTest
 		dto.setFlightDate(today.getTime());
 		dto.setFlightHours(2.0);
 		dto.setAmount(258.0);
-		Flight flight = new Flight(9, "F-GCNS CESSNA C152", "Test", today.getTime(), 2.0, 258.0);
+		Flight flight = new Flight(9, "Test", today.getTime(), 2.0);
+		flight.setAmount(258.0);
 		Mockito.when(_flightDtoConverterMock.convertDtoToEntity(Mockito.any(FlightRecordDto.class))).thenReturn(flight);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
@@ -165,6 +167,60 @@ public class FinancialServiceImplTest
 		
 		// assert
 		assertThat(actual.getAmount()).isEqualTo(258.0);
+		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
+	}
+	
+	@Test
+	void registerEndedFlight_ShouldRaiseEntityNotFoundException_WhenMemberNotExists()
+	{
+		//arrange
+		// TODO refactor when User defined
+		RegisterFlightMessage message = new RegisterFlightMessage();
+		message.setMemberId(-1);
+			
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			systemUnderTest.registerEndedFlight(message);
+		}).withMessage("Ce membre n'existe pas");
+	}
+	
+	@Test
+	void registerEndedFlight_ShouldRaiseProxyException_WhenHangarNotAvailable() throws ProxyException
+	{
+		//arrange
+		// TODO refactor when User defined
+		RegisterFlightMessage message = new RegisterFlightMessage();
+		message.setMemberId(9);
+		message.setAircraftId(8);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenThrow(ProxyException.class);
+		
+		// act & assert
+		assertThatExceptionOfType(ProxyException.class).isThrownBy(() ->
+		{
+			systemUnderTest.registerEndedFlight(message);
+		});
+	}
+	
+	@Test
+	void registerEndedFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException, ProxyException
+	{
+		//arrange
+		// TODO refactor when User and Hangar endpoint defined
+		Calendar now = Calendar.getInstance();
+		RegisterFlightMessage message = new RegisterFlightMessage();
+		message.setMemberId(9);
+		message.setAircraftId(8);
+		Aircraft aircraft = new Aircraft();
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
+		
+		Flight flight = new Flight(9, "", now.getTime(), 1.5);
+		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
+		
+		// act
+		systemUnderTest.registerEndedFlight(message);
+		
+		// assert
 		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
 	}
 }

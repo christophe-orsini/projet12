@@ -6,37 +6,50 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.dto.BookingCloseDto;
 import com.ocdev.reservation.dto.BookingCreateDto;
-import com.ocdev.reservation.dto.FlightDto;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
+import com.ocdev.reservation.messages.AircraftTotalTimeMessage;
+import com.ocdev.reservation.messages.RegisterFlightMessage;
 import com.ocdev.reservation.proxies.HangarProxy;
 
 @Service
 public class ReservationServiceImpl implements ReservationService
 {
+	@Value("${reservation.rabbitmq.exchange}")
+	private String exchange;
+	
+	@Value("${hangar.rabbitmq.routingkey}")
+	private String hangarRoutingkey;	
+	
+	@Value("${finance.rabbitmq.routingkey}")
+	private String financeRoutingkey;	
+	
 	private ReservationRepository _reservationRepository;
 	private HangarProxy _hangarProxy;
 	private IDtoConverter<Booking, BookingCreateDto> _bookingCreateDtoConverter;
 	
-	@Autowired
-	RabbitMQSender rabbitMQSender;
+	private AmqpTemplate _rabbitTemplate;
 	
 	public ReservationServiceImpl(@Autowired ReservationRepository repository, 
 			@Autowired HangarProxy hangarProxy,
-			@Autowired IDtoConverter<Booking, BookingCreateDto> converter)
+			@Autowired IDtoConverter<Booking, BookingCreateDto> converter,
+			@Autowired AmqpTemplate rabbitTemplate)
 	{
 		_reservationRepository = repository;
 		_hangarProxy = hangarProxy;
-		_bookingCreateDtoConverter = converter;	
+		_bookingCreateDtoConverter = converter;
+		_rabbitTemplate = rabbitTemplate;
 	}
 
 	@Override
@@ -117,8 +130,7 @@ public class ReservationServiceImpl implements ReservationService
         calendar.add(Calendar.MINUTE, minutes);
 		booking.setArrivalTime(calendar.getTime());
 		
-		_reservationRepository.save(booking);
-		return booking;
+		return _reservationRepository.save(booking);
 	}
 
 	@Override
@@ -142,9 +154,9 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Booking closeBooking(BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException
+	public Booking closeBooking(long reservationId, BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException
 	{
-		Optional<Booking> reservation = _reservationRepository.findById(bookingCloseDto.getReservationId());
+		Optional<Booking> reservation = _reservationRepository.findById(reservationId);
 		if (!reservation.isPresent()) throw new EntityNotFoundException("Cette réservation n'existe pas");
 		
 		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
@@ -171,18 +183,30 @@ public class ReservationServiceImpl implements ReservationService
 			throw new EntityNotFoundException("Cet aéronef n'existe pas");
 		}
 		
-		// TODO comment pour essais _reservationRepository.save(reservation.get());
+		AircraftTotalTimeMessage hangarMessage = new AircraftTotalTimeMessage(
+				aircraft.getId(),
+				bookingCloseDto.getDuration());
+		updateAircraftTotalTime(hangarMessage);
 		
-		// Enregistrer le vol dans les autres micro-services
-		FlightDto flight = new FlightDto(
+		RegisterFlightMessage flight = new RegisterFlightMessage(
 				reservation.get().getMemberId(),
 				aircraft.getId(),
 				bookingCloseDto.getDescription(),
 				bookingCloseDto.getDepartureTime(),
 				bookingCloseDto.getDuration(),
 				aircraft.getHourlyRate());
-		rabbitMQSender.registerFlight(flight);
+		registerFlightInFinance(flight);
 		
-		return reservation.get();
+		return _reservationRepository.save(reservation.get());
+	}
+	
+	private void updateAircraftTotalTime(AircraftTotalTimeMessage message)
+	{
+		_rabbitTemplate.convertAndSend(exchange, hangarRoutingkey, message);
+	}
+	
+	private void registerFlightInFinance(RegisterFlightMessage message)
+	{
+		_rabbitTemplate.convertAndSend(exchange, financeRoutingkey, message);
 	}
 }

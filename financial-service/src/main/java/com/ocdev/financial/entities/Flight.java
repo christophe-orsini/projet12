@@ -49,15 +49,13 @@ public class Flight implements Serializable
 		super();
 	}
 
-	public Flight(long memberId, String aircraft, String lineItem, Date flightDate, double flightHours, double amount)
+	public Flight(long memberId, String lineItem, Date flightDate, double flightHours)
 	{
 		super();
 		this.memberId = memberId;
-		this.aircraft= aircraft;
 		this.lineItem = lineItem;
 		this.flightDate = flightDate;
 		this.flightHours = flightHours;
-		this.amount = amount;
 	}
 
 	public long getId()

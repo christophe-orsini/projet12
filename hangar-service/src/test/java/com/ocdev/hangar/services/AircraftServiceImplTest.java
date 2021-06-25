@@ -19,6 +19,7 @@ import com.ocdev.hangar.dto.AircraftDto;
 import com.ocdev.hangar.entities.Aircraft;
 import com.ocdev.hangar.errors.AlreadyExistsException;
 import com.ocdev.hangar.errors.EntityNotFoundException;
+import com.ocdev.hangar.messages.AircraftTotalTimeMessage;
 
 @ExtendWith(MockitoExtension.class)
 public class AircraftServiceImplTest
@@ -346,5 +347,36 @@ public class AircraftServiceImplTest
 		
 		// assert
 		assertThat(actual).isEqualTo(-20f);
+	}
+	
+	@Test
+	void updateFlightHours_ShouldDoNothing_WhenAircraftNotExists()
+	{
+		//arrange
+		AircraftTotalTimeMessage message = new AircraftTotalTimeMessage(9L,  2.0);
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		// act
+		systemUnderTest.updateFlightHours(message);
+		
+		// assert
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findById(9L);
+		Mockito.verify(_aircraftRepositoryMock, Mockito.never()).save(Mockito.any(Aircraft.class));
+	}
+	
+	@Test
+	void updateFlightHours_ShouldUpdate_WhenAircraftExists()
+	{
+		//arrange
+		AircraftTotalTimeMessage message = new AircraftTotalTimeMessage(9L,  2.0);
+		Aircraft aircraft = new Aircraft();
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(aircraft));
+		
+		// act
+		systemUnderTest.updateFlightHours(message);
+		
+		// assert
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findById(9L);
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).save(aircraft);
 	}
 }
