@@ -12,15 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import io.swagger.v3.oas.annotations.Hidden;
-
 /**
  * Subscription représente la classe de paiement de la cotisation pour un membre.
  * @author PC_ASUS
  *
  */
 @Entity
-@Hidden
 public class Subscription implements Serializable
 {
 	@Id

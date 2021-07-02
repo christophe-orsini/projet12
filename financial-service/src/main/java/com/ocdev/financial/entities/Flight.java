@@ -12,15 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import io.swagger.v3.oas.annotations.Hidden;
-
 /**
  * Flight représente la classe d'un vol.
  * @author PC_ASUS
  *
  */
 @Entity
-@Hidden
 public class Flight implements Serializable
 {
 	@Id
