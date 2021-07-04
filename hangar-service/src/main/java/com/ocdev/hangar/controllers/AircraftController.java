@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,7 +36,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-//@FeignClient(contextId="dummies", name="proxy-service")
+//@FeignClient(contextId="dummies", name="gateway-service")
 @RefreshScope
 @RequestMapping("/aircrafts")
 @RestController
@@ -42,6 +46,15 @@ public class AircraftController
 {
 	@Autowired 
 	private AircraftService _aircraftService;
+	
+	//@PreAuthorize("hasAuthority('ROLE_AIRCLUB_ADMIN')")
+    @GetMapping("/ping")
+    public String ping()
+	{
+		SecurityContext context = SecurityContextHolder.getContext();
+	    Authentication authentication = context.getAuthentication();
+	    return "Scopes: " + authentication.getAuthorities();
+    }
 	
 	@ApiOperation(value = "Obtenir un aéronef", notes = "Obtenir un aéronef à partir de son immatriculation")
 	@ApiResponses(value = {
