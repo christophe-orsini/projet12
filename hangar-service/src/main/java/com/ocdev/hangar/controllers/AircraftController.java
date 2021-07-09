@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +35,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-//@FeignClient(contextId="dummies", name="gateway-service")
 @RefreshScope
 @RequestMapping("/aircrafts")
 @RestController
@@ -47,7 +45,6 @@ public class AircraftController
 	@Autowired 
 	private AircraftService _aircraftService;
 	
-	//@PreAuthorize("hasAuthority('ROLE_AIRCLUB_ADMIN')")
     @GetMapping("/ping")
     public String ping()
 	{

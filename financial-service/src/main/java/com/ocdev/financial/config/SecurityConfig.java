@@ -1,4 +1,4 @@
-package com.ocdev.hangar.config;
+package com.ocdev.financial.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,8 +14,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
 	private static final String[] AUTH_WHITELIST =
 		{
-			"/aircrafts/**",
-				
+			"/flights/**",
+			"/subscriptions/**",
+			
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
