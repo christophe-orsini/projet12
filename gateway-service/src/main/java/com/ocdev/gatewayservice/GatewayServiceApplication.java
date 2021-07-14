@@ -1,4 +1,4 @@
-package com.ocdev.services;
+package com.ocdev.gatewayservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ProxyServiceApplication 
+public class GatewayServiceApplication 
 {
 	public static void main(String[] args)
 	{
-		SpringApplication.run(ProxyServiceApplication.class, args);
+		SpringApplication.run(GatewayServiceApplication.class, args);
 	}
 }

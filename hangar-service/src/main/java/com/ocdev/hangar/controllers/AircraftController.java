@@ -32,7 +32,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-//@FeignClient(contextId="dummies", name="proxy-service")
 @RefreshScope
 @RequestMapping("/aircrafts")
 @RestController

@@ -10,6 +10,8 @@
 - **Java** version **1.8.0_292**
 - **Maven** version **3.8.1**
 - **MySQL** version **5.7.21**
+- **RabbitMQ** version **3.8.17**
+- **Keycloack** verion **?**
  
 Le serveur MySQL doit être en fonction et les ports **8080** à **8089** ainsi que **8761** et **8888** doivent être libres
 

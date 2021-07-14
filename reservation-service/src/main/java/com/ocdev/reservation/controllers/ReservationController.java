@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ import io.swagger.annotations.ApiResponses;
  
 @RefreshScope
 @RestController
+@RequestMapping("/reservations")
 @Validated
 @Api(tags = {"API de gestion des reservations"})
 public class ReservationController
@@ -91,7 +93,7 @@ public class ReservationController
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PostMapping(value = "/reservations", produces = "application/json")
+	@PostMapping(value = "", produces = "application/json")
 	public Booking addReservation(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
 			throws AlreadyExistsException, EntityNotFoundException, ProxyException
 	{
@@ -104,7 +106,7 @@ public class ReservationController
 			@ApiResponse(code = 401, message = "Authentification requise"),
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
-	@GetMapping(value = "/reservations/{memberId}", produces = "application/json")
+	@GetMapping(value = "/{memberId}", produces = "application/json")
 	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "1") 
 	@PathVariable @Positive final long memberId) throws EntityNotFoundException
 	{
@@ -117,7 +119,7 @@ public class ReservationController
 			@ApiResponse(code = 401, message = "Authentification requise"),
 			@ApiResponse(code = 404, message = "La réservation n'existe pas ou elle est clôturée"),
 			})
-	@DeleteMapping(value = "/reservations/{reservationId}", produces = "application/json")
+	@DeleteMapping(value = "/{reservationId}", produces = "application/json")
 	public void deleteReservation(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
 	@PathVariable @Positive final long reservationId) throws EntityNotFoundException
 	{
@@ -132,7 +134,7 @@ public class ReservationController
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PutMapping(value = "/reservations/{reservationId}", produces = "application/json")
+	@PutMapping(value = "/{reservationId}", produces = "application/json")
 	public Booking closeReservation(
 			@ApiParam(value = "Id de la réservation", required = true, example = "1") 
 			@PathVariable @Positive final long reservationId,
