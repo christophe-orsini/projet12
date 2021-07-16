@@ -7,8 +7,8 @@
 <html>
 <%@ include file="../theme/head.jsp" %>
 <body class="container">
-<!-- %@ include file="../theme/header.jsp" %-->
-<!-- %@ include file="../theme/menu.jsp" %-->
+<%@ include file="../theme/header.jsp" %>
+<%@ include file="../theme/menu.jsp" %>
 	<section class="row justify-content-center">	
 		<div class="col-12">
 			<p class="h3">Liste des aéronefs</p>
