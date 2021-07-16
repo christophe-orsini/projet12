@@ -18,9 +18,19 @@ public class AircraftController
 	private AircraftService _aircraftService;
 	
 	@GetMapping({"/list"})
-	public String login(Model model)
+	public String list(Model model)
 	{	
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
+		
+		model.addAttribute("aircrafts", aircrafts);
+		
+		return "/aircraft/list";
+	}
+	
+	@GetMapping({"/list2"})
+	public String list2(Model model)
+	{	
+		List<Aircraft> aircrafts = _aircraftService.getAircrafts2();
 		
 		model.addAttribute("aircrafts", aircrafts);
 		

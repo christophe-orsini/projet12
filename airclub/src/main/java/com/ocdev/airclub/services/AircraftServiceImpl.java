@@ -24,4 +24,20 @@ public class AircraftServiceImpl implements AircraftService
 		
 		return aircrafts;
 	}
+	
+	@Override
+	public List<Aircraft> getAircrafts2()
+	{
+		List<Aircraft> aircrafts = new ArrayList<Aircraft>();
+		Aircraft aircraft = new Aircraft();
+		aircraft.setId(1L);
+		aircraft.setRegistration("F-GHNY");
+		aircraft.setMake("CESSNA");
+		aircraft.setModel("C152");
+		aircraft.setHourlyRate(119);
+		
+		aircrafts.add(aircraft);
+		
+		return aircrafts;
+	}
 }
