@@ -32,16 +32,6 @@ public class AircraftController
 		return "/aircraft/list";
 	}
 	
-	@GetMapping({"/list2"})
-	public String list2(Model model)
-	{	
-		List<Aircraft> aircrafts = _aircraftService.getAircrafts2();
-		
-		model.addAttribute("aircrafts", aircrafts);
-		
-		return "/aircraft/list";
-	}
-	
 	@GetMapping({"/{registration}"})
 	public String getAircraft(@PathVariable @NotBlank final String registration, Model model)
 	{	

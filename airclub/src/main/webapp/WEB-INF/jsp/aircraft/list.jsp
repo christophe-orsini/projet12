@@ -22,7 +22,7 @@
 						<th>Fabricant</th>
 						<th>Modèle</th>
 						<th>Tarif horaire</th>
-						<th>Disponible</th>
+						<th>En maintenance</th>
 					</tr>
 				</thead>	
 				<tbody>
@@ -32,7 +32,7 @@
 						<td>${aircraft.make}</td>
 						<td>${aircraft.model}</td>
 						<td>${aircraft.hourlyRate} €/h</td>
-						<td><c:if test="${ aircraft.available = true }">Oui</c:if></td>
+						<td><c:if test="${ aircraft.available = false }">Oui</c:if></td>
 					</tr>
 					</c:forEach>
 				</tbody>
