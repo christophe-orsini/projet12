@@ -12,6 +12,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	 {
 		 http.authorizeRequests()
 		 .antMatchers("/index", "/webjars/**").permitAll()
+		 //.antMatchers("/aircraft/**").hasRole("airclub-member")
          .anyRequest().authenticated()
          .and()
          .oauth2Login();
