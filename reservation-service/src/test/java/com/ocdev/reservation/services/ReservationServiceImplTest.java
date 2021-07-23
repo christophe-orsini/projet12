@@ -2,11 +2,9 @@ package com.ocdev.reservation.services;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,12 +62,13 @@ public class ReservationServiceImplTest
 	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsNotAvailable() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Aircraft aircraft = new Aircraft();
 		aircraft.setAvailable(false);
 		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", new Date(), 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
 		
 		// assert
 		assertThat(actual).isFalse();
@@ -80,58 +79,61 @@ public class ReservationServiceImplTest
 	void isAircaftAvailable_ShouldReturnFalse_WhenAircraftIsBooked() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1);
 		aircraft.setAvailable(true);
 		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
 		
-		Booking booking = new Booking(1, 1, "Vol local", new Date(), 1.5d);
+		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
-				Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(reservations);
+				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(reservations);
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", new Date(), 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
 		
 		// assert
 		assertThat(actual).isFalse();
 		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraft("F-GAAA");
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).
-			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class));
+			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
 	
 	@Test
 	void isAircaftAvailable_ShouldReturnTrue_WhenAircraftIsNotBooked() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1);
 		aircraft.setAvailable(true);
 		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
 		
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
-				Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(new ArrayList<Booking>());
+				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(new ArrayList<Booking>());
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", new Date(), 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
 		
 		// assert
 		assertThat(actual).isTrue();
 		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraft("F-GAAA");
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).
-			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class));
+			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
 	
 	@Test
 	void availableAircrafts_ShouldReturnEmptyList_WhenNoAircraftsAvailable() throws ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
 		Mockito.when(_hangarProxyMock.getAircrafts()).thenReturn(aircrafts);
 		
 		// act
-		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(new Date(), 1.0d);
+		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(today, 1.0d);
 		
 		// assert
 		assertThat(actuals.isEmpty()).isTrue();
@@ -143,6 +145,7 @@ public class ReservationServiceImplTest
 	void availableAircrafts_ShouldReturnEmpty_WhenAircraftIsBooked() throws ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1L);
@@ -151,26 +154,27 @@ public class ReservationServiceImplTest
 		aircrafts.add(aircraft);
 		Mockito.when(_hangarProxyMock.getAircrafts()).thenReturn(aircrafts);
 		
-		Booking booking = new Booking(1, 1, "Vol local", new Date(), 1.5d);
+		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
-				Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(reservations);
+				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(reservations);
 		
 		// act
-		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(new Date(), 1.0d);
+		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(today, 1.0d);
 		
 		// assert
 		assertThat(actuals).size().isEqualTo(0);
 		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircrafts();
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).
-			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class));
+			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
 	
 	@Test
 	void availableAircrafts_ShouldReturnOne_WhenAircraftIsAvailableAndNotBooked() throws ProxyException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Collection<Aircraft> aircrafts = new ArrayList<Aircraft>();
 		Aircraft aircraft1 = new Aircraft();
 		aircraft1.setId(1L);
@@ -184,20 +188,21 @@ public class ReservationServiceImplTest
 		aircrafts.add(aircraft2);
 		Mockito.when(_hangarProxyMock.getAircrafts()).thenReturn(aircrafts);
 		
-		Booking booking = new Booking(1, 1, "Vol local", new Date(), 1.5d);
+		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
-				Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(reservations).thenReturn(new ArrayList<Booking>());
+			Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class)))
+			.thenReturn(reservations).thenReturn(new ArrayList<Booking>());
 		
 		// act
-		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(new Date(), 1.0d);
+		Collection<Aircraft> actuals = _systemUnderTest.availableAircrafts(today, 1.0d);
 		
 		// assert
 		assertThat(actuals).size().isEqualTo(1);
 		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircrafts();
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(2)).
-			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class));
+			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
 	
 	@Test
@@ -233,8 +238,8 @@ public class ReservationServiceImplTest
 	public void createBooking_ShouldRaiseAlreadyExistsException_WhenAircraftNotAvailable() throws ProxyException
 	{
 		//arrange
-		Calendar testDate = new GregorianCalendar(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(1, "F-GAAA", "Dummy", testDate.getTime(), 1.5);
+		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto(1, "F-GAAA", "Dummy", testDate, 1.5);
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
 		
@@ -249,32 +254,31 @@ public class ReservationServiceImplTest
 	public void createBooking_ShouldReturnBooking_WhenAllOK() throws ProxyException, EntityNotFoundException, AlreadyExistsException
 	{
 		//arrange
-		Calendar testDate = new GregorianCalendar(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(9, "F-GAAA", "Dummy", testDate.getTime(), 1.5);
+		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto(9, "F-GAAA", "Dummy", testDate, 1.5);
 		
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(8);
 		aircraft.setAvailable(true);
 		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
-				Mockito.anyLong(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(new ArrayList<Booking>());
+				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(new ArrayList<Booking>());
 		
 		Booking booking = new Booking();
 		booking.setMemberId(9);
 		booking.setDescription("Dummy");
-		booking.setDepartureTime(testDate.getTime());
+		booking.setDepartureTime(testDate);
+		booking.setArrivalTime(testDate.plusHours(1).plusMinutes(30));
 		Mockito.when(_bookingDtoConverterMock.convertDtoToEntity(Mockito.any(BookingCreateDto.class))).thenReturn(booking);
-		Mockito.when(_reservationRepositoryMock.save(Mockito.any(Booking.class))).thenReturn(new Booking());
+		Mockito.when(_reservationRepositoryMock.save(Mockito.any(Booking.class))).thenReturn(booking);
 		
-		Calendar arrivalTime = (Calendar)testDate.clone();
-		arrivalTime.add(Calendar.HOUR_OF_DAY, 1);
-		arrivalTime.add(Calendar.MINUTE, 30);
+		LocalDateTime arrivalTime = testDate.plusHours(1).plusMinutes(30);
 		
 		// act
 		Booking actual = _systemUnderTest.createBooking(bookingCreateDto);
 		
 		// assert
-		assertThat(actual.getArrivalTime()).isEqualTo(arrivalTime.getTime());
+		assertThat(actual.getArrivalTime()).isEqualTo(arrivalTime);
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).save(Mockito.any(Booking.class));
 	}
 	
@@ -309,8 +313,9 @@ public class ReservationServiceImplTest
 	public void getAllBookings_ShouldReturnsList_WhenReservationsExist() throws EntityNotFoundException
 	{
 		//arrange
+		LocalDateTime today = LocalDateTime.now();
 		Collection<Booking> reservations = new ArrayList<Booking>();
-		Booking booking = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		Booking booking = new Booking(9, 1, "Dummy", today, 1.5);
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyLong(), Mockito.anyBoolean())).thenReturn(reservations);
 		
@@ -339,7 +344,8 @@ public class ReservationServiceImplTest
 	public void deleteBooking_ShouldRaiseEntityNotFoundException_WhenReservationIsClosed()
 	{
 		//arrange
-		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		LocalDateTime today = LocalDateTime.now();
+		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
 		reservation.setClosed(true);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
@@ -354,7 +360,8 @@ public class ReservationServiceImplTest
 	public void deleteBooking_ShouldSuccess_WhenReservationIsActive() throws EntityNotFoundException
 	{
 		//arrange
-		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		LocalDateTime today = LocalDateTime.now();
+		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		Mockito.doNothing().when(_reservationRepositoryMock).delete(Mockito.any(Booking.class));
 		
@@ -369,7 +376,8 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationNotExists()
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.5);
+		LocalDateTime today = LocalDateTime.now();
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 		
 		// act & assert
@@ -383,9 +391,10 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldRaiseEntityNotFoundException_WhenReservationIsClosed()
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.5); 
+		LocalDateTime today = LocalDateTime.now();
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.5); 
 		
-		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
 		reservation.setClosed(true);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
@@ -400,9 +409,10 @@ public class ReservationServiceImplTest
 	public void closeBooking_ShouldReturnReservation_WhenAllOK() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
-		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", new Date(), 1.3);
+		LocalDateTime today = LocalDateTime.now();
+		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.3);
 		
-		Booking reservation = new Booking(9, 1, "Dummy", new Date(), 1.5);
+		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
 		Aircraft aircraft = new Aircraft();
@@ -417,10 +427,9 @@ public class ReservationServiceImplTest
 		.convertAndSend(Mockito.any(), Mockito.any(), Mockito.any(RegisterFlightMessage.class));
 		
 		// act
-		Booking actual = _systemUnderTest.closeBooking(9, bookingCloseDto);
+		_systemUnderTest.closeBooking(9, bookingCloseDto);
 		
 		// assert
-		assertThat(actual.isClosed()).isTrue();
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).save(Mockito.any(Booking.class));
 	}
 }

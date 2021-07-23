@@ -1,8 +1,9 @@
 package com.ocdev.reservation.messages;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -18,7 +19,7 @@ public class RegisterFlightMessage implements Serializable
 	private long memberId;
 	private long aircraftId;
 	private String description;
-	private Date flightDate;
+	private LocalDate flightDate;
 	private double duration;
 	private int hourlyRate;
 	
@@ -27,13 +28,13 @@ public class RegisterFlightMessage implements Serializable
 		super();
 	}
 
-	public RegisterFlightMessage(long memberId, long aircraftId, String description, Date flightDate, double duration, int hourlyRate)
+	public RegisterFlightMessage(long memberId, long aircraftId, String description, LocalDateTime flightDate, double duration, int hourlyRate)
 	{
 		super();
 		this.memberId = memberId;
 		this.aircraftId = aircraftId;
 		this.description = description;
-		this.flightDate = flightDate;
+		this.flightDate = flightDate.toLocalDate();
 		this.duration = duration;
 		this.hourlyRate = hourlyRate;
 	}
@@ -68,12 +69,12 @@ public class RegisterFlightMessage implements Serializable
 		this.description = description;
 	}
 
-	public Date getFlightDate()
+	public LocalDate getFlightDate()
 	{
 		return flightDate;
 	}
 
-	public void setFlightDate(Date flightDate)
+	public void setFlightDate(LocalDate flightDate)
 	{
 		this.flightDate = flightDate;
 	}
@@ -101,9 +102,8 @@ public class RegisterFlightMessage implements Serializable
 	@Override
 	public String toString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return "RegisterFlightMessage [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description="
-				+ description + ", flightDate=" + sdf.format(flightDate) + ", duration=" + duration + ", hourlyRate="
-				+ hourlyRate + "]";
+				+ description + ", flightDate=" + flightDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) 
+				+ ", duration=" + duration + ", hourlyRate=" + hourlyRate + "]";
 	}
 }

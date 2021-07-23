@@ -2,7 +2,7 @@ package com.ocdev.reservation.converters;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ public class ReservationCreateDtoConverterTest
 	void convertDtoToEntity_returnsEntity()
 	{
 		// arrange
-		Date testDate= new Date();
+		LocalDateTime testDate= LocalDateTime.now();
 		BookingCreateDto dto = new BookingCreateDto();
 		dto.setMemberId(9);
 		dto.setAircraft("F-GAAA");

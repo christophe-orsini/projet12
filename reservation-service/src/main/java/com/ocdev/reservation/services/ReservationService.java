@@ -1,7 +1,7 @@
 package com.ocdev.reservation.services;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dto.BookingCloseDto;
@@ -25,7 +25,7 @@ public interface ReservationService
 	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas 
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 */
-	public boolean isAircaftAvailable(String registration, Date startTime, double duration) throws EntityNotFoundException, ProxyException;
+	boolean isAircaftAvailable(String registration, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException;
 	/**
 	 * Cette méthode retourne la liste des aéronefs ({@link Aircraft}) disponible à une heure donnée et pour une durée déterminée.
 	 * <p>Un aéronef est disponible s'il n'est pas déjà réservé pour la période 
@@ -37,11 +37,12 @@ public interface ReservationService
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 * @see Aircraft
 	 */
-	public Collection<Aircraft> availableAircrafts(Date startTime, double duration) throws ProxyException;
+	public Collection<Aircraft> availableAircrafts(LocalDateTime startTime, double duration) throws ProxyException;
 	/**
 	 * Cette méthode crée une nouvelle réservation.
 	 * 
-	 * @param bookingCreateDto : DTO ({@link BookingCreateDto}) de création de la réservation 
+	 * @@Override
+	param bookingCreateDto : DTO ({@link BookingCreateDto}) de création de la réservation 
 	 * @return : La réservation ({@link Booking}) crée
 	 * @throws EntityNotFoundException levée si le membre ou l'aéronef n'existe pas
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
