@@ -81,7 +81,7 @@ public class MemberController
 	public String before(Model model, @PathVariable String currentDate)
 	{	 
 		LocalDate date = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		date.minusDays(1);
+		date = date.minusDays(1);
 		model.addAttribute("currentDate", date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 		
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
@@ -94,7 +94,7 @@ public class MemberController
 	public String after(Model model, @PathVariable String currentDate)
 	{	
 		LocalDate date = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		date.plusDays(1);
+		date = date.plusDays(1);
 		model.addAttribute("currentDate", date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 		
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
