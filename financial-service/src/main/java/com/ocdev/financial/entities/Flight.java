@@ -1,16 +1,14 @@
 package com.ocdev.financial.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Flight représente la classe d'un vol.
@@ -30,14 +28,12 @@ public class Flight implements Serializable
 	@Column(nullable=false, length=100)
 	private String lineItem;
 	@Column(nullable=false)
-	@Temporal(TemporalType.DATE)
-	private Date flightDate;
+	private LocalDate flightDate;
 	@Column(nullable=false)
 	private double flightHours;
 	@Column(nullable=false)
 	private double amount;
-	@Temporal(TemporalType.DATE)
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	private double payment;
 	private boolean closed;
 	
@@ -46,7 +42,7 @@ public class Flight implements Serializable
 		super();
 	}
 
-	public Flight(long memberId, String lineItem, Date flightDate, double flightHours)
+	public Flight(long memberId, String lineItem, LocalDate flightDate, double flightHours)
 	{
 		super();
 		this.memberId = memberId;
@@ -95,12 +91,12 @@ public class Flight implements Serializable
 		this.lineItem = lineItem;
 	}
 
-	public Date getFlightDate()
+	public LocalDate getFlightDate()
 	{
 		return flightDate;
 	}
 
-	public void setFlightDate(Date flightDate)
+	public void setFlightDate(LocalDate flightDate)
 	{
 		this.flightDate = flightDate;
 	}
@@ -125,12 +121,12 @@ public class Flight implements Serializable
 		this.amount = amount;
 	}
 
-	public Date getPaymentDate()
+	public LocalDate getPaymentDate()
 	{
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Date paymentDate)
+	public void setPaymentDate(LocalDate paymentDate)
 	{
 		this.paymentDate = paymentDate;
 	}
@@ -158,8 +154,7 @@ public class Flight implements Serializable
 	@Override
 	public String toString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return "Flight [memberId=" + memberId + ", aircraft=" + aircraft + ", lineItem=" + lineItem + ", flightDate="
-				+ sdf.format(flightDate) + ", flightHours=" + flightHours + "]";
+				+ flightDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + ", flightHours=" + flightHours + "]";
 	}
 }

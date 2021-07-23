@@ -2,8 +2,7 @@ package com.ocdev.financial.services;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -73,9 +72,9 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar date = new GregorianCalendar(2021,11,31);
-		Subscription subscription = new Subscription(9, date.getTime(), 123.45);
-		subscription.setValidityDate(date.getTime());
+		LocalDate date = LocalDate.of(2021,12,31);
+		Subscription subscription = new Subscription(9, date, 123.45);
+		subscription.setValidityDate(date);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		SubscriptionDto dto = new SubscriptionDto();
 		dto.setMemberId(9);
@@ -93,8 +92,8 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar today = Calendar.getInstance();
-		Subscription subscription = new Subscription(9, today.getTime(), 123.45);
+		LocalDate today = LocalDate.now();
+		Subscription subscription = new Subscription(9, today, 123.45);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		SubscriptionDto dto = new SubscriptionDto();
@@ -113,8 +112,8 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar today = Calendar.getInstance();
-		Subscription subscription = new Subscription(9, today.getTime(), 123.45);
+		LocalDate today = LocalDate.now();
+		Subscription subscription = new Subscription(9, today, 123.45);
 		subscription.setId(99);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		
@@ -149,15 +148,15 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User and Hangar endpoint defined
-		Calendar today = Calendar.getInstance();
+		LocalDate today = LocalDate.now();
 		FlightRecordDto dto = new FlightRecordDto();
 		dto.setMemberId(9);
 		dto.setAircraft("F-GCNS CESSNA C152");
 		dto.setLineItem("Test");
-		dto.setFlightDate(today.getTime());
+		dto.setFlightDate(today);
 		dto.setFlightHours(2.0);
 		dto.setAmount(258.0);
-		Flight flight = new Flight(9, "Test", today.getTime(), 2.0);
+		Flight flight = new Flight(9, "Test", today, 2.0);
 		flight.setAmount(258.0);
 		Mockito.when(_flightDtoConverterMock.convertDtoToEntity(Mockito.any(FlightRecordDto.class))).thenReturn(flight);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
@@ -207,14 +206,14 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User and Hangar endpoint defined
-		Calendar now = Calendar.getInstance();
+		LocalDate now = LocalDate.now();
 		RegisterFlightMessage message = new RegisterFlightMessage();
 		message.setMemberId(9);
 		message.setAircraftId(8);
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
-		Flight flight = new Flight(9, "", now.getTime(), 1.5);
+		Flight flight = new Flight(9, "", now, 1.5);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
 		// act

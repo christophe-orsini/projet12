@@ -1,7 +1,7 @@
 package com.ocdev.reservation.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -28,7 +28,7 @@ public class BookingCreateDto implements Serializable
 	private String description;
 	@ApiModelProperty(position = 4, required = true, value = "Date et heure du vol", example = "2021-05-23T10:30")
 	@DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm")
-	private Date departureTime;
+	private LocalDateTime departureTime;
 	@ApiModelProperty(position = 5, required = true, value = "Durée du vol en décimal", example = "1.5")
 	private double duration;
 	
@@ -37,7 +37,7 @@ public class BookingCreateDto implements Serializable
 		super();
 	}
 
-	public BookingCreateDto(long memberId, String aircraft, String description, Date departureTime, double duration)
+	public BookingCreateDto(long memberId, String aircraft, String description, LocalDateTime departureTime, double duration)
 	{
 		super();
 		this.memberId = memberId;
@@ -77,12 +77,12 @@ public class BookingCreateDto implements Serializable
 		this.description = description;
 	}
 
-	public Date getDepartureTime()
+	public LocalDateTime getDepartureTime()
 	{
 		return departureTime;
 	}
 
-	public void setDepartureTime(Date departureTime)
+	public void setDepartureTime(LocalDateTime departureTime)
 	{
 		this.departureTime = departureTime;
 	}

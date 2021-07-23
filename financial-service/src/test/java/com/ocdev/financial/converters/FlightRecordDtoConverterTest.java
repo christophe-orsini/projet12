@@ -2,7 +2,7 @@ package com.ocdev.financial.converters;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ public class FlightRecordDtoConverterTest
 	void convertDtoToEntity_returnsEntity()
 	{
 		// arrange
-		Date testDate = new Date();
+		LocalDate testDate = LocalDate.now();
 		FlightRecordDto dto = new FlightRecordDto();
 		dto.setMemberId(9);
 		dto.setAircraft("F-GAAA");
