@@ -1,16 +1,14 @@
 package com.ocdev.financial.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Subscription représente la classe de paiement de la cotisation pour un membre.
@@ -26,20 +24,18 @@ public class Subscription implements Serializable
 	@Column(nullable=false)
 	private long memberId;
 	@Column(nullable=false)
-	@Temporal(TemporalType.DATE)
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	@Column(nullable=false)
 	private double amount;
 	@Column(nullable=false)
-	@Temporal(TemporalType.DATE)
-	private Date validityDate;
+	private LocalDate validityDate;
 	
 	public Subscription()
 	{
 		super();
 	}
 
-	public Subscription(long memberId, Date paymentDate, double amount)
+	public Subscription(long memberId, LocalDate paymentDate, double amount)
 	{
 		super();
 		this.memberId = memberId;
@@ -67,12 +63,12 @@ public class Subscription implements Serializable
 		this.memberId = memberId;
 	}
 
-	public Date getPaymentDate()
+	public LocalDate getPaymentDate()
 	{
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Date paymentDate)
+	public void setPaymentDate(LocalDate paymentDate)
 	{
 		this.paymentDate = paymentDate;
 	}
@@ -87,12 +83,12 @@ public class Subscription implements Serializable
 		this.amount = amount;
 	}
 
-	public Date getValidityDate()
+	public LocalDate getValidityDate()
 	{
 		return validityDate;
 	}
 
-	public void setValidityDate(Date validityDate)
+	public void setValidityDate(LocalDate validityDate)
 	{
 		this.validityDate = validityDate;
 	}
@@ -100,8 +96,7 @@ public class Subscription implements Serializable
 	@Override
 	public String toString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		return "Subscription [memberId=" + memberId + ", paymentDate=" + sdf.format(paymentDate) + ", amount="
-				+ amount + ", validityDate=" + sdf.format(validityDate) + "]";
+				return "Subscription [memberId=" + memberId + ", paymentDate=" + paymentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+				+ ", amount=" + amount + ", validityDate=" + validityDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "]";
 	}
 }

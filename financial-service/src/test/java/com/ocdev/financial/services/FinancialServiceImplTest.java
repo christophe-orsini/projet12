@@ -3,8 +3,6 @@ package com.ocdev.financial.services;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -74,9 +72,9 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar date = new GregorianCalendar(2021,11,31);
-		Subscription subscription = new Subscription(9, date.getTime(), 123.45);
-		subscription.setValidityDate(date.getTime());
+		LocalDate date = LocalDate.of(2021,12,31);
+		Subscription subscription = new Subscription(9, date, 123.45);
+		subscription.setValidityDate(date);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		SubscriptionDto dto = new SubscriptionDto();
 		dto.setMemberId(9);
@@ -94,8 +92,8 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar today = Calendar.getInstance();
-		Subscription subscription = new Subscription(9, today.getTime(), 123.45);
+		LocalDate today = LocalDate.now();
+		Subscription subscription = new Subscription(9, today, 123.45);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		SubscriptionDto dto = new SubscriptionDto();
@@ -114,8 +112,8 @@ public class FinancialServiceImplTest
 	{
 		//arrange
 		// TODO refactor when User defined
-		Calendar today = Calendar.getInstance();
-		Subscription subscription = new Subscription(9, today.getTime(), 123.45);
+		LocalDate today = LocalDate.now();
+		Subscription subscription = new Subscription(9, today, 123.45);
 		subscription.setId(99);
 		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
 		
