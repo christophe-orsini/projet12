@@ -1,9 +1,8 @@
 package com.ocdev.reservation.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.amqp.core.AmqpTemplate;
@@ -53,36 +52,28 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public boolean isAircaftAvailable(String registration, Date startTime, double duration) throws EntityNotFoundException, ProxyException
+	public boolean isAircaftAvailable(String registration, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException
 	{
 		Aircraft aircraft = _hangarProxy.getAircraft(registration);
 		if (!aircraft.isAvailable()) return false;
 		
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startTime);
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-		Date arrivalTime = calendar.getTime();
+        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
 		Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
 		
 		return reservations.size() == 0;
 	}
 
 	@Override
-	public Collection<Aircraft> availableAircrafts(Date startTime, double duration) throws ProxyException
+	public Collection<Aircraft> availableAircrafts(LocalDateTime startTime, double duration) throws ProxyException
 	{
 		Collection<Aircraft> results = new ArrayList<Aircraft>();
 		Collection<Aircraft> aircrafts = _hangarProxy.getAircrafts();
 		
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startTime);
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-		Date arrivalTime = calendar.getTime();
+		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
 		
 		for (Aircraft aircraft : aircrafts)
 		{
@@ -124,11 +115,9 @@ public class ReservationServiceImpl implements ReservationService
 		
 		int hours = (int)bookingCreateDto.getDuration();
 		int minutes = (int)((bookingCreateDto.getDuration() - hours) * 60);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(bookingCreateDto.getDepartureTime());
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-		booking.setArrivalTime(calendar.getTime());
+		LocalDateTime startTime = bookingCreateDto.getDepartureTime();
+		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
+		booking.setArrivalTime(arrivalTime);
 		
 		return _reservationRepository.save(booking);
 	}
@@ -164,12 +153,10 @@ public class ReservationServiceImpl implements ReservationService
 		// Cloturer la réservation
 		int hours = (int)bookingCloseDto.getDuration();
 		int minutes = (int)((bookingCloseDto.getDuration() - hours) * 60);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(bookingCloseDto.getDepartureTime());
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-		reservation.get().setDepartureTime(bookingCloseDto.getDepartureTime());
-		reservation.get().setArrivalTime(calendar.getTime());
+		LocalDateTime startTime = bookingCloseDto.getDepartureTime();
+		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
+		reservation.get().setDepartureTime(startTime);
+		reservation.get().setArrivalTime(arrivalTime);
 		reservation.get().setDescription(bookingCloseDto.getDescription());
 		reservation.get().setClosed(true);
 		

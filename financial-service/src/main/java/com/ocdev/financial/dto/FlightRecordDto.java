@@ -1,6 +1,6 @@
 package com.ocdev.financial.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -30,7 +30,7 @@ public class FlightRecordDto
 	private String lineItem;
 	@ApiModelProperty(position = 4, required = true, value = "Date du vol", example = "2021-05-23")
 	@PastOrPresent(message = "La date du vol ne peut pas être posterieure à aujourd'hui")
-	private Date flightDate;
+	private LocalDate flightDate;
 	@ApiModelProperty(position = 5, required = true, value = "Durée du vol en décimal", example = "1.3")
 	@Positive(message="La durée du vol doit être supérieure à zéro)")
 	private double flightHours;
@@ -62,11 +62,11 @@ public class FlightRecordDto
 	{
 		this.lineItem = lineItem;
 	}
-	public Date getFlightDate()
+	public LocalDate getFlightDate()
 	{
 		return flightDate;
 	}
-	public void setFlightDate(Date flightDate)
+	public void setFlightDate(LocalDate flightDate)
 	{
 		this.flightDate = flightDate;
 	}

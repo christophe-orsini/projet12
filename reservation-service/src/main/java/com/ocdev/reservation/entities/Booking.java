@@ -1,16 +1,14 @@
 package com.ocdev.reservation.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Booking représente la classe d'une réservation.
@@ -30,11 +28,9 @@ public class Booking implements Serializable
 	@Column(nullable=false, length = 150)
 	private String description;
 	@Column(nullable=false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date departureTime;
+	private LocalDateTime departureTime;
 	@Column(nullable=false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date arrivalTime;
+	private LocalDateTime arrivalTime;
 	private boolean closed;
 	
 	public Booking()
@@ -42,7 +38,7 @@ public class Booking implements Serializable
 		super();
 	}
 
-	public Booking(long memberId, long aircraftId, String description, Date departureTime, double duration)
+	public Booking(long memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
 	{
 		super();
 		this.memberId = memberId;
@@ -51,11 +47,7 @@ public class Booking implements Serializable
 		this.departureTime = departureTime;
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(departureTime);
-        calendar.add(Calendar.HOUR_OF_DAY, hours);
-        calendar.add(Calendar.MINUTE, minutes);
-		this.arrivalTime = calendar.getTime();
+		this.arrivalTime = departureTime.plusHours(hours).plusMinutes(minutes);
 	}
 
 	public long getId()
@@ -98,22 +90,22 @@ public class Booking implements Serializable
 		this.description = description;
 	}
 
-	public Date getDepartureTime()
+	public LocalDateTime getDepartureTime()
 	{
 		return departureTime;
 	}
 
-	public void setDepartureTime(Date departureTime)
+	public void setDepartureTime(LocalDateTime departureTime)
 	{
 		this.departureTime = departureTime;
 	}
 
-	public Date getArrivalTime()
+	public LocalDateTime getArrivalTime()
 	{
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(Date arrivalTime)
+	public void setArrivalTime(LocalDateTime arrivalTime)
 	{
 		this.arrivalTime = arrivalTime;
 	}
@@ -131,8 +123,8 @@ public class Booking implements Serializable
 	@Override
 	public String toString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		return "Booking [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description=" + description
-				+ ", departureTime=" + sdf.format(departureTime) + ", arrivalTime=" + sdf.format(arrivalTime) + "]";
+				+ ", departureTime=" + departureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+				+ ", arrivalTime=" + arrivalTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "]";
 	}	
 }

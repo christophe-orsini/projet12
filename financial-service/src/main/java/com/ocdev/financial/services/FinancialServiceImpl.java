@@ -1,9 +1,7 @@
 package com.ocdev.financial.services;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -73,10 +71,12 @@ public class FinancialServiceImpl implements FinancialService
 		// TODO check if memberId exists
 		if (subscriptionDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
+		LocalDate today = LocalDate.now();
+		
 		Optional<Subscription> activeSubscription = _subscriptionRepository.findLastSubscriptionByMemberId(subscriptionDto.getMemberId());
 		if (activeSubscription.isPresent() 
 				&& activeSubscription.get().getValidityDate() != null 
-				&& activeSubscription.get().getValidityDate().after(new Date()))
+				&& activeSubscription.get().getValidityDate().isAfter(today))
 		{
 			throw new AlreadyExistsException("Ce membre a déjà une cotisation valide");
 		}
@@ -84,11 +84,10 @@ public class FinancialServiceImpl implements FinancialService
 		double value = subscriptionDto.getAmount();
 		if (value < 0) value = _charge;
 		
-		Calendar today = Calendar.getInstance();
-		Calendar validity = new GregorianCalendar(today.get(Calendar.YEAR), 11, 31);
+		LocalDate validity = LocalDate.of(today.getYear(), 12, 31);
 		
-		Subscription subscription = new Subscription(subscriptionDto.getMemberId(), today.getTime(), value);
-		subscription.setValidityDate(validity.getTime());
+		Subscription subscription = new Subscription(subscriptionDto.getMemberId(), today, value);
+		subscription.setValidityDate(validity);
 		
 		return _subscriptionRepository.save(subscription);
 	}

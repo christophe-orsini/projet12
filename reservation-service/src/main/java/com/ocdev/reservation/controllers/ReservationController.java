@@ -1,7 +1,7 @@
 package com.ocdev.reservation.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -59,7 +59,7 @@ public class ReservationController
 			@ApiParam(value = "Immatriculation de l'aéronef", required = true, example = "F-HAAA") 
 			@PathVariable @NotBlank final String registration,
 			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
-			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final Date startTime,
+			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final LocalDateTime startTime,
 			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
 			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
 			) throws EntityNotFoundException, ProxyException
@@ -76,7 +76,7 @@ public class ReservationController
 	@GetMapping(value = "/aircrafts/available", produces = "application/json")
 	public Collection<Aircraft> availableAircrafts(
 			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
-			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final Date startTime,
+			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final LocalDateTime startTime,
 			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
 			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
 			) throws ProxyException
