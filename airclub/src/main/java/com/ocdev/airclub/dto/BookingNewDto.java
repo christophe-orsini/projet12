@@ -1,7 +1,8 @@
 package com.ocdev.airclub.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -21,13 +22,13 @@ public class BookingNewDto implements Serializable
 	@NotBlank(message="La description du vol est obligatoire")
 	private String description;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date departureDate;
+	private LocalDate departureDate;
 	@DateTimeFormat(pattern = "HH:mm")
-	private Date departureTime;
+	private LocalTime departureTime;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date arrivalDate;
+	private LocalDate arrivalDate;
 	@DateTimeFormat(pattern = "HH:mm")
-	private Date arrivalTime;
+	private LocalTime arrivalTime;
 	
 	public long getMemberId()
 	{
@@ -53,36 +54,36 @@ public class BookingNewDto implements Serializable
 	{
 		this.description = description;
 	}
-	public Date getDepartureDate()
+	public LocalDate getDepartureDate()
 	{
 		return departureDate;
 	}
-	public void setDepartureDate(Date departureDate)
+	public void setDepartureDate(LocalDate departureDate)
 	{
 		this.departureDate = departureDate;
 	}
-	public Date getDepartureTime()
+	public LocalTime getDepartureTime()
 	{
 		return departureTime;
 	}
-	public void setDepartureTime(Date departureTime)
+	public void setDepartureTime(LocalTime departureTime)
 	{
 		this.departureTime = departureTime;
 	}
-	public Date getArrivalTime()
-	{
-		return arrivalTime;
-	}
-	public void setArrivalTime(Date arrivalTime)
-	{
-		this.arrivalTime = arrivalTime;
-	}
-	public Date getArrivalDate()
+	public LocalDate getArrivalDate()
 	{
 		return arrivalDate;
 	}
-	public void setArrivalDate(Date arrivalDate)
+	public void setArrivalDate(LocalDate arrivalDate)
 	{
 		this.arrivalDate = arrivalDate;
+	}
+	public LocalTime getArrivalTime()
+	{
+		return arrivalTime;
+	}
+	public void setArrivalTime(LocalTime arrivalTime)
+	{
+		this.arrivalTime = arrivalTime;
 	}
 }

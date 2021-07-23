@@ -36,9 +36,11 @@
 				</thead>	
 				<tbody>
 					<c:forEach items="${bookings}" var="booking" varStatus="status">
-						<tr>					
-							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${booking.departureTime}" /></td>
-							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${booking.arrivalTime}" /></td>				
+						<tr>
+							<fmt:parseDate value="${booking.departureTime}" pattern="yyyy-MM-dd'T'HH:mm" var="departure" type="date" />					
+							<fmt:parseDate value="${booking.arrivalTime}" pattern="yyyy-MM-dd'T'HH:mm" var="arrival" type="date" />					
+							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${departure}" /></td>
+							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${arrival}" /></td>				
 						</tr>
 					</c:forEach>
 				</tbody>

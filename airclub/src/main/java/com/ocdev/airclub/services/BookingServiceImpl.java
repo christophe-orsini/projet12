@@ -1,8 +1,8 @@
 package com.ocdev.airclub.services;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +32,11 @@ public class BookingServiceImpl implements BookingService
 	private IDtoConverter<BookingCreateDto, BookingNewDto> _bookingCreateDtoConverter;
 	
 	@Override
-	public List<Booking> getBookingForAircraftAndDay(long aircraftId, Date date)
+	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
 		return webclient
 				.method(HttpMethod.GET)
-				.uri(_gatewayUrl + "/reservation/reservations/aircraft/" + aircraftId + "/date/" + sdf.format(date))				
+				.uri(_gatewayUrl + "/reservation/reservations/aircraft/" + aircraftId + "/date/" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))				
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
 				.bodyToFlux(Booking.class)

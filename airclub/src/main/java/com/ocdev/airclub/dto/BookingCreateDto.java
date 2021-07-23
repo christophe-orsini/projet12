@@ -1,12 +1,11 @@
 package com.ocdev.airclub.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * BookingCreateDto représente la classe DTO pour la création d'une réservation.
@@ -20,8 +19,7 @@ public class BookingCreateDto implements Serializable
 	private long aircraftId;
 	@NotBlank(message="La description du vol est obligatoire")
 	private String description;
-	@DateTimeFormat(pattern = "HH:mm")
-	private Date departureTime;
+	private LocalDateTime departureTime;
 	@Positive(message="La durée du vol est obligatoire")
 	private double duration;
 	
@@ -49,11 +47,11 @@ public class BookingCreateDto implements Serializable
 	{
 		this.description = description;
 	}
-	public Date getDepartureTime()
+	public LocalDateTime getDepartureTime()
 	{
 		return departureTime;
 	}
-	public void setDepartureTime(Date departureTime)
+	public void setDepartureTime(LocalDateTime departureTime)
 	{
 		this.departureTime = departureTime;
 	}

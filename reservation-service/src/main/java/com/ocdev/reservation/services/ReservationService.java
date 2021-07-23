@@ -1,5 +1,6 @@
 package com.ocdev.reservation.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -18,14 +19,14 @@ public interface ReservationService
 	 * <p>Un aéronef est disponible s'il n'est pas déjà réservé pour la période 
 	 * et s'il n'est pas techniquement indisponible</p>
 	 * 
-	 * @param registration : Immatriculation de l'aéronef
+	 * @param aircraftId : Id de l'aéronef
 	 * @param startTime : Date et heure du départ prévue
 	 * @param duration: Date et heure du départ prévue
 	 * @return : true si l'aéronef est disponible, false sinon
 	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas 
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 */
-	boolean isAircaftAvailable(String registration, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException;
+	boolean isAircaftAvailable(long aircraftId, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException;
 	/**
 	 * Cette méthode retourne la liste des aéronefs ({@link Aircraft}) disponible à une heure donnée et pour une durée déterminée.
 	 * <p>Un aéronef est disponible s'il n'est pas déjà réservé pour la période 
@@ -86,5 +87,5 @@ public interface ReservationService
 	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas
 	 * @see Booking
 	 */
-	public Collection<Booking> getAllBookings(long aircraftId, Date date) throws EntityNotFoundException;
+	public Collection<Booking> getAllBookings(long aircraftId, LocalDate date) throws EntityNotFoundException;
 }

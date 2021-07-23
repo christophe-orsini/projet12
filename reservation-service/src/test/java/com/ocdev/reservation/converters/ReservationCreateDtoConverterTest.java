@@ -29,7 +29,7 @@ public class ReservationCreateDtoConverterTest
 		LocalDateTime testDate= LocalDateTime.now();
 		BookingCreateDto dto = new BookingCreateDto();
 		dto.setMemberId(9);
-		dto.setAircraft("F-GAAA");
+		dto.setAircraftId(1);
 		dto.setDescription("Dummy");
 		dto.setDepartureTime(testDate);
 		dto.setDuration(1.5);

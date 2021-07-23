@@ -65,14 +65,14 @@ public class ReservationServiceImplTest
 		LocalDateTime today = LocalDateTime.now();
 		Aircraft aircraft = new Aircraft();
 		aircraft.setAvailable(false);
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable(1, today, 1.0d);
 		
 		// assert
 		assertThat(actual).isFalse();
-		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraft("F-GAAA");
+		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraftById(1);
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class ReservationServiceImplTest
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1);
 		aircraft.setAvailable(true);
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
@@ -92,11 +92,11 @@ public class ReservationServiceImplTest
 				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(reservations);
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable(1, today, 1.0d);
 		
 		// assert
 		assertThat(actual).isFalse();
-		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraft("F-GAAA");
+		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraftById(1);
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).
 			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
@@ -109,17 +109,17 @@ public class ReservationServiceImplTest
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1);
 		aircraft.setAvailable(true);
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
 				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(new ArrayList<Booking>());
 		
 		// act
-		boolean actual = _systemUnderTest.isAircaftAvailable("F-GAAA", today, 1.0d);
+		boolean actual = _systemUnderTest.isAircaftAvailable(1, today, 1.0d);
 		
 		// assert
 		assertThat(actual).isTrue();
-		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraft("F-GAAA");
+		Mockito.verify(_hangarProxyMock, Mockito.times(1)).getAircraftById(1);
 		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).
 			findAllBookingForAircraftId(Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class));
 	}
@@ -225,7 +225,8 @@ public class ReservationServiceImplTest
 		//arrange
 		BookingCreateDto bookingCreateDto= new BookingCreateDto();
 		bookingCreateDto.setMemberId(1);
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenThrow(ProxyException.class);
+		bookingCreateDto.setAircraftId(1);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenThrow(ProxyException.class);
 		
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
@@ -239,9 +240,9 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(1, "F-GAAA", "Dummy", testDate, 1.5);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto(1, 1, "Dummy", testDate, 1.5);
 		Aircraft aircraft = new Aircraft();
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		// act & assert
 		assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
@@ -255,17 +256,18 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(9, "F-GAAA", "Dummy", testDate, 1.5);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto(9, 1, "Dummy", testDate, 1.5);
 		
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(8);
 		aircraft.setAvailable(true);
-		Mockito.when(_hangarProxyMock.getAircraft(Mockito.anyString())).thenReturn(aircraft);
+		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
 				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(new ArrayList<Booking>());
 		
 		Booking booking = new Booking();
 		booking.setMemberId(9);
+		booking.setAircraftId(1);
 		booking.setDescription("Dummy");
 		booking.setDepartureTime(testDate);
 		booking.setArrivalTime(testDate.plusHours(1).plusMinutes(30));

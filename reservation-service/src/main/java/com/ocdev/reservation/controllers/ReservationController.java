@@ -1,5 +1,6 @@
 package com.ocdev.reservation.controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -56,15 +57,15 @@ public class ReservationController
 			})
 	@GetMapping(value = "/aircrafts/available/{registration}", produces = "application/json")
 	public boolean isAircraftAvailable(
-			@ApiParam(value = "Immatriculation de l'aéronef", required = true, example = "F-HAAA") 
-			@PathVariable @NotBlank final String registration,
+			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") 
+			@PathVariable @NotBlank final long aircraftId,
 			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
 			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final LocalDateTime startTime,
 			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
 			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
 			) throws EntityNotFoundException, ProxyException
 	{
-		return _reservationService.isAircaftAvailable(registration, startTime, duration);
+		return _reservationService.isAircaftAvailable(aircraftId, startTime, duration);
 	}
 	
 	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une dheure et une durée")
@@ -93,7 +94,7 @@ public class ReservationController
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PostMapping(value = "", produces = "application/json")
+	@PostMapping(value = "", consumes = "application/json", produces = "application/json")
 	public Booking addReservation(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
 			throws AlreadyExistsException, EntityNotFoundException, ProxyException
 	{
@@ -155,7 +156,7 @@ public class ReservationController
 			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") 
 			@PathVariable @Positive final long aircraftId,
 			@ApiParam(value = "Date", required = true, example = "2021-08-05") 
-			@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") final Date date
+			@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date
 			) throws EntityNotFoundException
 	{
 		return _reservationService.getAllBookings(aircraftId, date);

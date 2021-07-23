@@ -20,9 +20,9 @@ public class BookingCreateDto implements Serializable
 	@ApiModelProperty(position = 1, required = true, value = "Id du membre effectuant le vol", example = "1")
 	@Positive(message="L'id du membre est obligatoire")
 	private long memberId;
-	@ApiModelProperty(position = 2, required = true, value = "Immatriculation de l'aéronef", example = "F-GAAA")
-	@NotBlank(message="L'immatriculation de l'aéronef est obligatoire")
-	private String aircraft;
+	@ApiModelProperty(position = 2, required = true, value = "Id de l'aéronef", example = "1")
+	@Positive(message="L'immatriculation de l'aéronef est obligatoire")
+	private long aircraftId;
 	@ApiModelProperty(position = 3, required = true, value = "Description du vol", example = "Vol local")
 	@NotBlank(message="La description du vol est obligatoire")
 	private String description;
@@ -37,11 +37,11 @@ public class BookingCreateDto implements Serializable
 		super();
 	}
 
-	public BookingCreateDto(long memberId, String aircraft, String description, LocalDateTime departureTime, double duration)
+	public BookingCreateDto(long memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
 	{
 		super();
 		this.memberId = memberId;
-		this.aircraft = aircraft;
+		this.aircraftId = aircraftId;
 		this.description = description;
 		this.departureTime = departureTime;
 		this.duration = duration;
@@ -57,14 +57,14 @@ public class BookingCreateDto implements Serializable
 		this.memberId = memberId;
 	}
 
-	public String getAircraft()
+	public long getAircraftId()
 	{
-		return aircraft;
+		return aircraftId;
 	}
 
-	public void setAircraft(String aircraft)
+	public void setAircraftId(long aircraftId)
 	{
-		this.aircraft = aircraft;
+		this.aircraftId = aircraftId;
 	}
 
 	public String getDescription()

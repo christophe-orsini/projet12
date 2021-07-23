@@ -1,5 +1,6 @@
 package com.ocdev.reservation.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,9 +53,9 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public boolean isAircaftAvailable(String registration, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException
+	public boolean isAircaftAvailable(long aircraftId, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException
 	{
-		Aircraft aircraft = _hangarProxy.getAircraft(registration);
+		Aircraft aircraft = _hangarProxy.getAircraftById(aircraftId);
 		if (!aircraft.isAvailable()) return false;
 		
 		int hours = (int)duration;
@@ -100,14 +101,14 @@ public class ReservationServiceImpl implements ReservationService
 		Aircraft aircraft;
 		try
 		{
-			aircraft = _hangarProxy.getAircraft(bookingCreateDto.getAircraft());
+			aircraft = _hangarProxy.getAircraftById(bookingCreateDto.getAircraftId());
 		} catch (Exception e)
 		{
 			throw new EntityNotFoundException("Cet aéronef n'existe pas");
 		}
 		
 		// check if aircraft is available
-		boolean available = isAircaftAvailable(bookingCreateDto.getAircraft(), bookingCreateDto.getDepartureTime(), bookingCreateDto.getDuration());
+		boolean available = isAircaftAvailable(bookingCreateDto.getAircraftId(), bookingCreateDto.getDepartureTime(), bookingCreateDto.getDuration());
 		if (!available) throw new AlreadyExistsException("Cet aéronef est déjà réservé pour la période demandée");
 		
 		Booking booking = _bookingCreateDtoConverter.convertDtoToEntity(bookingCreateDto);
@@ -198,8 +199,8 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Booking> getAllBookings(long aircraftId, Date date) throws EntityNotFoundException
-	{				
+	public Collection<Booking> getAllBookings(long aircraftId, LocalDate date) throws EntityNotFoundException
+	{		
 		return _reservationRepository.findAllByAircraftIdAndDate(aircraftId, date);
 	}
 }

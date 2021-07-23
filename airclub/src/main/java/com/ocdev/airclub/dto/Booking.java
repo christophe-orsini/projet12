@@ -1,8 +1,8 @@
 package com.ocdev.airclub.dto;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Booking représente la classe d'une réservation duservice réservation.
@@ -15,8 +15,8 @@ public class Booking implements Serializable
 	private long memberId;
 	private long aircraftId;
 	private String description;
-	private Date departureTime;
-	private Date arrivalTime;
+	private LocalDateTime departureTime;
+	private LocalDateTime arrivalTime;
 	private boolean closed;
 	
 	public long getId()
@@ -59,22 +59,22 @@ public class Booking implements Serializable
 		this.description = description;
 	}
 
-	public Date getDepartureTime()
+	public LocalDateTime getDepartureTime()
 	{
 		return departureTime;
 	}
 
-	public void setDepartureTime(Date departureTime)
+	public void setDepartureTime(LocalDateTime departureTime)
 	{
 		this.departureTime = departureTime;
 	}
 
-	public Date getArrivalTime()
+	public LocalDateTime getArrivalTime()
 	{
 		return arrivalTime;
 	}
 
-	public void setArrivalTime(Date arrivalTime)
+	public void setArrivalTime(LocalDateTime arrivalTime)
 	{
 		this.arrivalTime = arrivalTime;
 	}
@@ -92,8 +92,8 @@ public class Booking implements Serializable
 	@Override
 	public String toString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		return "Booking [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description=" + description
-				+ ", departureTime=" + sdf.format(departureTime) + ", arrivalTime=" + sdf.format(arrivalTime) + "]";
+				+ ", departureTime=" + departureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+				+ ", arrivalTime=" + arrivalTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "]";
 	}	
 }
