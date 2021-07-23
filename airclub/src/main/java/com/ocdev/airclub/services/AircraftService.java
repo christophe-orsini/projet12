@@ -9,4 +9,6 @@ public interface AircraftService
 {
 	public List<Aircraft> getAircrafts();
 	public Optional<Aircraft> getAircraftByRegistration(String registration);
+	public Aircraft selectAircraftById(long id, List<Aircraft> aircrafts);
+	public Optional<Aircraft> getAircraft(long id);
 }

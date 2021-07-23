@@ -11,8 +11,23 @@
 		</button>
 		<div class="collapse navbar-collapse" id="menu">	
 			<sec:authorize access="isAuthenticated()">
-				<a class="nav-link" href="/aircraft/list">Liste des aéronefs</a>
-				<a class="nav-link" href="/aircraft/F-GCNS">F-GCNS</a>
+				<a class="nav-link" href="/aircraft/list">Planning</a>
+				<a class="nav-link" href="/aircraft/F-GCNS">Mes réservations</a>
+				<a class="nav-link" href="/aircraft/F-GCNS">Mes factures</a>
+			</sec:authorize>
+			<sec:authorize access="hasRole('BENEVOLE')">
+				<a class="nav-link" href="/aircraft/F-GCNS">Finances</a>
+				<div class="col-3">
+					<select class="form-select" name="member" id="member-select">
+					    <option value="">Choisir un membre</option>
+					    <option value="id1">Pilot1</option>
+					    <option value="id2">Pilot2</option>
+					    <option value="id3">Pilot3</option>
+					    <option value="id4">Pilot4</option>
+					    <option value="id5">Pilot5</option>
+					    <option value="id6">Pilot6</option>
+					</select>
+				</div>
 			</sec:authorize>
 		</div>
 	</div>

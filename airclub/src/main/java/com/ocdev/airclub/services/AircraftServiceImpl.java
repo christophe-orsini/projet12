@@ -43,4 +43,27 @@ public class AircraftServiceImpl implements AircraftService
 				.bodyToMono(Aircraft.class)
 				.blockOptional(timeoutIn10Seconds);
 	}
+	
+	@Override
+	public Optional<Aircraft> getAircraft(long id)
+	{
+		Duration timeoutIn10Seconds = Duration.ofSeconds(10);
+		return webclient
+				.method(HttpMethod.GET)
+				.uri("http://localhost:8080/hangar/aircrafts/id/" + id)				
+				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
+				.retrieve()
+				.bodyToMono(Aircraft.class)
+				.blockOptional(timeoutIn10Seconds);
+	}
+
+	@Override
+	public Aircraft selectAircraftById(long id, List<Aircraft> aircrafts)
+	{
+		Optional<Aircraft> aircraft = aircrafts.stream()
+				.filter(a -> a.getId() == id)
+				.findFirst();
+		
+		return aircraft.orElse(null);
+	}
 }

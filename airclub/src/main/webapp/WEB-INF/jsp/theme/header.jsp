@@ -5,11 +5,13 @@
  <header class="row  bg-dark text-white">
  	<div class="col-12">
   		<h1>Aéroclub de ...</h1>
-		<h3 class="d-none d-md-block">Le site de l'aéroclub de ...</h3>
  	</div>
- 	<div class="col-12">
-	 	<sec:authorize access="isAuthenticated()">
-	 		Connecté en tant que <sec:authentication property="name"/>
-	 	</sec:authorize>
+ 	<div class="col-12 row justify-content-between">
+ 		<div class="col-8"><h3 class="d-none d-md-block">Le site de l'aéroclub de ...</h3></div>
+ 		<div class="col-4">
+		 	<sec:authorize access="isAuthenticated()">
+		 		<p>Connecté en tant que <sec:authentication property="name"/></p>
+		 	</sec:authorize>
+	 	</div>
    	</div>
 </header>
