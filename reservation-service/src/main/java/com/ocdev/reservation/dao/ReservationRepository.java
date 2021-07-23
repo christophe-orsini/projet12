@@ -18,4 +18,7 @@ public interface ReservationRepository extends JpaRepository<Booking, Long>
 	public List<Booking> findAllBookingForAircraftId(@Param("acftId") long aircraftId, @Param("departure") Date departureTime, @Param("arrival") Date arrivalTime);
 	
 	public Collection<Booking> findAllByMemberIdAndClosed(long memberId, boolean closed);
+	
+	@Query(value = "select b from Booking b where aircraft_id = :acftId AND closed = 0 AND (DATE(departure_time) = :date OR DATE(arrival_time) = :date)")
+	public Collection<Booking> findAllByAircraftIdAndDate(@Param("acftId")long aircraftId, @Param("date")Date date);
 }

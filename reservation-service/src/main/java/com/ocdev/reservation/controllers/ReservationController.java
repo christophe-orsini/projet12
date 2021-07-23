@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dto.BookingCloseDto;
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
@@ -144,4 +144,20 @@ public class ReservationController
 		return _reservationService.closeBooking(reservationId, bookingCloseDto);
 	}
 	
+	@ApiOperation(value = "Lister les réservations d'un aéronef pour une journée", notes = "Obtenir la liste des réservations d'un membre")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
+			})
+	@GetMapping(value = "/aircraft/{aircraftId}/date/{date}", produces = "application/json")
+	public Collection<Booking> getAllForAircraftAndDate(
+			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") 
+			@PathVariable @Positive final long aircraftId,
+			@ApiParam(value = "Date", required = true, example = "2021-08-05") 
+			@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") final Date date
+			) throws EntityNotFoundException
+	{
+		return _reservationService.getAllBookings(aircraftId, date);
+	}
 }

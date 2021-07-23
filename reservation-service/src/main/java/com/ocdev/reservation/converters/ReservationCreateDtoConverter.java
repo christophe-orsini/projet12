@@ -2,8 +2,9 @@ package com.ocdev.reservation.converters;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Component;
-import com.ocdev.reservation.dto.BookingCreateDto;
+
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 
 @Component
 public class ReservationCreateDtoConverter implements IDtoConverter<Booking, BookingCreateDto>

@@ -5,8 +5,8 @@ import java.util.Date;
 
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dto.BookingCloseDto;
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
@@ -76,4 +76,14 @@ public interface ReservationService
 	 * @throws ProxyException levée en cas d'erreur de requête au service hangar
 	 */
 	public Booking closeBooking(long reservationId, BookingCloseDto bookingCloseDto) throws EntityNotFoundException, ProxyException;
+	/**
+	 * Cette méthode retourne la liste des réservations en cours pour un aéronef et pour une date.
+	 * 
+	 * @param memberId : Id de l'aéronef
+	 * @param date : La journée
+	 * @return : La liste des réservations
+	 * @throws EntityNotFoundException levée si l'aéronef n'existe pas
+	 * @see Booking
+	 */
+	public Collection<Booking> getAllBookings(long aircraftId, Date date) throws EntityNotFoundException;
 }

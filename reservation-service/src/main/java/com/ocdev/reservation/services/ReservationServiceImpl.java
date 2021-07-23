@@ -14,8 +14,8 @@ import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.dto.BookingCloseDto;
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
@@ -208,5 +208,11 @@ public class ReservationServiceImpl implements ReservationService
 	private void registerFlightInFinance(RegisterFlightMessage message)
 	{
 		_rabbitTemplate.convertAndSend(exchange, financeRoutingkey, message);
+	}
+
+	@Override
+	public Collection<Booking> getAllBookings(long aircraftId, Date date) throws EntityNotFoundException
+	{				
+		return _reservationRepository.findAllByAircraftIdAndDate(aircraftId, date);
 	}
 }
