@@ -7,12 +7,12 @@
 <%@ include file="head.jsp" %>
 <body class="container">
 <%@ include file="header.jsp" %>
+<%@ include file="../theme/menu.jsp" %>
 	<section class="row">
 		<div class="col-12">
 			<p class="h3">Erreur</p>
 		</div>
 		<div class="col-12">
-			<p>Une erreur s'est produite</p>
 			<p>${exceptionMessage.getMessage()}</p>
 		</div>	
 	</section>

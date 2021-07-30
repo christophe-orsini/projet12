@@ -1,20 +1,20 @@
-package com.ocdev.airclub.errors;
+package com.ocdev.gatewayservice.errors;
 
 /**
  * Classe principale des exceptions controlées de l'application.
  * @author C.Orsini
  *
  */
-public class BiblioException extends Exception
+public class ServicesException extends Exception
 {
 
-	public BiblioException()
+	public ServicesException()
 	{
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public BiblioException(String message)
+	public ServicesException(String message)
 	{
 		super(message);
 		// TODO Auto-generated constructor stub

@@ -57,4 +57,13 @@ class ErrorHandlingControllerAdvice
 		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
 		return ResponseEntity.status(status.value()).body(error);
 	}
+	
+	@ExceptionHandler(ProxyException.class)
+	@ResponseBody
+	ResponseEntity<ErrorMessage> onProxyException(ProxyException e)
+	{
+		HttpStatus status = HttpStatus.BAD_GATEWAY;
+		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
+		return ResponseEntity.status(status.value()).body(error);
+	}
 }

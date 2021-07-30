@@ -1,6 +1,5 @@
 package com.ocdev.airclub.controllers;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingNewDto;
+import com.ocdev.airclub.errors.ErrorMessage;
 import com.ocdev.airclub.services.AircraftService;
 import com.ocdev.airclub.services.BookingService;
 
@@ -71,10 +71,13 @@ public class MemberController
 	
 	@PostMapping(value = "/book", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String bookAircraft(Model model, @Valid final BookingNewDto bookingNewDto)
-	{	 
-		_bookingService.createBooking(bookingNewDto);
+	{	
+		Booking response = _bookingService.createBooking(bookingNewDto);
 		
-		return "redirect:/member/planning";
+		if (response != null) return "redirect:/member/planning";
+			
+		model.addAttribute("exceptionMessage", new ErrorMessage(0, null, "La réservation n'a pas été crée"));
+		return "/theme/error";
 	}
 	
 	@GetMapping("/before/{currentDate}")

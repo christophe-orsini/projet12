@@ -1,4 +1,4 @@
-package com.ocdev.hangar.errors;
+package com.ocdev.gatewayservice.errors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-class ErrorHandlingControllerAdvice
+class CustomExceptionHandler
 {
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
