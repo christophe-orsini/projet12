@@ -4,11 +4,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,8 +16,12 @@ import com.ocdev.airclub.converters.IDtoConverter;
 import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingCreateDto;
 import com.ocdev.airclub.dto.BookingNewDto;
+import com.ocdev.airclub.errors.AlreadyExistsException;
+import com.ocdev.airclub.errors.EntityNotFoundException;
+import com.ocdev.airclub.errors.ProxyException;
 
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 @Service
 public class BookingServiceImpl implements BookingService
@@ -34,28 +37,36 @@ public class BookingServiceImpl implements BookingService
 	@Override
 	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date)
 	{
+		Duration timeout = Duration.ofSeconds(2);
 		return webclient
-				.method(HttpMethod.GET)
+				.get()
 				.uri(_gatewayUrl + "/reservation/reservations/aircraft/" + aircraftId + "/date/" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))				
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
+				.onStatus(code -> code.is5xxServerError(), clientResponse -> Mono.error(new ProxyException("Le service Hangar n'est pas accessible")))
 				.bodyToFlux(Booking.class)
-				.collectList().block();
+				.retryWhen(Retry.fixedDelay(3, Duration.ofMillis(100)))
+				.collectList()
+				.block(timeout);
 	}
 
 	@Override
-	public Optional<Booking> createBooking(BookingNewDto bookingNewDto)
+	public Booking createBooking(BookingNewDto bookingNewDto)
 	{
-		Duration timeoutIn10Seconds = Duration.ofSeconds(10);
+		Duration timeout = Duration.ofSeconds(5);
 		
 		BookingCreateDto bookingDto = _bookingCreateDtoConverter.convertDtoToEntity(bookingNewDto);
 		return webclient
-				.method(HttpMethod.POST)
+				.post()
 				.uri(_gatewayUrl + "/reservation/reservations")				
 				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.body(Mono.just(bookingDto), BookingCreateDto.class)
 				.retrieve()
+				.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("L'aéronef/le membre est introuvable")))
+				.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Hangar n'est pas accessible")))
+				.onRawStatus(value -> value == 460, clientResponse -> 
+					Mono.error(new AlreadyExistsException("Une réservation existe déjà pour cet aéronef et cette période")))
 				.bodyToMono(Booking.class)
-				.blockOptional(timeoutIn10Seconds);
+				.block(timeout);
 	}
 }
