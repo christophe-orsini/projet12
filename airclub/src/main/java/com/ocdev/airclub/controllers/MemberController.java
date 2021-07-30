@@ -74,7 +74,11 @@ public class MemberController
 	{	
 		Booking response = _bookingService.createBooking(bookingNewDto);
 		
-		if (response != null) return "redirect:/member/planning";
+		if (response != null)
+		{
+			model.addAttribute("message", "La réservation n° " + response.getId() + " est enregistrée");
+			return "/theme/validation";
+		}
 			
 		model.addAttribute("exceptionMessage", new ErrorMessage(0, null, "La réservation n'a pas été crée"));
 		return "/theme/error";
