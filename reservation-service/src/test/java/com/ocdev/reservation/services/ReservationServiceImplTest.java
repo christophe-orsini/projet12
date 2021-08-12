@@ -85,7 +85,7 @@ public class ReservationServiceImplTest
 		aircraft.setAvailable(true);
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
-		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
+		Booking booking = new Booking("1", 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
@@ -154,7 +154,7 @@ public class ReservationServiceImplTest
 		aircrafts.add(aircraft);
 		Mockito.when(_hangarProxyMock.getAircrafts()).thenReturn(aircrafts);
 		
-		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
+		Booking booking = new Booking("1", 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
@@ -188,7 +188,7 @@ public class ReservationServiceImplTest
 		aircrafts.add(aircraft2);
 		Mockito.when(_hangarProxyMock.getAircrafts()).thenReturn(aircrafts);
 		
-		Booking booking = new Booking(1, 1, "Vol local", today, 1.5d);
+		Booking booking = new Booking("1", 1, "Vol local", today, 1.5d);
 		List<Booking> reservations = new ArrayList<Booking>();
 		reservations.add(booking);
 		Mockito.when(_reservationRepositoryMock.findAllBookingForAircraftId(
@@ -210,7 +210,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		BookingCreateDto bookingCreateDto= new BookingCreateDto();
-		bookingCreateDto.setMemberId(-1);
+		bookingCreateDto.setMemberId(null);
 		
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
@@ -224,7 +224,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		BookingCreateDto bookingCreateDto= new BookingCreateDto();
-		bookingCreateDto.setMemberId(1);
+		bookingCreateDto.setMemberId("1");
 		bookingCreateDto.setAircraftId(1);
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenThrow(ProxyException.class);
 		
@@ -240,7 +240,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(1, 1, "Dummy", testDate, 1.5);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto("1", 1, "Dummy", testDate, 1.5);
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
@@ -256,7 +256,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime testDate = LocalDateTime.of(2021, 5, 15, 10, 30);
-		BookingCreateDto bookingCreateDto= new BookingCreateDto(9, 1, "Dummy", testDate, 1.5);
+		BookingCreateDto bookingCreateDto= new BookingCreateDto("9", 1, "Dummy", testDate, 1.5);
 		
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(8);
@@ -266,7 +266,7 @@ public class ReservationServiceImplTest
 				Mockito.anyLong(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(new ArrayList<Booking>());
 		
 		Booking booking = new Booking();
-		booking.setMemberId(9);
+		booking.setMemberId("9");
 		booking.setAircraftId(1);
 		booking.setDescription("Dummy");
 		booking.setDepartureTime(testDate);
@@ -292,7 +292,7 @@ public class ReservationServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			_systemUnderTest.getAllBookings(-1);
+			_systemUnderTest.getAllBookings(null);
 		}).withMessage("Ce membre n'existe pas");
 	}
 	
@@ -300,15 +300,15 @@ public class ReservationServiceImplTest
 	public void getAllBookings_ShouldReturnsEmpty_WhenNoReservations() throws EntityNotFoundException
 	{
 		//arrange
-		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyLong(), Mockito.anyBoolean())).
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyString(), Mockito.anyBoolean())).
 			thenReturn(new ArrayList<Booking>());
 		
 		// act
-		Collection<Booking> actual = _systemUnderTest.getAllBookings(9);
+		Collection<Booking> actual = _systemUnderTest.getAllBookings("9");
 		
 		// assert
 		assertThat(actual).size().isEqualTo(0);
-		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed(9, false);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed("9", false);
 	}
 	
 	@Test
@@ -317,16 +317,16 @@ public class ReservationServiceImplTest
 		//arrange
 		LocalDateTime today = LocalDateTime.now();
 		Collection<Booking> reservations = new ArrayList<Booking>();
-		Booking booking = new Booking(9, 1, "Dummy", today, 1.5);
+		Booking booking = new Booking("9", 1, "Dummy", today, 1.5);
 		reservations.add(booking);
-		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyLong(), Mockito.anyBoolean())).thenReturn(reservations);
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(reservations);
 		
 		// act
-		Collection<Booking> actual = _systemUnderTest.getAllBookings(9);
+		Collection<Booking> actual = _systemUnderTest.getAllBookings("9");
 		
 		// assert
 		assertThat(actual).size().isEqualTo(1);
-		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed(9, false);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed("9", false);
 	}
 	
 	@Test
@@ -347,7 +347,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime today = LocalDateTime.now();
-		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
+		Booking reservation = new Booking("9", 1, "Dummy", today, 1.5);
 		reservation.setClosed(true);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
@@ -363,7 +363,7 @@ public class ReservationServiceImplTest
 	{
 		//arrange
 		LocalDateTime today = LocalDateTime.now();
-		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
+		Booking reservation = new Booking("9", 1, "Dummy", today, 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		Mockito.doNothing().when(_reservationRepositoryMock).delete(Mockito.any(Booking.class));
 		
@@ -396,7 +396,7 @@ public class ReservationServiceImplTest
 		LocalDateTime today = LocalDateTime.now();
 		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.5); 
 		
-		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
+		Booking reservation = new Booking("9", 1, "Dummy", today, 1.5);
 		reservation.setClosed(true);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
@@ -414,7 +414,7 @@ public class ReservationServiceImplTest
 		LocalDateTime today = LocalDateTime.now();
 		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.3);
 		
-		Booking reservation = new Booking(9, 1, "Dummy", today, 1.5);
+		Booking reservation = new Booking("9", 1, "Dummy", today, 1.5);
 		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
 		
 		Aircraft aircraft = new Aircraft();

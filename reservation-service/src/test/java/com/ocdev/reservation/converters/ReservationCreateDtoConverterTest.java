@@ -28,14 +28,14 @@ public class ReservationCreateDtoConverterTest
 		// arrange
 		LocalDateTime testDate= LocalDateTime.now();
 		BookingCreateDto dto = new BookingCreateDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		dto.setAircraftId(1);
 		dto.setDescription("Dummy");
 		dto.setDepartureTime(testDate);
 		dto.setDuration(1.5);
 		
 		Booking expected = new Booking();
-		expected.setMemberId(9);
+		expected.setMemberId("9");
 		expected.setDescription("Dummy");
 		expected.setDepartureTime(testDate);
 				

@@ -108,8 +108,8 @@ public class ReservationController
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
 	@GetMapping(value = "/{memberId}", produces = "application/json")
-	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "1") 
-	@PathVariable @Positive final long memberId) throws EntityNotFoundException
+	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
+	@PathVariable final String memberId) throws EntityNotFoundException
 	{
 		return _reservationService.getAllBookings(memberId);
 	}
