@@ -14,7 +14,7 @@ public class FlightTest
 		// arrange
 		LocalDate date = LocalDate.of(2021, 05, 20);
 		Flight entityUnderTest = new Flight();
-		entityUnderTest.setMemberId(5);
+		entityUnderTest.setMemberId("5");
 		entityUnderTest.setAircraft("F-GCNS CESSNA C152");
 		entityUnderTest.setLineItem("Vol local Valence");
 		entityUnderTest.setFlightDate(date);

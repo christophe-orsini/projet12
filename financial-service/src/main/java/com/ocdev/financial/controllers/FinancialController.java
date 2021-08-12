@@ -3,7 +3,6 @@ package com.ocdev.financial.controllers;
 import java.util.Collection;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -61,7 +60,7 @@ public class FinancialController
 			})
 	@GetMapping(value = "/flights/{memberId}", produces = "application/json")
 	public ResponseEntity<Collection<Flight>> getFlights(
-			@ApiParam(value = "Id du membre", required = true, example = "1") @PathVariable @Min(1) final long memberId)
+			@ApiParam(value = "Id du membre", required = true, example = "2ffe-5a55") @PathVariable final String memberId)
 			throws EntityNotFoundException
 	{
 		Collection<Flight> flights = _financialService.getAllFlights(memberId);
@@ -76,7 +75,7 @@ public class FinancialController
 			})
 	@GetMapping(value = "/subscriptions/{memberId}", produces = "application/json")
 	public ResponseEntity<Subscription> getSubscription(
-			@ApiParam(value = "Id du membre", required = true, example = "1") @PathVariable @Min(1) final long memberId)
+			@ApiParam(value = "Id du membre", required = true, example = "2ffe-5a55") @PathVariable final String memberId)
 			throws EntityNotFoundException
 	{
 		Subscription subscription = _financialService.getLastSubscription(memberId);

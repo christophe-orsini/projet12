@@ -57,7 +57,7 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		SubscriptionDto dto = new SubscriptionDto();
-		dto.setMemberId(-1);
+		dto.setMemberId(null);
 		dto.setAmount(-1);
 			
 		// act & assert
@@ -73,11 +73,11 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		LocalDate date = LocalDate.of(2021,12,31);
-		Subscription subscription = new Subscription(9, date, 123.45);
+		Subscription subscription = new Subscription("9", date, 123.45);
 		subscription.setValidityDate(date);
-		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
+		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyString())).thenReturn(Optional.of(subscription));
 		SubscriptionDto dto = new SubscriptionDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		dto.setAmount(-1);
 		
 		// act & assert
@@ -93,11 +93,11 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		LocalDate today = LocalDate.now();
-		Subscription subscription = new Subscription(9, today, 123.45);
-		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
+		Subscription subscription = new Subscription("9", today, 123.45);
+		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyString())).thenReturn(Optional.of(subscription));
 		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		SubscriptionDto dto = new SubscriptionDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		dto.setAmount(123.45);
 		
 		// act
@@ -113,12 +113,12 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		LocalDate today = LocalDate.now();
-		Subscription subscription = new Subscription(9, today, 123.45);
+		Subscription subscription = new Subscription("9", today, 123.45);
 		subscription.setId(99);
-		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyLong())).thenReturn(Optional.of(subscription));
+		Mockito.when(_subscriptionRepositoryMock.findLastSubscriptionByMemberId(Mockito.anyString())).thenReturn(Optional.of(subscription));
 		
 		SubscriptionDto dto = new SubscriptionDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		
 		// act
@@ -134,7 +134,7 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		FlightRecordDto dto = new FlightRecordDto();
-		dto.setMemberId(-1);
+		dto.setMemberId(null);
 			
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
@@ -150,13 +150,13 @@ public class FinancialServiceImplTest
 		// TODO refactor when User defined
 		LocalDate today = LocalDate.now();
 		FlightRecordDto dto = new FlightRecordDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		dto.setAircraft("F-GCNS CESSNA C152");
 		dto.setLineItem("Test");
 		dto.setFlightDate(today);
 		dto.setFlightHours(2.0);
 		dto.setAmount(258.0);
-		Flight flight = new Flight(9, "Test", today, 2.0);
+		Flight flight = new Flight("9", "Test", today, 2.0);
 		flight.setAmount(258.0);
 		Mockito.when(_flightDtoConverterMock.convertDtoToEntity(Mockito.any(FlightRecordDto.class))).thenReturn(flight);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
@@ -175,7 +175,7 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		RegisterFlightMessage message = new RegisterFlightMessage();
-		message.setMemberId(-1);
+		message.setMemberId(null);
 			
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
@@ -190,7 +190,7 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		RegisterFlightMessage message = new RegisterFlightMessage();
-		message.setMemberId(9);
+		message.setMemberId("9");
 		message.setAircraftId(8);
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenThrow(ProxyException.class);
 		
@@ -208,12 +208,12 @@ public class FinancialServiceImplTest
 		// TODO refactor when User defined
 		LocalDate now = LocalDate.now();
 		RegisterFlightMessage message = new RegisterFlightMessage();
-		message.setMemberId(9);
+		message.setMemberId("9");
 		message.setAircraftId(8);
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
-		Flight flight = new Flight(9, "", now, 1.5);
+		Flight flight = new Flight("9", "", now, 1.5);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
 		// act

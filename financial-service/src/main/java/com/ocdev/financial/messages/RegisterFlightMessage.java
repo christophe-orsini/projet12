@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = RegisterFlightMessage.class)
 public class RegisterFlightMessage implements Serializable
 {
-	private long memberId;
+	private String memberId;
 	private long aircraftId;
 	private String description;
 	private LocalDate flightDate;
@@ -26,7 +26,7 @@ public class RegisterFlightMessage implements Serializable
 		super();
 	}
 
-	public RegisterFlightMessage(long memberId, long aircraftId, String description, LocalDate flightDate, 
+	public RegisterFlightMessage(String memberId, long aircraftId, String description, LocalDate flightDate, 
 			double duration, int hourlyRate)
 	{
 		super();
@@ -38,12 +38,12 @@ public class RegisterFlightMessage implements Serializable
 		this.hourlyRate = hourlyRate;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

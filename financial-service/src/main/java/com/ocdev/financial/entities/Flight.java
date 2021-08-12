@@ -21,8 +21,8 @@ public class Flight implements Serializable
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Column(nullable=false)
-	private long memberId;
+	@Column(nullable=false, length=64)
+	private String memberId;
 	@Column(nullable=false, length=100)
 	private String aircraft;
 	@Column(nullable=false, length=100)
@@ -42,7 +42,7 @@ public class Flight implements Serializable
 		super();
 	}
 
-	public Flight(long memberId, String lineItem, LocalDate flightDate, double flightHours)
+	public Flight(String memberId, String lineItem, LocalDate flightDate, double flightHours)
 	{
 		super();
 		this.memberId = memberId;
@@ -61,12 +61,12 @@ public class Flight implements Serializable
 		this.id = id;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}
