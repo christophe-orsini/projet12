@@ -126,7 +126,6 @@ public class ReservationServiceImpl implements ReservationService
 	@Override
 	public Collection<Booking> getAllBookings(long memberId) throws EntityNotFoundException
 	{
-		// TODO check if memberId exists
 		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
 		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);

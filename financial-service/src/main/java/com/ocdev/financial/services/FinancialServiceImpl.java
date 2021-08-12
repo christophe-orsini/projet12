@@ -49,16 +49,12 @@ public class FinancialServiceImpl implements FinancialService
 	@Override
 	public Collection<Flight> getAllFlights(long memberId)
 	{
-		// TODO check if memberId exists
-		
 		return _flightRepository.findByMemberIdAndClosed(memberId, false);
 	}
 
 	@Override
 	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException
 	{
-		// TODO check if memberId exists
-		
 		Optional<Subscription> subscription = _subscriptionRepository.findLastSubscriptionByMemberId(memberId);
 		if (!subscription.isPresent()) throw new EntityNotFoundException("Ce membre n'a pas de cotisation en cours");
 		

@@ -147,7 +147,7 @@ public class FinancialServiceImplTest
 	void recordFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException
 	{
 		//arrange
-		// TODO refactor when User and Hangar endpoint defined
+		// TODO refactor when User defined
 		LocalDate today = LocalDate.now();
 		FlightRecordDto dto = new FlightRecordDto();
 		dto.setMemberId(9);
@@ -205,7 +205,7 @@ public class FinancialServiceImplTest
 	void registerEndedFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException, ProxyException
 	{
 		//arrange
-		// TODO refactor when User and Hangar endpoint defined
+		// TODO refactor when User defined
 		LocalDate now = LocalDate.now();
 		RegisterFlightMessage message = new RegisterFlightMessage();
 		message.setMemberId(9);
