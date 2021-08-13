@@ -12,7 +12,7 @@ import java.util.Date;
 public class Subscription implements Serializable
 {
 	private long id;
-	private long memberId;
+	private String memberId;
 	private Date paymentDate;
 	private double amount;
 	private Date validityDate;
@@ -27,12 +27,12 @@ public class Subscription implements Serializable
 		this.id = id;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

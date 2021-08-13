@@ -17,9 +17,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class BookingCreateDto implements Serializable
 {
-	@ApiModelProperty(position = 1, required = true, value = "Id du membre effectuant le vol", example = "1")
-	@Positive(message="L'id du membre est obligatoire")
-	private long memberId;
+	@ApiModelProperty(position = 1, required = true, value = "Id du membre effectuant le vol", example = "5ffe-4d55")
+	@NotBlank(message="L'id du membre est obligatoire")
+	private String memberId;
 	@ApiModelProperty(position = 2, required = true, value = "Id de l'aéronef", example = "1")
 	@Positive(message="L'immatriculation de l'aéronef est obligatoire")
 	private long aircraftId;
@@ -37,7 +37,7 @@ public class BookingCreateDto implements Serializable
 		super();
 	}
 
-	public BookingCreateDto(long memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
+	public BookingCreateDto(String memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
 	{
 		super();
 		this.memberId = memberId;
@@ -47,12 +47,12 @@ public class BookingCreateDto implements Serializable
 		this.duration = duration;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

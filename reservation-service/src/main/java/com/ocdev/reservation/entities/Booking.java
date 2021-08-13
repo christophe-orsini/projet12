@@ -21,8 +21,8 @@ public class Booking implements Serializable
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Column(nullable=false)
-	private long memberId;
+	@Column(nullable=false, length=64)
+	private String memberId;
 	@Column(nullable=false)
 	private long aircraftId;
 	@Column(nullable=false, length = 150)
@@ -38,7 +38,7 @@ public class Booking implements Serializable
 		super();
 	}
 
-	public Booking(long memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
+	public Booking(String memberId, long aircraftId, String description, LocalDateTime departureTime, double duration)
 	{
 		super();
 		this.memberId = memberId;
@@ -60,12 +60,12 @@ public class Booking implements Serializable
 		this.id = id;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

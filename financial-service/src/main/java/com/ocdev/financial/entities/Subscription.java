@@ -21,8 +21,8 @@ public class Subscription implements Serializable
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Column(nullable=false)
-	private long memberId;
+	@Column(nullable=false, length=64)
+	private String memberId;
 	@Column(nullable=false)
 	private LocalDate paymentDate;
 	@Column(nullable=false)
@@ -35,7 +35,7 @@ public class Subscription implements Serializable
 		super();
 	}
 
-	public Subscription(long memberId, LocalDate paymentDate, double amount)
+	public Subscription(String memberId, LocalDate paymentDate, double amount)
 	{
 		super();
 		this.memberId = memberId;
@@ -53,12 +53,12 @@ public class Subscription implements Serializable
 		this.id = id;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

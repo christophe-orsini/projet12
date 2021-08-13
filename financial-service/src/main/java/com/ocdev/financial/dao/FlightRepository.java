@@ -10,5 +10,5 @@ import com.ocdev.financial.entities.Flight;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long>
 {
-	public Collection<Flight> findByMemberIdAndClosed(long memberId, boolean closed);
+	public Collection<Flight> findByMemberIdAndClosed(String memberId, boolean closed);
 }

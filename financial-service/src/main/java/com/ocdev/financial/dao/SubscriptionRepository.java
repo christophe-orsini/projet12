@@ -12,5 +12,5 @@ import com.ocdev.financial.entities.Subscription;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long>
 {
 	@Query(value = "SELECT * FROM subscription WHERE member_id = ?1 ORDER BY validity_date DESC LIMIT 1", nativeQuery = true)
-	public Optional<Subscription> findLastSubscriptionByMemberId(long memberId);
+	public Optional<Subscription> findLastSubscriptionByMemberId(String memberId);
 }

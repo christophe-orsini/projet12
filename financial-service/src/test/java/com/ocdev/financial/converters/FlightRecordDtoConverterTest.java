@@ -28,7 +28,7 @@ public class FlightRecordDtoConverterTest
 		// arrange
 		LocalDate testDate = LocalDate.now();
 		FlightRecordDto dto = new FlightRecordDto();
-		dto.setMemberId(9);
+		dto.setMemberId("9");
 		dto.setAircraft("F-GAAA");
 		dto.setLineItem("Dummy");
 		dto.setFlightDate(testDate);
@@ -36,7 +36,7 @@ public class FlightRecordDtoConverterTest
 		dto.setAmount(123.4);
 		
 		Flight expected = new Flight();
-		expected.setMemberId(9);
+		expected.setMemberId("9");
 		expected.setAircraft("F-GAAA");
 		expected.setLineItem("Dummy");
 		expected.setFlightDate(testDate);

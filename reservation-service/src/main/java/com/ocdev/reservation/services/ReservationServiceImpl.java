@@ -95,7 +95,7 @@ public class ReservationServiceImpl implements ReservationService
 	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException, ProxyException, AlreadyExistsException
 	{
 		// TODO check if memberId exists
-		if (bookingCreateDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (bookingCreateDto.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
 		// check if aircraft exists
 		Aircraft aircraft;
@@ -124,9 +124,9 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Booking> getAllBookings(long memberId) throws EntityNotFoundException
+	public Collection<Booking> getAllBookings(String memberId) throws EntityNotFoundException
 	{
-		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (memberId == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
 		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);
 	}
