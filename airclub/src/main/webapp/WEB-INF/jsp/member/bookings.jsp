@@ -17,11 +17,12 @@
 			<table class="table table-sm table-striped table-bordered">
 				<thead>
 					<tr>
-						<th>Aéronef</th>
-						<th>Description</th>
-						<th>Heure départ</th>
-						<th>Heure retour</th>
-						<th>Action</th>
+						<th class="col-1">Numéro</th>
+						<th class="col-2">Aéronef</th>
+						<th class="col-3">Description</th>
+						<th class="col-1">Heure départ</th>
+						<th class="col-1">Heure retour</th>
+						<th class="col-2">Action</th>
 					</tr>
 				</thead>	
 				<tbody>
@@ -29,11 +30,17 @@
 					<fmt:parseDate value="${booking.departureTime}" pattern="yyyy-MM-dd'T'HH:mm" var="departure" type="date" />
 					<fmt:parseDate value="${booking.arrivalTime}" pattern="yyyy-MM-dd'T'HH:mm" var="arrival" type="date" />	
 					<tr>
+						<td>${booking.id}</td>
 						<td>${booking.aircraft}</td>
 						<td>${booking.description}</td>
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${departure}" /></td>
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${arrival}" /></td>				
-						<td><c:if test="${ booking.canCancel == true }">Oui</c:if></td>
+						<td>
+							<a class="col-5 btn btn-primary" href="/" role="button">Clôturer</a>
+							<c:if test="${ booking.canCancel == true }">
+								<a class="col-5 btn btn-primary" href="/member/bookings/delete/${booking.id}" role="button">Annuler</a>
+							</c:if>
+						</td>
 					</tr>
 					</c:forEach>
 				</tbody>

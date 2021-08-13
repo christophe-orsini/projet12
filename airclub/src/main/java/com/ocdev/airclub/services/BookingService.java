@@ -12,4 +12,5 @@ public interface BookingService
 	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date);
 	public Booking createBooking(BookingNewDto bookingNewDto);
 	public List<BookingDisplayDto> getBookings(String memberId);
+	public void cancelBooking(long id);
 }

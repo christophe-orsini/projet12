@@ -48,7 +48,7 @@ public class MemberController
 	}
 	
 	@GetMapping("/planning/{aircraftId}/date/{currentDate}")
-	public String planning(Model model, @PathVariable long aircraftId, @PathVariable String currentDate)
+	public String planning(Model model, Principal principal, @PathVariable long aircraftId, @PathVariable String currentDate)
 	{	 
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
@@ -62,9 +62,12 @@ public class MemberController
 		List<Booking> bookings = _bookingService.getBookingForAircraftAndDay(aircraftId, date);
 		model.addAttribute("bookings", bookings);
 		
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
+		
 		BookingNewDto dto = new BookingNewDto();
 		dto.setAircraftId(aircraftId);
-		dto.setMemberId("1");
+		dto.setMemberId(memberId);
 		dto.setDepartureDate(date);
 		dto.setArrivalDate(date);
 		model.addAttribute("newBooking", dto);
@@ -122,5 +125,13 @@ public class MemberController
 		model.addAttribute("bookings", bookings);
 	    
 		return "/member/bookings";
+	}
+	
+	@GetMapping("/bookings/delete/{id}")
+	public String deleteBooking(@PathVariable long id)
+	{
+		_bookingService.cancelBooking(id);
+	    
+		return "redirect:/member/bookings";
 	}
 }

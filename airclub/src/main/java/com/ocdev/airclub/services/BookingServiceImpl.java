@@ -48,7 +48,7 @@ public class BookingServiceImpl implements BookingService
 	@Override
 	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date)
 	{
-		Duration timeout = Duration.ofSeconds(2);
+		Duration timeout = Duration.ofSeconds(10);
 		return webclient
 				.get()
 				.uri(_gatewayUrl + "/reservation/reservations/aircraft/" + aircraftId + "/date/" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))				
@@ -64,7 +64,7 @@ public class BookingServiceImpl implements BookingService
 	@Override
 	public Booking createBooking(BookingNewDto bookingNewDto)
 	{
-		Duration timeout = Duration.ofSeconds(5);
+		Duration timeout = Duration.ofSeconds(10);
 
 		BookingCreateDto bookingDto = _bookingCreateDtoConverter.convertDtoToEntity(bookingNewDto);
 		return webclient
@@ -143,5 +143,20 @@ public class BookingServiceImpl implements BookingService
 		}
 		
 		return results;
+	}
+
+	@Override
+	public void cancelBooking(long id)
+	{
+		Duration timeout = Duration.ofSeconds(10);
+
+		webclient.delete()
+				.uri(_gatewayUrl + "/reservation/reservations/" + id)				
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.retrieve()
+				.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("La réservation n'existe pas")))
+				.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Réservation n'est pas accessible")))
+				.bodyToMono(void.class)
+				.block(timeout);
 	}
 }
