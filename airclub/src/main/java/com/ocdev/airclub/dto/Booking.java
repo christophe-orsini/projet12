@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 public class Booking implements Serializable
 {
 	private long id;
-	private long memberId;
+	private String memberId;
 	private long aircraftId;
 	private String description;
 	private LocalDateTime departureTime;
@@ -29,12 +29,12 @@ public class Booking implements Serializable
 		this.id = id;
 	}
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
 
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

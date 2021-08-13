@@ -15,8 +15,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class BookingNewDto implements Serializable
 {
-	@Positive(message="L'id du membre est obligatoire")
-	private long memberId;
+	@NotBlank(message="L'id du membre est obligatoire")
+	private String memberId;
 	@Positive(message="L'id de l'aéronef est obligatoire")
 	private long aircraftId;
 	@NotBlank(message="La description du vol est obligatoire")
@@ -30,11 +30,11 @@ public class BookingNewDto implements Serializable
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime arrivalTime;
 	
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

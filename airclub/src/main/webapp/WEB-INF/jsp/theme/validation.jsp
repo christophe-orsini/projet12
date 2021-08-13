@@ -15,6 +15,7 @@
 		<div class="col-12">
 			<p>L'opération demandée a réussie</p>
 			<p>${message}</p>
+			<a class="col-3 btn btn-primary" href="/member/planning" role="button">Retour</a>
 		</div>	
 	</section>
 </body>

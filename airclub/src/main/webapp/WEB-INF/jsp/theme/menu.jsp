@@ -11,8 +11,8 @@
 		</button>
 		<div class="collapse navbar-collapse" id="menu">	
 			<sec:authorize access="isAuthenticated()">
-				<a class="nav-link" href="/aircraft/list">Planning</a>
-				<a class="nav-link" href="/aircraft/F-GCNS">Mes réservations</a>
+				<a class="nav-link" href="/member/planning">Planning</a>
+				<a class="nav-link" href="/member/bookings">Mes réservations</a>
 				<a class="nav-link" href="/aircraft/F-GCNS">Mes factures</a>
 			</sec:authorize>
 			<sec:authorize access="hasRole('BENEVOLE')">

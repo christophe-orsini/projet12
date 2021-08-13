@@ -1,5 +1,6 @@
 package com.ocdev.airclub.controllers;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -8,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
+import com.ocdev.airclub.dto.BookingDisplayDto;
 import com.ocdev.airclub.dto.BookingNewDto;
 import com.ocdev.airclub.errors.ErrorMessage;
 import com.ocdev.airclub.services.AircraftService;
@@ -61,7 +64,7 @@ public class MemberController
 		
 		BookingNewDto dto = new BookingNewDto();
 		dto.setAircraftId(aircraftId);
-		dto.setMemberId(1L);
+		dto.setMemberId("1");
 		dto.setDepartureDate(date);
 		dto.setArrivalDate(date);
 		model.addAttribute("newBooking", dto);
@@ -108,5 +111,16 @@ public class MemberController
 		model.addAttribute("aircrafts", aircrafts);
 	    
 		return "/member/planning";
+	}
+	
+	@GetMapping("/bookings")
+	public String bookings(Model model, Principal principal)
+	{
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
+		List<BookingDisplayDto> bookings = _bookingService.getBookings(memberId);
+		model.addAttribute("bookings", bookings);
+	    
+		return "/member/bookings";
 	}
 }
