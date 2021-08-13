@@ -25,7 +25,8 @@ public class BookingCreateDtoConverter implements IDtoConverter<BookingCreateDto
 		booking.setDepartureTime(departureDate);
 		
 		LocalDateTime arrivalDate = LocalDateTime.of(bookingNewDto.getArrivalDate(), bookingNewDto.getArrivalTime());
-		booking.setDuration(Duration.between(departureDate, arrivalDate).toMinutes() / 60);
+		
+		booking.setDuration(Duration.between(departureDate, arrivalDate).toMinutes() / 60.0);
 		
 		return booking;
 	}
