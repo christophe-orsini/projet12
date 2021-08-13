@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.internal.compiler.ast.Annotation.AnnotationTargetAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +33,8 @@ import reactor.util.retry.Retry;
 @Service
 public class BookingServiceImpl implements BookingService
 {
-	private final String _gatewayUrl = "http://localhost:8080";
+	@Value("${app.gateway.url}")
+	private String _gatewayUrl;
 	
 	@Autowired
 	WebClient webclient;
