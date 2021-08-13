@@ -56,11 +56,12 @@ public interface ReservationService
 	 * Cette méthode retourne la liste des réservations en cours pour un membre.
 	 * 
 	 * @param memberId : Id du membre
+	 * @param closed : True pour la liste des réservations termlinées ou False pour la liste des réservations en cours
 	 * @return : La liste des réservations
 	 * @throws EntityNotFoundException levée si le membre n'existe pas
 	 * @see Booking
 	 */
-	public Collection<Booking> getAllBookings(String memberId) throws EntityNotFoundException;
+	public Collection<Booking> getAllBookings(String memberId, boolean closed) throws EntityNotFoundException;
 	/***
 	 * Cette méthode supprime une réservation existante et non cloturée.
 	 * 

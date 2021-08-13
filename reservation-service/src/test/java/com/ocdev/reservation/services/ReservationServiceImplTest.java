@@ -292,7 +292,7 @@ public class ReservationServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			_systemUnderTest.getAllBookings(null);
+			_systemUnderTest.getAllBookings(null, false);
 		}).withMessage("Ce membre n'existe pas");
 	}
 	
@@ -304,7 +304,7 @@ public class ReservationServiceImplTest
 			thenReturn(new ArrayList<Booking>());
 		
 		// act
-		Collection<Booking> actual = _systemUnderTest.getAllBookings("9");
+		Collection<Booking> actual = _systemUnderTest.getAllBookings("9", false);
 		
 		// assert
 		assertThat(actual).size().isEqualTo(0);
@@ -322,7 +322,7 @@ public class ReservationServiceImplTest
 		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(reservations);
 		
 		// act
-		Collection<Booking> actual = _systemUnderTest.getAllBookings("9");
+		Collection<Booking> actual = _systemUnderTest.getAllBookings("9", false);
 		
 		// assert
 		assertThat(actual).size().isEqualTo(1);

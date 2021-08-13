@@ -101,17 +101,17 @@ public class ReservationController
 		return _reservationService.createBooking(bookingCreateDto);
 	}
 	
-	@ApiOperation(value = "Lister les réservations d'un membre", notes = "Obtenir la liste des réservations d'un membre")
+	@ApiOperation(value = "Lister les réservations d'un membre", notes = "Obtenir la liste des réservations en cours d'un membre")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
 	@GetMapping(value = "/{memberId}", produces = "application/json")
-	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
+	public Collection<Booking> getAllActive(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
 	@PathVariable final String memberId) throws EntityNotFoundException
 	{
-		return _reservationService.getAllBookings(memberId);
+		return _reservationService.getAllBookings(memberId, false);
 	}
 	
 	@ApiOperation(value = "Annuler une réservation", notes = "Annuler une réservation en cours")

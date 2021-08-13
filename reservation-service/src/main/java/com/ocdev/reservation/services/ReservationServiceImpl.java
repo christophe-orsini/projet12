@@ -124,11 +124,11 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Booking> getAllBookings(String memberId) throws EntityNotFoundException
+	public Collection<Booking> getAllBookings(String memberId, boolean closed) throws EntityNotFoundException
 	{
 		if (memberId == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
-		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);
+		return _reservationRepository.findAllByMemberIdAndClosed(memberId, closed);
 	}
 
 	@Override
