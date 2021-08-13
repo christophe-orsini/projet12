@@ -11,40 +11,48 @@
 <%@ include file="../theme/menu.jsp" %>
 	<section class="row justify-content-center">	
 		<div class="col-3 mt-1">
+			<p class="h3">Choisir une date</p>
 			<div class="col row justify-content-between">
-				<a class="col-3 btn btn-primary" href="/member/before/${currentDate}" role="button">Avant</a>
-				<p class="h5 col-6 border border-primary">${currentDate}</p>
-				<a class="col-3 btn btn-primary" href="/member/after/${currentDate}" role="button">Après</a>
+				<a class="col-3 btn btn-primary btn-sm" href="/member/before/${currentDate}" role="button">Avant</a>
+				<p class="h5 col-6 border border-primary my-0">${currentDate}</p>
+				<a class="col-3 btn btn-primary btn-sm" href="/member/after/${currentDate}" role="button">Après</a>
 			</div>
-			<p class="h3">Aéronefs</p>
+			<p class="h3">Choisir un aéronef</p>
 			<ul class="list-group">
 				<c:forEach items="${aircrafts}" var="aircraft" varStatus="status">
-					<li><a href="/member/planning/${aircraft.id}/date/${currentDate}">
-						${aircraft.registration} ${aircraft.make} ${aircraft.model} ${aircraft.hourlyRate} €/h
-					</a></li>
+					<li>
+						<c:if test="${aircraft.available == true}"><a href="/member/planning/${aircraft.id}/date/${currentDate}">
+							${aircraft.registration}</a> ${aircraft.make} ${aircraft.model} ${aircraft.hourlyRate} €/h
+						</c:if>
+						<c:if test="${aircraft.available == false}">
+							${aircraft.registration} ${aircraft.make} ${aircraft.model} / Indisponible
+						</c:if>
+					</li>
 				</c:forEach>
 			</ul>
 		</div>
 		<div class="col-5 table-responsive">
-			<p class="h3">Réservations en cours</p>
-			<table class="table table-sm table-striped table-bordered">
-				<thead>
-					<tr>
-						<th>Heure départ</th>
-						<th>Heure retour</th>
-					</tr>
-				</thead>	
-				<tbody>
-					<c:forEach items="${bookings}" var="booking" varStatus="status">
+			<c:if test="${selectedAircraft != null}">
+				<p class="h3">Réservations en cours pour ${selectedAircraft.registration}</p>
+				<table class="table table-sm table-striped table-bordered">
+					<thead>
 						<tr>
-							<fmt:parseDate value="${booking.departureTime}" pattern="yyyy-MM-dd'T'HH:mm" var="departure" type="date" />					
-							<fmt:parseDate value="${booking.arrivalTime}" pattern="yyyy-MM-dd'T'HH:mm" var="arrival" type="date" />					
-							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${departure}" /></td>
-							<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${arrival}" /></td>				
+							<th>Heure départ</th>
+							<th>Heure retour</th>
 						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
+					</thead>	
+					<tbody>
+						<c:forEach items="${bookings}" var="booking" varStatus="status">
+							<tr>
+								<fmt:parseDate value="${booking.departureTime}" pattern="yyyy-MM-dd'T'HH:mm" var="departure" type="date" />					
+								<fmt:parseDate value="${booking.arrivalTime}" pattern="yyyy-MM-dd'T'HH:mm" var="arrival" type="date" />					
+								<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${departure}" /></td>
+								<td><fmt:formatDate type = "both" pattern="dd-MM HH:mm" value = "${arrival}" /></td>				
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</c:if>
 		</div>
 		<div class="col-4">
 			<c:if test="${selectedAircraft != null}">
