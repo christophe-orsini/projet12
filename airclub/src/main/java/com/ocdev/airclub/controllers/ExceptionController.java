@@ -56,4 +56,14 @@ class ExceptionController
 		model.addAttribute("exceptionMessage", error);
 		return "/theme/error";
 	}
+	
+	@ExceptionHandler(IllegalStateException.class)
+	public String onIllegalStateException(IllegalStateException e, Model model) 
+	{
+		HttpStatus status = HttpStatus.GATEWAY_TIMEOUT;
+		ErrorMessage error = new ErrorMessage(status.value(),  status.getReasonPhrase(), "Le serveur est trop long pour répondre");
+		
+		model.addAttribute("exceptionMessage", error);
+		return "/theme/error";
+    }
 }

@@ -3,14 +3,12 @@ package com.ocdev.airclub.errors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @ControllerAdvice
 class CustomExceptionHandler
@@ -40,39 +38,4 @@ class CustomExceptionHandler
 		}
 		return error;
     }
-	
-//	@ExceptionHandler(AlreadyExistsException.class)
-//	@ResponseBody
-//	ResponseEntity<ErrorMessage> onAlreadyExistsException(AlreadyExistsException e)
-//	{
-//		ServicesHttpStatus status = ServicesHttpStatus.SERVICES_DUPLICATE;
-//		ErrorMessage error = new ErrorMessage(status.getCode(), status.getName(), e.getMessage());
-//		return ResponseEntity.status(status.getCode()).body(error);
-//	}
-	
-	@ExceptionHandler(EntityNotFoundException.class)
-	@ResponseBody
-	ResponseEntity<ErrorMessage> onEntityNotFoundException(EntityNotFoundException e)
-	{
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
-		return ResponseEntity.status(status.value()).body(error);
-	}
-	
-	@ExceptionHandler(ProxyException.class)
-	@ResponseBody
-	ResponseEntity<ErrorMessage> onProxyException(ProxyException e)
-	{
-		HttpStatus status = HttpStatus.BAD_GATEWAY;
-		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
-		return ResponseEntity.status(status.value()).body(error);
-	}
-	
-//	@ExceptionHandler(WebClientResponseException.class)
-//	@ResponseBody
-//	ResponseEntity<ErrorMessage> onWebClientResponseException(WebClientResponseException e)
-//	{
-//		ErrorMessage error = new ErrorMessage(e.getRawStatusCode(),  e.getStatusText(), e.getMessage());
-//		return ResponseEntity.status(e.getRawStatusCode()).body(error);
-//	}
 }
