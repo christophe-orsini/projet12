@@ -60,7 +60,8 @@ public class ReservationServiceImpl implements ReservationService
 		
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
+        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes).minusSeconds(1);
+        startTime = startTime.plusSeconds(1);
 		Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
 		
 		return reservations.size() == 0;
@@ -128,7 +129,7 @@ public class ReservationServiceImpl implements ReservationService
 	{
 		if (memberId == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
-		return _reservationRepository.findAllByMemberIdAndClosed(memberId, closed);
+		return _reservationRepository.findAllByMemberIdAndClosedOrderByDepartureTimeAsc(memberId, closed);
 	}
 
 	@Override

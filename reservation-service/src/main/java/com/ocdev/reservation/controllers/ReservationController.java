@@ -68,7 +68,7 @@ public class ReservationController
 		return _reservationService.isAircaftAvailable(aircraftId, startTime, duration);
 	}
 	
-	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une dheure et une durée")
+	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une heure et une durée")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
@@ -145,11 +145,11 @@ public class ReservationController
 		return _reservationService.closeBooking(reservationId, bookingCloseDto);
 	}
 	
-	@ApiOperation(value = "Lister les réservations d'un aéronef pour une journée", notes = "Obtenir la liste des réservations d'un membre")
+	@ApiOperation(value = "Lister les réservations d'un aéronef pour une journée", notes = "Obtenir la liste des réservations d'un aéronef pour une date")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
-			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
+			@ApiResponse(code = 404, message = "L'aéronef n'existe pas"),
 			})
 	@GetMapping(value = "/aircraft/{aircraftId}/date/{date}", produces = "application/json")
 	public Collection<Booking> getAllForAircraftAndDate(
