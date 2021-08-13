@@ -203,4 +203,12 @@ public class ReservationServiceImpl implements ReservationService
 	{		
 		return _reservationRepository.findAllByAircraftIdAndDate(aircraftId, date);
 	}
+
+	@Override
+	public Booking getBooking(long reservationId) throws EntityNotFoundException
+	{
+		Optional<Booking> booking = _reservationRepository.findById(reservationId);
+		
+		return booking.orElseThrow(() -> new EntityNotFoundException("La réservation n'existe pas"));
+	}
 }

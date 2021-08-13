@@ -89,4 +89,13 @@ public interface ReservationService
 	 * @see Booking
 	 */
 	public Collection<Booking> getAllBookings(long aircraftId, LocalDate date) throws EntityNotFoundException;
+	/***
+	 * Cette méthode retourne une réservation.
+	 * 
+	 * @param reservationId : Id de la réservation
+	 * @return : La réservation
+	 * @throws EntityNotFoundException levée si la réservation n'existe pas
+	 */
+	public Booking getBooking(long reservationId) throws EntityNotFoundException;
+	
 }

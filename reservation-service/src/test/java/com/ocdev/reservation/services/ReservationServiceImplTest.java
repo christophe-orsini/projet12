@@ -300,7 +300,7 @@ public class ReservationServiceImplTest
 	public void getAllBookings_ShouldReturnsEmpty_WhenNoReservations() throws EntityNotFoundException
 	{
 		//arrange
-		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyString(), Mockito.anyBoolean())).
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosedOrderByDepartureTimeAsc(Mockito.anyString(), Mockito.anyBoolean())).
 			thenReturn(new ArrayList<Booking>());
 		
 		// act
@@ -308,7 +308,7 @@ public class ReservationServiceImplTest
 		
 		// assert
 		assertThat(actual).size().isEqualTo(0);
-		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed("9", false);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosedOrderByDepartureTimeAsc("9", false);
 	}
 	
 	@Test
@@ -319,14 +319,14 @@ public class ReservationServiceImplTest
 		Collection<Booking> reservations = new ArrayList<Booking>();
 		Booking booking = new Booking("9", 1, "Dummy", today, 1.5);
 		reservations.add(booking);
-		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosed(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(reservations);
+		Mockito.when(_reservationRepositoryMock.findAllByMemberIdAndClosedOrderByDepartureTimeAsc(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(reservations);
 		
 		// act
 		Collection<Booking> actual = _systemUnderTest.getAllBookings("9", false);
 		
 		// assert
 		assertThat(actual).size().isEqualTo(1);
-		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosed("9", false);
+		Mockito.verify(_reservationRepositoryMock, Mockito.times(1)).findAllByMemberIdAndClosedOrderByDepartureTimeAsc("9", false);
 	}
 	
 	@Test

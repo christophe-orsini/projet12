@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService
 		
 		List<Booking> bookings = webclient
 				.get()
-				.uri(_gatewayUrl + "/reservation/reservations/" + memberId)				
+				.uri(_gatewayUrl + "/reservation/reservations/member/" + memberId)				
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
 				.bodyToFlux(Booking.class)

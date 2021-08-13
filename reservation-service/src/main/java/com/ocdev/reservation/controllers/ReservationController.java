@@ -107,7 +107,7 @@ public class ReservationController
 			@ApiResponse(code = 401, message = "Authentification requise"),
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
-	@GetMapping(value = "/{memberId}", produces = "application/json")
+	@GetMapping(value = "/member/{memberId}", produces = "application/json")
 	public Collection<Booking> getAllActive(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
 	@PathVariable final String memberId) throws EntityNotFoundException
 	{
@@ -160,5 +160,18 @@ public class ReservationController
 			) throws EntityNotFoundException
 	{
 		return _reservationService.getAllBookings(aircraftId, date);
+	}
+	
+	@ApiOperation(value = "Obtenir une réservation", notes = "Obtenir une réservation par son ID")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La réservation retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "La réservation n'existe pas"),
+			})
+	@GetMapping(value = "/{id}", produces = "application/json")
+	public Booking getBooking(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
+	@PathVariable final long id) throws EntityNotFoundException
+	{
+		return _reservationService.getBooking(id);
 	}
 }
