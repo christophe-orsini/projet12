@@ -21,6 +21,7 @@ public class BookingDisplayDtoConverter implements IDtoConverter<Booking, Bookin
 	{
 		BookingDisplayDto dto = new BookingDisplayDto();
 		
+		dto.setId(entity.getId());
 		dto.setMemberId(entity.getMemberId());
 		dto.setDescription(entity.getDescription());
 		dto.setDepartureTime(entity.getDepartureTime());

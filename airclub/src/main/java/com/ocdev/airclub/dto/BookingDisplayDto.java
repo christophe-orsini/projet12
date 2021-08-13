@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
  */
 public class BookingDisplayDto implements Serializable
 {
+	private long id;
 	private String memberId;
 	private String aircraft;
 	private String description;
@@ -16,6 +17,14 @@ public class BookingDisplayDto implements Serializable
 	private LocalDateTime arrivalTime;
 	private boolean canCancel;
 	
+	public long getId()
+	{
+		return id;
+	}
+	public void setId(long id)
+	{
+		this.id = id;
+	}
 	public String getMemberId()
 	{
 		return memberId;
