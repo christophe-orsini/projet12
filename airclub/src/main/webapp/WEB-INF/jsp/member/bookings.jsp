@@ -36,7 +36,7 @@
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${departure}" /></td>
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${arrival}" /></td>				
 						<td>
-							<a class="col-5 btn btn-primary" href="/" role="button">Clôturer</a>
+							<a class="col-5 btn btn-primary" href="/member/bookings/close/${booking.id}" role="button">Clôturer</a>
 							<c:if test="${ booking.canCancel == true }">
 								<a class="col-5 btn btn-primary" href="/member/bookings/delete/${booking.id}" role="button">Annuler</a>
 							</c:if>

@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
+import com.ocdev.airclub.dto.BookingDisplayCloseDto;
 import com.ocdev.airclub.dto.BookingDisplayDto;
 import com.ocdev.airclub.dto.BookingNewDto;
+import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.errors.ErrorMessage;
 import com.ocdev.airclub.services.AircraftService;
 import com.ocdev.airclub.services.BookingService;
@@ -134,4 +136,14 @@ public class MemberController
 	    
 		return "redirect:/member/bookings";
 	}
+	
+	@GetMapping("/bookings/close/{id}")
+	public String closeBooking(Model model, @PathVariable long id) throws EntityNotFoundException
+	{
+		BookingDisplayCloseDto closedBooking = _bookingService.initBookingCloseDto(id);
+		model.addAttribute("closedBooking", closedBooking);
+	    
+		return "/member/close_booking";
+	}
+	
 }

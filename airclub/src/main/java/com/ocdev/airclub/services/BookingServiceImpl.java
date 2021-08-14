@@ -21,6 +21,7 @@ import com.ocdev.airclub.converters.IDtoConverter;
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingCreateDto;
+import com.ocdev.airclub.dto.BookingDisplayCloseDto;
 import com.ocdev.airclub.dto.BookingDisplayDto;
 import com.ocdev.airclub.dto.BookingNewDto;
 import com.ocdev.airclub.errors.AlreadyExistsException;
@@ -44,6 +45,9 @@ public class BookingServiceImpl implements BookingService
 	
 	@Autowired
 	private IDtoConverter<Booking, BookingDisplayDto> _bookingDisplayDtoConverter;
+	
+	@Autowired
+	private IDtoConverter<Booking, BookingDisplayCloseDto> _bookingDisplayCloseDtoConverter;
 	
 	@Override
 	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date)
@@ -158,5 +162,30 @@ public class BookingServiceImpl implements BookingService
 				.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Réservation n'est pas accessible")))
 				.bodyToMono(void.class)
 				.block(timeout);
+	}
+
+	@Override
+	public BookingDisplayCloseDto initBookingCloseDto(long id) throws EntityNotFoundException
+	{
+		Booking booking = getBooking(id);
+					
+		if (booking == null || booking.isClosed()) throw new EntityNotFoundException("Cette réservation n'existe pas ou est cloturée");
+			
+		return _bookingDisplayCloseDtoConverter.convertEntityToDto(booking);
+	}
+	
+	private Booking getBooking(long id)
+	{
+		Duration timeout = Duration.ofSeconds(10);
+		
+		return webclient
+			.get()
+			.uri(_gatewayUrl + "/reservation/reservations/" + id)				
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.retrieve()
+			.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("La réservation n'existe pas")))
+			.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Réservation n'est pas accessible")))
+			.bodyToMono(Booking.class)
+			.block(timeout);
 	}
 }

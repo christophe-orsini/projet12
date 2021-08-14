@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-
 /**
  * BookingCreateDto représente la classe DTO pour la création d'une réservation.
  *
