@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.ModelAttribute;
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingDisplayCloseDto;
@@ -146,4 +146,11 @@ public class MemberController
 		return "/member/close_booking";
 	}
 	
+	@PostMapping("/close")
+	public String formCloseAction(@ModelAttribute("closedBooking") BookingDisplayCloseDto closedBooking, Model model)
+	{
+		_bookingService.closeBooking(closedBooking);
+		   
+		return "redirect:/member/bookings";
+	}
 }

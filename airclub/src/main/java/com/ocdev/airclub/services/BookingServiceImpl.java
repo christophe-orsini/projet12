@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.ocdev.airclub.converters.IDtoConverter;
 import com.ocdev.airclub.dto.Aircraft;
 import com.ocdev.airclub.dto.Booking;
+import com.ocdev.airclub.dto.BookingCloseDto;
 import com.ocdev.airclub.dto.BookingCreateDto;
 import com.ocdev.airclub.dto.BookingDisplayCloseDto;
 import com.ocdev.airclub.dto.BookingDisplayDto;
@@ -48,6 +49,9 @@ public class BookingServiceImpl implements BookingService
 	
 	@Autowired
 	private IDtoConverter<Booking, BookingDisplayCloseDto> _bookingDisplayCloseDtoConverter;
+	
+	@Autowired
+	private IDtoConverter<BookingCloseDto, BookingDisplayCloseDto> _bookingCloseDtoConverter;
 	
 	@Override
 	public List<Booking> getBookingForAircraftAndDay(long aircraftId, LocalDate date)
@@ -186,6 +190,25 @@ public class BookingServiceImpl implements BookingService
 			.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("La réservation n'existe pas")))
 			.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Réservation n'est pas accessible")))
 			.bodyToMono(Booking.class)
+			.block(timeout);
+	}
+
+	@Override
+	public void closeBooking(BookingDisplayCloseDto closedBooking)
+	{
+		Duration timeout = Duration.ofSeconds(10);
+		
+		BookingCloseDto bookingToClose = _bookingCloseDtoConverter.convertDtoToEntity(closedBooking);
+		
+		webclient
+			.put()
+			.uri(_gatewayUrl + "/reservation/reservations/" + closedBooking.getId())				
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.body(Mono.just(bookingToClose), BookingCloseDto.class)
+			.retrieve()
+			.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("La réservation n'existe pas")))
+			.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Réservation n'est pas accessible")))
+			.bodyToMono(void.class)
 			.block(timeout);
 	}
 }
