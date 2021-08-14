@@ -29,7 +29,6 @@ public class BookingDisplayCloseDto implements Serializable
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime arrivalTime;
 	
-	
 	public long getId()
 	{
 		return id;
