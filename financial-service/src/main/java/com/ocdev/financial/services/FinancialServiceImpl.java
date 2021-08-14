@@ -47,18 +47,14 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Collection<Flight> getAllFlights(long memberId)
+	public Collection<Flight> getAllFlights(String memberId)
 	{
-		// TODO check if memberId exists
-		
 		return _flightRepository.findByMemberIdAndClosed(memberId, false);
 	}
 
 	@Override
-	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException
+	public Subscription getLastSubscription(String memberId) throws EntityNotFoundException
 	{
-		// TODO check if memberId exists
-		
 		Optional<Subscription> subscription = _subscriptionRepository.findLastSubscriptionByMemberId(memberId);
 		if (!subscription.isPresent()) throw new EntityNotFoundException("Ce membre n'a pas de cotisation en cours");
 		
@@ -69,7 +65,7 @@ public class FinancialServiceImpl implements FinancialService
 	public Subscription recordSubscription(SubscriptionDto subscriptionDto) throws EntityNotFoundException, AlreadyExistsException
 	{
 		// TODO check if memberId exists
-		if (subscriptionDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (subscriptionDto.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
 		LocalDate today = LocalDate.now();
 		
@@ -96,7 +92,7 @@ public class FinancialServiceImpl implements FinancialService
 	public Flight recordFlight(FlightRecordDto flightDto) throws EntityNotFoundException
 	{
 		// TODO check if memberId exists
-		if (flightDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (flightDto.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
 		Flight flight = _flightRecordDtoConverter.convertDtoToEntity(flightDto);
 		
@@ -107,7 +103,7 @@ public class FinancialServiceImpl implements FinancialService
 	public void registerEndedFlight(RegisterFlightMessage message) throws EntityNotFoundException, ProxyException
 	{
 		// TODO check if memberId exists
-		if (message.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (message.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
 		//Get aircraft
 		Aircraft aircraft = _hangarProxy.getAircraftById(message.getAircraftId());

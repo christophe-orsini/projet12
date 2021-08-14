@@ -11,5 +11,5 @@ import com.ocdev.reservation.errors.ProxyException;
 public interface FinancialProxy
 {
 	@GetMapping( value = "/subscriptions/{memberId}")
-	public ResponseEntity<Subscription> getSubscription(@PathVariable final long memberId) throws ProxyException;
+	public ResponseEntity<Subscription> getSubscription(@PathVariable final String memberId) throws ProxyException;
 }

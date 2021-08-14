@@ -18,7 +18,7 @@ public interface FinancialService
 	 * @return La liste (peut être vide)
 	 * @See {@link com.ocdev.financial.entities.Flight}
 	 */
-	public Collection<Flight> getAllFlights(long memberId);
+	public Collection<Flight> getAllFlights(String memberId);
 	/**
 	 * Cette méthode retourne la dernière cotisation d'un membre.
 	 * 
@@ -27,7 +27,7 @@ public interface FinancialService
 	 * @throws EntityNotFoundException levée si le membre n'existe pas ou s'il n'a jamais payé de cotisation
 	 * @See {@link com.ocdev.financial.entities.Subscription}
 	 */
-	public Subscription getLastSubscription(long memberId) throws EntityNotFoundException;
+	public Subscription getLastSubscription(String memberId) throws EntityNotFoundException;
 	/**
 	 * Cette méthode enregistre le paiement d'une cotisation pour un membre.
 	 * <p>Si le champs amount est négatif, le montant forfaitaire de la cotisation est utilisé.</p>

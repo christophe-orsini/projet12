@@ -14,7 +14,7 @@ public class SubscriptionTest
 		// arrange
 		LocalDate date = LocalDate.of(2021,05,20);
 		Subscription entityUnderTest = new Subscription();
-		entityUnderTest.setMemberId(5);
+		entityUnderTest.setMemberId("5");
 		entityUnderTest.setPaymentDate(date);
 		entityUnderTest.setAmount(150.0);
 		entityUnderTest.setValidityDate(date);

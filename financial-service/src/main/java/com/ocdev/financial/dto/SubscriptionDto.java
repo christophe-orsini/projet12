@@ -1,6 +1,6 @@
 package com.ocdev.financial.dto;
 
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,17 +14,17 @@ import io.swagger.annotations.ApiModelProperty;
 public class SubscriptionDto
 {
 	@ApiModelProperty(position = 1, required = true, value = "Id du membre", example = "1")
-	@Positive(message="L'id du membre est obligatoire et doit être positive")
-	private long memberId;
+	@NotBlank(message="L'id du membre est obligatoire")
+	private String memberId;
 	@ApiModelProperty(position = 2, required = false, value = "Montant de la cotisation (absent pour utiliser le forfait)",
 			example = "135.0 ou absent pour utiliser le forfait")
 	private Double amount;
 
-	public long getMemberId()
+	public String getMemberId()
 	{
 		return memberId;
 	}
-	public void setMemberId(long memberId)
+	public void setMemberId(String memberId)
 	{
 		this.memberId = memberId;
 	}

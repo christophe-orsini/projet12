@@ -15,7 +15,7 @@ public class BookingTest
 		// arrange
 		LocalDateTime  date = LocalDateTime.of(2021, 6, 15, 10, 30, 00);
 		Booking entityUnderTest = new Booking();
-		entityUnderTest.setMemberId(9);
+		entityUnderTest.setMemberId("9");
 		entityUnderTest.setAircraftId(8);
 		entityUnderTest.setDescription("Dummy");
 		entityUnderTest.setDepartureTime(date);

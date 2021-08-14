@@ -8,8 +8,8 @@ import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 
 public class ReservationCreateDtoConverterTest
 {
@@ -28,14 +28,14 @@ public class ReservationCreateDtoConverterTest
 		// arrange
 		LocalDateTime testDate= LocalDateTime.now();
 		BookingCreateDto dto = new BookingCreateDto();
-		dto.setMemberId(9);
-		dto.setAircraft("F-GAAA");
+		dto.setMemberId("9");
+		dto.setAircraftId(1);
 		dto.setDescription("Dummy");
 		dto.setDepartureTime(testDate);
 		dto.setDuration(1.5);
 		
 		Booking expected = new Booking();
-		expected.setMemberId(9);
+		expected.setMemberId("9");
 		expected.setDescription("Dummy");
 		expected.setDepartureTime(testDate);
 				

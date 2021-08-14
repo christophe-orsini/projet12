@@ -1,5 +1,6 @@
 package com.ocdev.reservation.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +14,8 @@ import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.converters.IDtoConverter;
 import com.ocdev.reservation.dao.ReservationRepository;
 import com.ocdev.reservation.dto.BookingCloseDto;
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
@@ -52,14 +53,15 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public boolean isAircaftAvailable(String registration, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException
+	public boolean isAircaftAvailable(long aircraftId, LocalDateTime startTime, double duration) throws EntityNotFoundException, ProxyException
 	{
-		Aircraft aircraft = _hangarProxy.getAircraft(registration);
+		Aircraft aircraft = _hangarProxy.getAircraftById(aircraftId);
 		if (!aircraft.isAvailable()) return false;
 		
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
+        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes).minusSeconds(1);
+        startTime = startTime.plusSeconds(1);
 		Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
 		
 		return reservations.size() == 0;
@@ -94,20 +96,20 @@ public class ReservationServiceImpl implements ReservationService
 	public Booking createBooking(BookingCreateDto bookingCreateDto) throws EntityNotFoundException, ProxyException, AlreadyExistsException
 	{
 		// TODO check if memberId exists
-		if (bookingCreateDto.getMemberId() < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (bookingCreateDto.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 		
 		// check if aircraft exists
 		Aircraft aircraft;
 		try
 		{
-			aircraft = _hangarProxy.getAircraft(bookingCreateDto.getAircraft());
+			aircraft = _hangarProxy.getAircraftById(bookingCreateDto.getAircraftId());
 		} catch (Exception e)
 		{
 			throw new EntityNotFoundException("Cet aéronef n'existe pas");
 		}
 		
 		// check if aircraft is available
-		boolean available = isAircaftAvailable(bookingCreateDto.getAircraft(), bookingCreateDto.getDepartureTime(), bookingCreateDto.getDuration());
+		boolean available = isAircaftAvailable(bookingCreateDto.getAircraftId(), bookingCreateDto.getDepartureTime(), bookingCreateDto.getDuration());
 		if (!available) throw new AlreadyExistsException("Cet aéronef est déjà réservé pour la période demandée");
 		
 		Booking booking = _bookingCreateDtoConverter.convertDtoToEntity(bookingCreateDto);
@@ -123,12 +125,11 @@ public class ReservationServiceImpl implements ReservationService
 	}
 
 	@Override
-	public Collection<Booking> getAllBookings(long memberId) throws EntityNotFoundException
+	public Collection<Booking> getAllBookings(String memberId, boolean closed) throws EntityNotFoundException
 	{
-		// TODO check if memberId exists
-		if (memberId < 0) throw new EntityNotFoundException("Ce membre n'existe pas");
+		if (memberId == null) throw new EntityNotFoundException("Ce membre n'existe pas");
 				
-		return _reservationRepository.findAllByMemberIdAndClosed(memberId, false);
+		return _reservationRepository.findAllByMemberIdAndClosedOrderByDepartureTimeAsc(memberId, closed);
 	}
 
 	@Override
@@ -195,5 +196,19 @@ public class ReservationServiceImpl implements ReservationService
 	private void registerFlightInFinance(RegisterFlightMessage message)
 	{
 		_rabbitTemplate.convertAndSend(exchange, financeRoutingkey, message);
+	}
+
+	@Override
+	public Collection<Booking> getAllBookings(long aircraftId, LocalDate date) throws EntityNotFoundException
+	{		
+		return _reservationRepository.findAllByAircraftIdAndDate(aircraftId, date);
+	}
+
+	@Override
+	public Booking getBooking(long reservationId) throws EntityNotFoundException
+	{
+		Optional<Booking> booking = _reservationRepository.findById(reservationId);
+		
+		return booking.orElseThrow(() -> new EntityNotFoundException("La réservation n'existe pas"));
 	}
 }

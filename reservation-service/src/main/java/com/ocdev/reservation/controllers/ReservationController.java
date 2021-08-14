@@ -1,5 +1,6 @@
 package com.ocdev.reservation.controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -24,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.ocdev.reservation.beans.Aircraft;
 import com.ocdev.reservation.dto.BookingCloseDto;
-import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.entities.Booking;
+import com.ocdev.reservation.dto.BookingCreateDto;
 import com.ocdev.reservation.errors.AlreadyExistsException;
 import com.ocdev.reservation.errors.EntityNotFoundException;
 import com.ocdev.reservation.errors.ProxyException;
@@ -56,18 +57,18 @@ public class ReservationController
 			})
 	@GetMapping(value = "/aircrafts/available/{registration}", produces = "application/json")
 	public boolean isAircraftAvailable(
-			@ApiParam(value = "Immatriculation de l'aéronef", required = true, example = "F-HAAA") 
-			@PathVariable @NotBlank final String registration,
+			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") 
+			@PathVariable @NotBlank final long aircraftId,
 			@ApiParam(value = "Date et heure de départ", required = true, example = "2021-06-04 10:30") 
 			@RequestParam("start_time") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") final LocalDateTime startTime,
 			@ApiParam(value = "Durée du vol", example = "1.5", defaultValue = "1.0") 
 			@RequestParam(name = "duration", required = false, defaultValue = "1.0") final double duration
 			) throws EntityNotFoundException, ProxyException
 	{
-		return _reservationService.isAircaftAvailable(registration, startTime, duration);
+		return _reservationService.isAircaftAvailable(aircraftId, startTime, duration);
 	}
 	
-	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une dheure et une durée")
+	@ApiOperation(value = "Obtenir la liste des aéronefs disponibles", notes = "Obtenir la liste des aéronefs disponibles pour une heure et une durée")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
@@ -93,24 +94,24 @@ public class ReservationController
 			@ApiResponse(code = 502, message = "Erreur d'accés au service hangar")
 			})
 	@ResponseStatus(value = HttpStatus.CREATED)
-	@PostMapping(value = "", produces = "application/json")
+	@PostMapping(value = "", consumes = "application/json", produces = "application/json")
 	public Booking addReservation(@Valid @RequestBody final BookingCreateDto bookingCreateDto) 
 			throws AlreadyExistsException, EntityNotFoundException, ProxyException
 	{
 		return _reservationService.createBooking(bookingCreateDto);
 	}
 	
-	@ApiOperation(value = "Lister les réservations d'un membre", notes = "Obtenir la liste des réservations d'un membre")
+	@ApiOperation(value = "Lister les réservations d'un membre", notes = "Obtenir la liste des réservations en cours d'un membre")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
 			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
 			})
-	@GetMapping(value = "/{memberId}", produces = "application/json")
-	public Collection<Booking> getAll(@ApiParam(value = "Id du membre", required = true, example = "1") 
-	@PathVariable @Positive final long memberId) throws EntityNotFoundException
+	@GetMapping(value = "/member/{memberId}", produces = "application/json")
+	public Collection<Booking> getAllActive(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
+	@PathVariable final String memberId) throws EntityNotFoundException
 	{
-		return _reservationService.getAllBookings(memberId);
+		return _reservationService.getAllBookings(memberId, false);
 	}
 	
 	@ApiOperation(value = "Annuler une réservation", notes = "Annuler une réservation en cours")
@@ -144,4 +145,33 @@ public class ReservationController
 		return _reservationService.closeBooking(reservationId, bookingCloseDto);
 	}
 	
+	@ApiOperation(value = "Lister les réservations d'un aéronef pour une journée", notes = "Obtenir la liste des réservations d'un aéronef pour une date")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "L'aéronef n'existe pas"),
+			})
+	@GetMapping(value = "/aircraft/{aircraftId}/date/{date}", produces = "application/json")
+	public Collection<Booking> getAllForAircraftAndDate(
+			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") 
+			@PathVariable @Positive final long aircraftId,
+			@ApiParam(value = "Date", required = true, example = "2021-08-05") 
+			@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date
+			) throws EntityNotFoundException
+	{
+		return _reservationService.getAllBookings(aircraftId, date);
+	}
+	
+	@ApiOperation(value = "Obtenir une réservation", notes = "Obtenir une réservation par son ID")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La réservation retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "La réservation n'existe pas"),
+			})
+	@GetMapping(value = "/{id}", produces = "application/json")
+	public Booking getBooking(@ApiParam(value = "Id de la réservation", required = true, example = "1") 
+	@PathVariable final long id) throws EntityNotFoundException
+	{
+		return _reservationService.getBooking(id);
+	}
 }
