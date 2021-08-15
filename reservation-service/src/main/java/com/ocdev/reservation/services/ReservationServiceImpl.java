@@ -2,8 +2,10 @@ package com.ocdev.reservation.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.amqp.core.AmqpTemplate;
@@ -176,11 +178,12 @@ public class ReservationServiceImpl implements ReservationService
 				bookingCloseDto.getDuration());
 		updateAircraftTotalTime(hangarMessage);
 		
+		Date flightDate = Date.from(bookingCloseDto.getDepartureTime().toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
 		RegisterFlightMessage flight = new RegisterFlightMessage(
 				reservation.get().getMemberId(),
 				aircraft.getId(),
 				bookingCloseDto.getDescription(),
-				bookingCloseDto.getDepartureTime(),
+				flightDate,
 				bookingCloseDto.getDuration(),
 				aircraft.getHourlyRate());
 		registerFlightInFinance(flight);
