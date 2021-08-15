@@ -125,7 +125,24 @@ public class MemberController
 		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
 		List<BookingDisplayDto> bookings = _bookingService.getBookings(memberId, false);
 		model.addAttribute("bookings", bookings);
+		
+		model.addAttribute("btn_1", "active");
+		model.addAttribute("btn_2", "");
 	    
+		return "/member/bookings";
+	}
+	
+	@GetMapping("/bookings/closed")
+	public String closedBookings(Model model, Principal principal)
+	{
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
+		List<BookingDisplayDto> bookings = _bookingService.getBookings(memberId, true);
+		model.addAttribute("bookings", bookings);
+	    
+		model.addAttribute("btn_1", "");
+		model.addAttribute("btn_2", "active");
+		
 		return "/member/bookings";
 	}
 	
