@@ -53,6 +53,7 @@ public class BookingDisplayDtoConverterTest
 		entity.setDescription("Dummy");
 		entity.setDepartureTime(LocalDateTime.of(departureDate, departureTime));
 		entity.setArrivalTime(LocalDateTime.of(arrivalDate, arrivalTime));
+		entity.setClosed(true);
 		
 		// act
 		BookingDisplayDto actual = converterUnderTest.convertEntityToDto(entity);
@@ -62,6 +63,7 @@ public class BookingDisplayDtoConverterTest
 		assertThat(actual.getDescription()).isEqualTo("Dummy");
 		assertThat(actual.getDepartureTime()).isEqualTo(LocalDateTime.of(departureDate, departureTime));
 		assertThat(actual.getArrivalTime()).isEqualTo(LocalDateTime.of(arrivalDate, arrivalTime));
+		assertThat(actual.isClosed()).isTrue();
 		assertThat(actual.isCanCancel()).isFalse();
 	}
 }

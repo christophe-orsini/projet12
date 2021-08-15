@@ -26,7 +26,7 @@ public class BookingDisplayDtoConverter implements IDtoConverter<Booking, Bookin
 		dto.setDescription(entity.getDescription());
 		dto.setDepartureTime(entity.getDepartureTime());
 		dto.setArrivalTime(entity.getArrivalTime());
-	
+		dto.setClosed(entity.isClosed());
 		return dto;
 	}
 }

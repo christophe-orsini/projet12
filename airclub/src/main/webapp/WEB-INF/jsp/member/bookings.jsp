@@ -19,9 +19,10 @@
 					<tr>
 						<th class="col-1">Numéro</th>
 						<th class="col-2">Aéronef</th>
-						<th class="col-3">Description</th>
+						<th class="col-2">Description</th>
 						<th class="col-1">Heure départ</th>
 						<th class="col-1">Heure retour</th>
+						<th class="col-1">Status</th>
 						<th class="col-2">Action</th>
 					</tr>
 				</thead>	
@@ -34,7 +35,11 @@
 						<td>${booking.aircraft}</td>
 						<td>${booking.description}</td>
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${departure}" /></td>
-						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${arrival}" /></td>				
+						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy HH:mm" value = "${arrival}" /></td>
+						<td>
+							<c:if test="${ booking.closed == false }">En cours</c:if>
+							<c:if test="${ booking.closed == true }">Terminées</c:if>
+						</td>			
 						<td>
 							<a class="col-5 btn btn-primary" href="/member/bookings/close/${booking.id}" role="button">Clôturer</a>
 							<c:if test="${ booking.canCancel == true }">
