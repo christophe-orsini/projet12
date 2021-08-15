@@ -119,11 +119,11 @@ public class MemberController
 	}
 	
 	@GetMapping("/bookings")
-	public String bookings(Model model, Principal principal)
+	public String activeBookings(Model model, Principal principal)
 	{
 		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
 		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
-		List<BookingDisplayDto> bookings = _bookingService.getBookings(memberId);
+		List<BookingDisplayDto> bookings = _bookingService.getBookings(memberId, false);
 		model.addAttribute("bookings", bookings);
 	    
 		return "/member/bookings";
