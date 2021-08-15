@@ -2,7 +2,9 @@ package com.ocdev.financial.messages;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -17,7 +19,8 @@ public class RegisterFlightMessage implements Serializable
 	private String memberId;
 	private long aircraftId;
 	private String description;
-	private LocalDate flightDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date flightDate;
 	private double duration;
 	private int hourlyRate;
 	
@@ -26,7 +29,7 @@ public class RegisterFlightMessage implements Serializable
 		super();
 	}
 
-	public RegisterFlightMessage(String memberId, long aircraftId, String description, LocalDate flightDate, 
+	public RegisterFlightMessage(String memberId, long aircraftId, String description, Date flightDate, 
 			double duration, int hourlyRate)
 	{
 		super();
@@ -68,12 +71,12 @@ public class RegisterFlightMessage implements Serializable
 		this.description = description;
 	}
 
-	public LocalDate getFlightDate()
+	public Date getFlightDate()
 	{
 		return flightDate;
 	}
 
-	public void setFlightDate(LocalDate flightDate)
+	public void setFlightDate(Date flightDate)
 	{
 		this.flightDate = flightDate;
 	}

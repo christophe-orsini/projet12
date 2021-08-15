@@ -1,10 +1,9 @@
 package com.ocdev.reservation.messages;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -19,7 +18,8 @@ public class RegisterFlightMessage implements Serializable
 	private String memberId;
 	private long aircraftId;
 	private String description;
-	private LocalDate flightDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date flightDate;
 	private double duration;
 	private int hourlyRate;
 	
@@ -28,13 +28,13 @@ public class RegisterFlightMessage implements Serializable
 		super();
 	}
 
-	public RegisterFlightMessage(String memberId, long aircraftId, String description, LocalDateTime flightDate, double duration, int hourlyRate)
+	public RegisterFlightMessage(String memberId, long aircraftId, String description, Date flightDate, double duration, int hourlyRate)
 	{
 		super();
 		this.memberId = memberId;
 		this.aircraftId = aircraftId;
 		this.description = description;
-		this.flightDate = flightDate.toLocalDate();
+		this.flightDate = flightDate;
 		this.duration = duration;
 		this.hourlyRate = hourlyRate;
 	}
@@ -69,12 +69,12 @@ public class RegisterFlightMessage implements Serializable
 		this.description = description;
 	}
 
-	public LocalDate getFlightDate()
+	public Date getFlightDate()
 	{
 		return flightDate;
 	}
 
-	public void setFlightDate(LocalDate flightDate)
+	public void setFlightDate(Date flightDate)
 	{
 		this.flightDate = flightDate;
 	}
@@ -103,7 +103,7 @@ public class RegisterFlightMessage implements Serializable
 	public String toString()
 	{
 		return "RegisterFlightMessage [memberId=" + memberId + ", aircraftId=" + aircraftId + ", description="
-				+ description + ", flightDate=" + flightDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) 
+				+ description + ", flightDate=" + flightDate 
 				+ ", duration=" + duration + ", hourlyRate=" + hourlyRate + "]";
 	}
 }

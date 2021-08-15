@@ -1,6 +1,9 @@
 package com.ocdev.financial.services;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -107,8 +110,9 @@ public class FinancialServiceImpl implements FinancialService
 		
 		//Get aircraft
 		Aircraft aircraft = _hangarProxy.getAircraftById(message.getAircraftId());
-				
-		Flight flight = new Flight(message.getMemberId(), message.getDescription(), message.getFlightDate(), message.getDuration());
+		
+		LocalDateTime flightDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getFlightDate().getTime()), ZoneOffset.UTC);
+		Flight flight = new Flight(message.getMemberId(), message.getDescription(), flightDate.toLocalDate(), message.getDuration());
 		flight.setAircraft(aircraft.getRegistration() + " " + aircraft.getMake() + " " + aircraft.getModel());
 		flight.setAmount(message.getDuration() * message.getHourlyRate());
 		
