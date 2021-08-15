@@ -62,9 +62,8 @@ public class ReservationServiceImpl implements ReservationService
 		
 		int hours = (int)duration;
 		int minutes = (int)((duration - hours) * 60);
-        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes).minusSeconds(1);
-        startTime = startTime.plusSeconds(1);
-		Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
+        LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
+        Collection<Booking> reservations = _reservationRepository.findAllBookingForAircraftId(aircraft.getId(), startTime, arrivalTime);
 		
 		return reservations.size() == 0;
 	}
