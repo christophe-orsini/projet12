@@ -86,11 +86,11 @@ public class MemberController
 		if (response != null)
 		{
 			model.addAttribute("message", "La réservation n° " + response.getId() + " est enregistrée");
-			return "/theme/validation";
+			return "/utils/validation";
 		}
 			
 		model.addAttribute("exceptionMessage", new ErrorMessage(0, null, "La réservation n'a pas été crée"));
-		return "/theme/error";
+		return "/utils/error";
 	}
 	
 	@GetMapping("/before/{currentDate}")

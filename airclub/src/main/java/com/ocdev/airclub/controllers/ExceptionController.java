@@ -25,7 +25,7 @@ class ExceptionController
 		ErrorMessage error = new ErrorMessage(status.getCode(), status.getName(), e.getMessage());
 		
 		model.addAttribute("exceptionMessage", error);
-		return "/theme/error";
+		return "/utils/error";
 	}
 	
 	@ExceptionHandler(EntityNotFoundException.class)
@@ -35,7 +35,7 @@ class ExceptionController
 		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
 		
 		model.addAttribute("exceptionMessage", error);
-		return "/theme/error";
+		return "/utils/error";
 	}
 	
 	@ExceptionHandler(ProxyException.class)
@@ -45,7 +45,7 @@ class ExceptionController
 		ErrorMessage error = new ErrorMessage(status.value(), status.getReasonPhrase(), e.getMessage());
 		
 		model.addAttribute("exceptionMessage", error);
-		return "/theme/error";
+		return "/utils/error";
 	}
 	
 	@ExceptionHandler(WebClientResponseException.class)
@@ -54,7 +54,7 @@ class ExceptionController
 		ErrorMessage error = new ErrorMessage(e.getRawStatusCode(),  e.getStatusText(), e.getMessage());
 		
 		model.addAttribute("exceptionMessage", error);
-		return "/theme/error";
+		return "/utils/error";
 	}
 	
 	@ExceptionHandler(IllegalStateException.class)
@@ -64,6 +64,6 @@ class ExceptionController
 		ErrorMessage error = new ErrorMessage(status.value(),  status.getReasonPhrase(), "Le serveur est trop long pour répondre");
 		
 		model.addAttribute("exceptionMessage", error);
-		return "/theme/error";
+		return "/utils/error";
     }
 }
