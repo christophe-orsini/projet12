@@ -13,9 +13,10 @@
 			<sec:authorize access="isAuthenticated()">
 				<a class="nav-link" href="/member/planning">Planning</a>
 				<a class="nav-link" href="/member/bookings">Mes réservations</a>
+				<a class="nav-link" href="/member/invoices">Mes factures</a>
 			</sec:authorize>
 			<sec:authorize access="hasRole('BENEVOLE')">
-				<a class="nav-link" href="/aircraft/F-GCNS">Finances</a>
+				<a class="nav-link" href="/financial/list">Finances</a>
 				<div class="col-3">
 					<select class="form-select" name="member" id="member-select">
 					    <option value="">Choisir un membre</option>

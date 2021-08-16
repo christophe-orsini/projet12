@@ -15,10 +15,11 @@ public interface FinancialService
 	 * Cette méthode retourne la liste des encours pour un membre.
 	 * 
 	 * @param memberId : Id du membre
+	 * @param paid : True si le vol est payé sinon false
 	 * @return La liste (peut être vide)
 	 * @See {@link com.ocdev.financial.entities.Flight}
 	 */
-	public Collection<Flight> getAllFlights(String memberId);
+	public Collection<Flight> getAllFlights(String memberId, boolean paid);
 	/**
 	 * Cette méthode retourne la dernière cotisation d'un membre.
 	 * 

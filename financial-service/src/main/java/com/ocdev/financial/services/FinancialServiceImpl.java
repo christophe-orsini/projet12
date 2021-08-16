@@ -50,9 +50,9 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Collection<Flight> getAllFlights(String memberId)
+	public Collection<Flight> getAllFlights(String memberId, boolean paid)
 	{
-		return _flightRepository.findByMemberIdAndClosed(memberId, false);
+		return _flightRepository.findByMemberIdAndClosed(memberId, paid);
 	}
 
 	@Override

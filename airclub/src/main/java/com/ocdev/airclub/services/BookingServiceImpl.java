@@ -90,14 +90,19 @@ public class BookingServiceImpl implements BookingService
 	}
 	
 	@Override
-	public List<BookingDisplayDto> getBookings(String memberId)
+	public List<BookingDisplayDto> getBookings(String memberId, boolean closed)
 	{
 		Duration timeout = Duration.ofSeconds(10);
 		LocalDateTime now = LocalDateTime.now();
 		
+		String endPoint = _gatewayUrl + "/reservation/reservations/member/" + memberId;
+		if (closed)
+		{
+			endPoint += "/closed";
+		}
 		List<Booking> bookings = webclient
 				.get()
-				.uri(_gatewayUrl + "/reservation/reservations/member/" + memberId)				
+				.uri(endPoint)				
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
 				.bodyToFlux(Booking.class)

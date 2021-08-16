@@ -15,6 +15,7 @@ public class BookingDisplayDto implements Serializable
 	private String description;
 	private LocalDateTime departureTime;
 	private LocalDateTime arrivalTime;
+	private boolean closed;
 	private boolean canCancel;
 	
 	public long getId()
@@ -64,6 +65,14 @@ public class BookingDisplayDto implements Serializable
 	public void setArrivalTime(LocalDateTime arrivalTime)
 	{
 		this.arrivalTime = arrivalTime;
+	}
+	public boolean isClosed()
+	{
+		return closed;
+	}
+	public void setClosed(boolean closed)
+	{
+		this.closed = closed;
 	}
 	public boolean isCanCancel()
 	{

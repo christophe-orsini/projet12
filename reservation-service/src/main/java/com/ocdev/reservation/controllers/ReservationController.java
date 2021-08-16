@@ -114,6 +114,19 @@ public class ReservationController
 		return _reservationService.getAllBookings(memberId, false);
 	}
 	
+	@ApiOperation(value = "Lister les vols d'un membre", notes = "Obtenir la liste des vols terminés d'un membre")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas"),
+			})
+	@GetMapping(value = "/member/{memberId}/closed", produces = "application/json")
+	public Collection<Booking> getAllClosed(@ApiParam(value = "Id du membre", required = true, example = "5ffe-d445") 
+	@PathVariable final String memberId) throws EntityNotFoundException
+	{
+		return _reservationService.getAllBookings(memberId, true);
+	}
+	
 	@ApiOperation(value = "Annuler une réservation", notes = "Annuler une réservation en cours")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La réservation est annulée"),
