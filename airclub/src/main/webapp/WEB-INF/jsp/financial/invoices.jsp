@@ -12,8 +12,8 @@
 	<section class="row justify-content-center">	
 		<div class="col-12 row">
 			<p class="col-8 h3">Liste de vos factures</p>
-			<a class="col-2 btn btn-secondary ${btn_1}" href="/member/invoices" role="button">A régler</a>
-			<a class="col-2 btn btn-secondary ${btn_2}" data-toggle="button" href="/member/invoices/paid" role="button">Payées</a>
+			<a class="col-2 btn btn-secondary ${btn_1}" href="/financial/invoices" role="button">A régler</a>
+			<a class="col-2 btn btn-secondary ${btn_2}" data-toggle="button" href="/financial/invoices/paid" role="button">Payées</a>
 		</div>
 		<div class="col-12 table-responsive">
 			<table class="table table-sm table-striped table-bordered">

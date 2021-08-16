@@ -13,7 +13,7 @@
 			<sec:authorize access="isAuthenticated()">
 				<a class="nav-link" href="/member/planning">Planning</a>
 				<a class="nav-link" href="/member/bookings">Mes réservations</a>
-				<a class="nav-link" href="/member/invoices">Mes factures</a>
+				<a class="nav-link" href="/financial/invoices">Mes factures</a>
 			</sec:authorize>
 			<sec:authorize access="hasRole('BENEVOLE')">
 				<a class="nav-link" href="/financial/list">Finances</a>
