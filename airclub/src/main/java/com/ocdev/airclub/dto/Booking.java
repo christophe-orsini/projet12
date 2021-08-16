@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Booking représente la classe d'une réservation duservice réservation.
+ * Booking représente la classe d'une réservation du service réservation.
  * @author PC_ASUS
  *
  */
