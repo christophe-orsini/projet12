@@ -22,10 +22,12 @@ import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingDisplayCloseDto;
 import com.ocdev.airclub.dto.BookingDisplayDto;
 import com.ocdev.airclub.dto.BookingNewDto;
+import com.ocdev.airclub.dto.Flight;
 import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.errors.ErrorMessage;
 import com.ocdev.airclub.services.AircraftService;
 import com.ocdev.airclub.services.BookingService;
+import com.ocdev.airclub.services.FinancialService;
 
 @RequestMapping("/member")
 @Controller
@@ -36,6 +38,9 @@ public class MemberController
 	
 	@Autowired
 	private BookingService _bookingService;
+	
+	@Autowired
+	private FinancialService _financialService;
 	
 	@GetMapping("/planning")
 	public String planning(Model model)
@@ -169,5 +174,39 @@ public class MemberController
 		_bookingService.closeBooking(closedBooking);
 		   
 		return "redirect:/member/bookings";
+	}
+	
+	@GetMapping("/invoices")
+	public String activeInvoices(Model model, Principal principal)
+	{
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
+		List<Flight> flights = _financialService.getInvoices(memberId, false);
+		model.addAttribute("flights", flights);
+		
+		model.addAttribute("totalTime", _financialService.totalTime(flights));
+		model.addAttribute("totalAmount", _financialService.totalAmount(flights, false));
+		
+		model.addAttribute("btn_1", "active");
+		model.addAttribute("btn_2", "");
+	    
+		return "/member/invoices";
+	}
+	
+	@GetMapping("/invoices/paid")
+	public String paidInvoices(Model model, Principal principal)
+	{
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
+		List<Flight> flights = _financialService.getInvoices(memberId, true);
+		model.addAttribute("flights", flights);
+	    
+		model.addAttribute("totalTime", _financialService.totalTime(flights));
+		model.addAttribute("totalAmount", _financialService.totalAmount(flights, true));
+		
+		model.addAttribute("btn_1", "");
+		model.addAttribute("btn_2", "active");
+		
+		return "/member/invoices";
 	}
 }
