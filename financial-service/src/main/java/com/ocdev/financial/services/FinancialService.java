@@ -21,6 +21,15 @@ public interface FinancialService
 	 */
 	public Collection<Flight> getAllFlights(String memberId, boolean paid);
 	/**
+	 * Cette méthode retourne un vol.
+	 * 
+	 * @param id : Id du vol
+	 * @return Le vol
+	 * * @throws EntityNotFoundException levée si le vol n'existe pas
+	 * @See {@link com.ocdev.financial.entities.Flight}
+	 */
+	public Flight getFlight(long id) throws EntityNotFoundException;
+	/**
 	 * Cette méthode retourne la dernière cotisation d'un membre.
 	 * 
 	 * @param memberId : Id du membre

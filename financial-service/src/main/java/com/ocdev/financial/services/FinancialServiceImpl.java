@@ -53,6 +53,15 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
+	public Flight getFlight(long id) throws EntityNotFoundException
+	{
+		Optional<Flight> flight = _flightRepository.findById(id);
+		if (!flight.isPresent()) throw new EntityNotFoundException("Ce vol n'existe pas");
+		
+		return flight.get();
+	}
+
+	@Override
 	public Subscription getLastSubscription(String memberId) throws EntityNotFoundException
 	{
 		Optional<Subscription> subscription = _subscriptionRepository.findLastSubscriptionByMemberId(memberId);
