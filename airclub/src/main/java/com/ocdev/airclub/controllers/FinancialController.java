@@ -8,8 +8,11 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.ocdev.airclub.dto.Flight;
+import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.services.FinancialService;
 
 @RequestMapping("/financial")
@@ -51,5 +54,24 @@ public class FinancialController
 		model.addAttribute("btn_2", "active");
 		
 		return "/financial/invoices";
+	}
+	
+	@GetMapping("/invoice/{id}")
+	public String getInvoice(Model model, Principal principal, @PathVariable long id) throws EntityNotFoundException
+	{
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String givenName = (String) oAuth2Authentication.getPrincipal().getAttribute("given_name");
+		model.addAttribute("givenName", givenName);
+		
+		String familyName = (String) oAuth2Authentication.getPrincipal().getAttribute("family_name");
+		model.addAttribute("familyName", familyName); 
+		
+		String email = (String) oAuth2Authentication.getPrincipal().getAttribute("email");
+		model.addAttribute("email", email); 
+		
+		Flight invoice = _financialService.getInvoice(id);
+		model.addAttribute("invoice", invoice);
+	    
+		return "/financial/invoice";
 	}
 }

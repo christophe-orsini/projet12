@@ -32,7 +32,7 @@
 					<c:forEach items="${flights}" var="flight" varStatus="status">
 					<fmt:parseDate value="${flight.flightDate}" pattern="yyyy-MM-dd" var="flightDate" type="date" />
 					<tr>
-						<td>${flight.id}</td>
+						<td><a href="/financial/invoice/${flight.id}">N° ${flight.id}</a></td>
 						<td>${flight.aircraft}</td>
 						<td>${flight.lineItem}</td>
 						<td><fmt:formatDate type = "both" pattern="dd/MM/yyyy" value = "${flightDate}" /></td>
