@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="themes::head"></head>
+<body class="container">
+	<header th:insert="themes::header"></header>
+	<nav th:insert="themes::menu"></nav>
+	<section class="row justify-content-center">	
+		<div class="col-6">
+			<p class="h3" th:text="'Clôture le réservation numéro ' + ${closedBooking.id}">Clôture le réservation numéro x</p>
+			<div class="col-12">
+				<form action="#" th:action="@{/member/close}" method="post" class="form-row form-inline" th:object="${closedBooking}"> 
+					<input type="hidden" th:field="*{id}" />
+				  			
+					<label class="col">Description :</label>
+					<input type="text" class="form-control form-control-sm col-7 col-md-3"
+						th:field="*{description}" required="required" autofocus="autofocus" />
+					
+					<label class="col">Départ :</label>
+						<div class="col-12 row"> 
+							<input type="date" class="form-control form-control-sm col-6" 
+								th:field="*{departureDate}" required="required"  />
+							<input type="time" class="form-control form-control-sm col-6" 
+								th:field="*{departureTime}" required="required"  />
+						</div>
+															
+						<label class="col">Retour</label>
+						<div class="col-12 row"> 
+							<input type="date" class="form-control form-control-sm col-6"
+								th:field="*{arrivalDate}" required="required" />
+							<input type="time" class="form-control form-control-sm col-6"
+								th:field="*{arrivalTime}" required="required" />	
+						</div>		
+													
+					<input class="btn btn-primary offset-4 mt-3" type="submit" value="Clôturer">						
+					<input class="btn btn-primary offset-4 mt-3" type="reset" value="Annuler">						
+				</form>
+			</div>
+		</div>
+	</section>
+	<footer th:insert="themes::footer"></footer>
+</body>
+</html>
