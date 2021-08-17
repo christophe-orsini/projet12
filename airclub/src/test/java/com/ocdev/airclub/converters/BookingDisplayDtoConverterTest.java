@@ -66,4 +66,3 @@ public class BookingDisplayDtoConverterTest
 		assertThat(actual.isCanCancel()).isFalse();
 	}
 }
-}
