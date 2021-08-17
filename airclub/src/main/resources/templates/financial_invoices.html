@@ -11,7 +11,8 @@
 			<a class="col-2 btn btn-secondary" th:classappend="${btn_2}" href="#" th:href="@{/financial/invoices/paid}" role="button">Payées</a>
 		</div>
 		<div class="col-12 table-responsive">
-			<table class="table table-sm table-striped table-bordered">
+			<table class="table table-sm table-striped table-bordered caption-top">
+			<caption>Cliquer sur un numéro pour charger la facture en pdf</caption>
 				<thead>
 					<tr>
 						<th class="col-1">Numéro</th>
@@ -25,7 +26,7 @@
 				</thead>	
 				<tbody>
 					<tr th:each="flight : ${flights}">
-						<td><a href="#" th:href="@{/financial/invoice/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
+						<td><a href="#" th:href="@{/financial/invoice/pdf/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
 						<td th:text="${flight.aircraft}">Aéronef</td>
 						<td th:text="${flight.lineItem}">Description</td>
 						<td th:text="${#temporals.format(flight.flightDate, 'dd-MM-yyyy')}">15-08-2021</td>
