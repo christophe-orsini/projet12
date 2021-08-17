@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="themes::head"></head>
+<body class="container">
+	<header th:insert="themes::header"></header>
+	<nav th:insert="themes::menu"></nav>
+	<section class="row justify-content-center">	
+		<div class="col-12 row">
+			<p class="col-8 h3">Liste de vos factures</p>
+			<a class="col-2 btn btn-secondary" th:classappend="${btn_1}" href="#" th:href="@{/financial/invoices}" role="button">A régler</a>
+			<a class="col-2 btn btn-secondary" th:classappend="${btn_2}" href="#" th:href="@{/financial/invoices/paid}" role="button">Payées</a>
+		</div>
+		<div class="col-12 table-responsive">
+			<table class="table table-sm table-striped table-bordered caption-top">
+			<caption>Cliquer sur un numéro pour charger la facture en pdf</caption>
+				<thead>
+					<tr>
+						<th class="col-1">Numéro</th>
+						<th class="col-2">Aéronef</th>
+						<th class="col-2">Description</th>
+						<th class="col-1">Date du vol</th>
+						<th class="col-1">Durée</th>
+						<th class="col-1">Montant</th>
+						<th class="col-1">Payé le</th>
+					</tr>
+				</thead>	
+				<tbody>
+					<tr th:each="flight : ${flights}">
+						<td><a href="#" th:href="@{/financial/invoice/pdf/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
+						<td th:text="${flight.aircraft}">Aéronef</td>
+						<td th:text="${flight.lineItem}">Description</td>
+						<td th:text="${#temporals.format(flight.flightDate, 'dd-MM-yyyy')}">15-08-2021</td>
+						<td th:text="${flight.flightHours}">2.0</td>
+						<td th:unless="${flight.closed}" th:text="${flight.amount} + ' €'">999 €</td>
+						<td th:unless="${flight.closed}">A régler</td>
+						<td th:if="${flight.closed}" th:text="${flight.payment} + ' €'">999 €</td>
+						<td th:if="${flight.closed}" th:text="${flight.paymentDate}">16-08-2021</td>	
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">Totaux</td>
+						<td th:text="${totalTime}">2.0</td>
+						<td th:text="${totalAmount} + ' €'">999 €</td>
+						<td></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</section>
+	<footer th:insert="themes::footer"></footer>
+</body>
+</html>

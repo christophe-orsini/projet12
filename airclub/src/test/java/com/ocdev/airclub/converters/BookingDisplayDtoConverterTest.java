@@ -1,4 +1,4 @@
-package com.ocdev.airclub.converters;
+﻿package com.ocdev.airclub.converters;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -65,4 +65,5 @@ public class BookingDisplayDtoConverterTest
 		assertThat(actual.isClosed()).isTrue();
 		assertThat(actual.isCanCancel()).isFalse();
 	}
+}
 }

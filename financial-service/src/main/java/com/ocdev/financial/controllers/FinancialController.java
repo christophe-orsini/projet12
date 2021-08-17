@@ -56,7 +56,8 @@ public class FinancialController
 	@ApiOperation(value = "Obtenir l'encours d'un membre", notes = "Obtenir la liste des vols dûs par un membre")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
-			@ApiResponse(code = 401, message = "Authentification requise")
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas")
 			})
 	@GetMapping(value = "/flights/{memberId}", produces = "application/json")
 	public ResponseEntity<Collection<Flight>> getFlights(
@@ -70,7 +71,8 @@ public class FinancialController
 	@ApiOperation(value = "Obtenir les vols d'un membre", notes = "Obtenir la liste des vols payés par un membre")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "La liste est retournée dans le corps de la réponse"),
-			@ApiResponse(code = 401, message = "Authentification requise")
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le membre n'existe pas")
 			})
 	@GetMapping(value = "/flights/{memberId}/paid", produces = "application/json")
 	public ResponseEntity<Collection<Flight>> getPaidFlights(
@@ -79,6 +81,21 @@ public class FinancialController
 	{
 		Collection<Flight> flights = _financialService.getAllFlights(memberId, true);
 		return new ResponseEntity<Collection<Flight>>(flights, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Obtenir un vol", notes = "Obtenir un vol")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Le vol est retourné dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "Le vol n'existe pas")
+			})
+	@GetMapping(value = "/flights/flight/{id}", produces = "application/json")
+	public ResponseEntity<Flight> getFlight(
+			@ApiParam(value = "Id du vol", required = true, example = "2ffe-5a55") @PathVariable final long id)
+			throws EntityNotFoundException
+	{
+		Flight flight = _financialService.getFlight(id);
+		return new ResponseEntity<Flight>(flight, HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Obtenir les informations d'une cotisation", notes = "Obtenir les information concernant la dernière cotisation d'un membre")

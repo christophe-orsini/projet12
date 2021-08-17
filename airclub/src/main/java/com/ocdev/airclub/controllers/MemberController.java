@@ -22,12 +22,11 @@ import com.ocdev.airclub.dto.Booking;
 import com.ocdev.airclub.dto.BookingDisplayCloseDto;
 import com.ocdev.airclub.dto.BookingDisplayDto;
 import com.ocdev.airclub.dto.BookingNewDto;
-import com.ocdev.airclub.dto.Flight;
 import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.errors.ErrorMessage;
 import com.ocdev.airclub.services.AircraftService;
 import com.ocdev.airclub.services.BookingService;
-import com.ocdev.airclub.services.FinancialService;
+
 
 @RequestMapping("/member")
 @Controller
@@ -39,9 +38,6 @@ public class MemberController
 	@Autowired
 	private BookingService _bookingService;
 	
-	@Autowired
-	private FinancialService _financialService;
-	
 	@GetMapping("/planning")
 	public String planning(Model model)
 	{	 
@@ -51,7 +47,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/planning/{aircraftId}/date/{currentDate}")
@@ -79,7 +75,7 @@ public class MemberController
 		dto.setArrivalDate(date);
 		model.addAttribute("newBooking", dto);
 		
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@PostMapping(value = "/book", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -90,11 +86,11 @@ public class MemberController
 		if (response != null)
 		{
 			model.addAttribute("message", "La réservation n° " + response.getId() + " est enregistrée");
-			return "/theme/validation";
+			return "validation";
 		}
 			
 		model.addAttribute("exceptionMessage", new ErrorMessage(0, null, "La réservation n'a pas été crée"));
-		return "/theme/error";
+		return "error";
 	}
 	
 	@GetMapping("/before/{currentDate}")
@@ -107,7 +103,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/after/{currentDate}")
@@ -120,7 +116,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/bookings")
@@ -134,7 +130,7 @@ public class MemberController
 		model.addAttribute("btn_1", "active");
 		model.addAttribute("btn_2", "");
 	    
-		return "/member/bookings";
+		return "member_bookings";
 	}
 	
 	@GetMapping("/bookings/closed")
@@ -148,7 +144,7 @@ public class MemberController
 		model.addAttribute("btn_1", "");
 		model.addAttribute("btn_2", "active");
 		
-		return "/member/bookings";
+		return "member_bookings";
 	}
 	
 	@GetMapping("/bookings/delete/{id}")
@@ -165,7 +161,7 @@ public class MemberController
 		BookingDisplayCloseDto closedBooking = _bookingService.initBookingCloseDto(id);
 		model.addAttribute("closedBooking", closedBooking);
 	    
-		return "/member/close_booking";
+		return "member_close_booking";
 	}
 	
 	@PostMapping("/close")
@@ -174,39 +170,5 @@ public class MemberController
 		_bookingService.closeBooking(closedBooking);
 		   
 		return "redirect:/member/bookings";
-	}
-	
-	@GetMapping("/invoices")
-	public String activeInvoices(Model model, Principal principal)
-	{
-		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
-		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
-		List<Flight> flights = _financialService.getInvoices(memberId, false);
-		model.addAttribute("flights", flights);
-		
-		model.addAttribute("totalTime", _financialService.totalTime(flights));
-		model.addAttribute("totalAmount", _financialService.totalAmount(flights, false));
-		
-		model.addAttribute("btn_1", "active");
-		model.addAttribute("btn_2", "");
-	    
-		return "/member/invoices";
-	}
-	
-	@GetMapping("/invoices/paid")
-	public String paidInvoices(Model model, Principal principal)
-	{
-		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
-		String memberId = (String) oAuth2Authentication.getPrincipal().getAttribute("sub");
-		List<Flight> flights = _financialService.getInvoices(memberId, true);
-		model.addAttribute("flights", flights);
-	    
-		model.addAttribute("totalTime", _financialService.totalTime(flights));
-		model.addAttribute("totalAmount", _financialService.totalAmount(flights, true));
-		
-		model.addAttribute("btn_1", "");
-		model.addAttribute("btn_2", "active");
-		
-		return "/member/invoices";
 	}
 }
