@@ -36,7 +36,7 @@ public class FinancialController
 		model.addAttribute("btn_1", "active");
 		model.addAttribute("btn_2", "");
 	    
-		return "/financial/invoices";
+		return "financial_invoices";
 	}
 	
 	@GetMapping("/invoices/paid")
@@ -53,7 +53,7 @@ public class FinancialController
 		model.addAttribute("btn_1", "");
 		model.addAttribute("btn_2", "active");
 		
-		return "/financial/invoices";
+		return "financial_invoices";
 	}
 	
 	@GetMapping("/invoice/{id}")
@@ -72,6 +72,6 @@ public class FinancialController
 		Flight invoice = _financialService.getInvoice(id);
 		model.addAttribute("invoice", invoice);
 	    
-		return "/financial/invoice";
+		return "financial_invoice";
 	}
 }

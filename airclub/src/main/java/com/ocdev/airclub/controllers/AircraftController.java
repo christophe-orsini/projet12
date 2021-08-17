@@ -29,7 +29,7 @@ public class AircraftController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/aircraft/list";
+		return "aircraft_list";
 	}
 	
 	@GetMapping({"/{registration}"})
@@ -44,6 +44,6 @@ public class AircraftController
 		
 		model.addAttribute("aircrafts", aircrafts);
 		
-		return "/aircraft/list";
+		return "aircraft_list";
 	}
 }

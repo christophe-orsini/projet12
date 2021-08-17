@@ -47,7 +47,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/planning/{aircraftId}/date/{currentDate}")
@@ -75,7 +75,7 @@ public class MemberController
 		dto.setArrivalDate(date);
 		model.addAttribute("newBooking", dto);
 		
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@PostMapping(value = "/book", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -86,11 +86,11 @@ public class MemberController
 		if (response != null)
 		{
 			model.addAttribute("message", "La réservation n° " + response.getId() + " est enregistrée");
-			return "/utils/validation";
+			return "validation";
 		}
 			
 		model.addAttribute("exceptionMessage", new ErrorMessage(0, null, "La réservation n'a pas été crée"));
-		return "/utils/error";
+		return "error";
 	}
 	
 	@GetMapping("/before/{currentDate}")
@@ -103,7 +103,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/after/{currentDate}")
@@ -116,7 +116,7 @@ public class MemberController
 		List<Aircraft> aircrafts = _aircraftService.getAircrafts();
 		model.addAttribute("aircrafts", aircrafts);
 	    
-		return "/member/planning";
+		return "member_planning";
 	}
 	
 	@GetMapping("/bookings")
@@ -130,7 +130,7 @@ public class MemberController
 		model.addAttribute("btn_1", "active");
 		model.addAttribute("btn_2", "");
 	    
-		return "/member/bookings";
+		return "member_bookings";
 	}
 	
 	@GetMapping("/bookings/closed")
@@ -144,7 +144,7 @@ public class MemberController
 		model.addAttribute("btn_1", "");
 		model.addAttribute("btn_2", "active");
 		
-		return "/member/bookings";
+		return "member_bookings";
 	}
 	
 	@GetMapping("/bookings/delete/{id}")
@@ -161,7 +161,7 @@ public class MemberController
 		BookingDisplayCloseDto closedBooking = _bookingService.initBookingCloseDto(id);
 		model.addAttribute("closedBooking", closedBooking);
 	    
-		return "/member/close_booking";
+		return "member_close_booking";
 	}
 	
 	@PostMapping("/close")
