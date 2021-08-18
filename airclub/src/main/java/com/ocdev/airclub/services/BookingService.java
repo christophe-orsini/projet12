@@ -16,5 +16,5 @@ public interface BookingService
 	public List<BookingDisplayDto> getBookings(String memberId, boolean closed);
 	public void cancelBooking(long id);
 	public BookingDisplayCloseDto initBookingCloseDto(long id) throws EntityNotFoundException;
-	public void closeBooking(BookingDisplayCloseDto closedBooking);
+	public void closeBooking(String givenName, String familyName, String email, BookingDisplayCloseDto closedBooking);
 }

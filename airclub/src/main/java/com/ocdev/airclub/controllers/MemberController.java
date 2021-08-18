@@ -165,9 +165,14 @@ public class MemberController
 	}
 	
 	@PostMapping("/close")
-	public String formCloseAction(@ModelAttribute("closedBooking") BookingDisplayCloseDto closedBooking, Model model)
+	public String formCloseAction(@ModelAttribute("closedBooking") BookingDisplayCloseDto closedBooking, Model model, Principal principal)
 	{
-		_bookingService.closeBooking(closedBooking);
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken) principal;
+		String givenName = (String) oAuth2Authentication.getPrincipal().getAttribute("given_name");	
+		String familyName = (String) oAuth2Authentication.getPrincipal().getAttribute("family_name");
+		String email = (String) oAuth2Authentication.getPrincipal().getAttribute("email");
+		
+		_bookingService.closeBooking(givenName, familyName, email, closedBooking);
 		   
 		return "redirect:/member/bookings";
 	}
