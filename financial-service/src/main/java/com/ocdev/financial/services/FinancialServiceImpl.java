@@ -135,10 +135,12 @@ public class FinancialServiceImpl implements FinancialService
 		Aircraft aircraft = _hangarProxy.getAircraftById(message.getAircraftId());
 		
 		LocalDateTime flightDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getFlightDate().getTime()), ZoneOffset.UTC);
-		Flight flight = new Flight(message.getMemberId(), message.getDescription(), flightDate.toLocalDate(), message.getDuration());
+		double duration = Math.round(message.getDuration() * 10.0)/10.0;
+		
+		Flight flight = new Flight(message.getMemberId(), message.getDescription(), flightDate.toLocalDate(), duration);
 		flight.setAircraft(aircraft.getRegistration() + " " + aircraft.getMake() + " " + aircraft.getModel());
-		double duration = Math.round(message.getDuration()*10)/10.0;
-		flight.setAmount(Math.round(message.getDuration()*10)/10.0 * message.getHourlyRate());
+		
+		flight.setAmount(flight.getFlightHours() * message.getHourlyRate());
 		
 		_flightRepository.save(flight);
 		
