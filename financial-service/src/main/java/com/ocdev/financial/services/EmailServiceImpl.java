@@ -25,7 +25,7 @@ public class EmailServiceImpl implements EmailService
 	private String _emailPassword="";
 	
 	@Override
-    public void envoiEmailHtml(String to, String content, String subject, String from) throws MessagingException
+    public void sendEmailHtml(String to, String content, String subject, String from) throws MessagingException
 	{
 		JavaMailSender emailSender = getJavaMailSender();
 				

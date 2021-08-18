@@ -147,7 +147,7 @@ public class FinancialServiceImpl implements FinancialService
 		try
 		{
 			String emailContent = _contentBuilder.buildInvoiceEmail(message.getGivenName(), message.getFamilyName(), _emailContact, flight);
-			_emailService.envoiEmailHtml(
+			_emailService.sendEmailHtml(
 					message.getEmail(),
 					emailContent,
 					_emailSubject,
