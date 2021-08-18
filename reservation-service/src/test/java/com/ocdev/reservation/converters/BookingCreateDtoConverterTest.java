@@ -21,29 +21,36 @@ public class BookingCreateDtoConverterTest
 		  converterUnderTest = new BookingCreateDtoConverter();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	void convertDtoToEntity_returnsEntity()
 	{
 		// arrange
-		LocalDateTime testDate= LocalDateTime.now();
+		LocalDateTime departureTime= LocalDateTime.now();
+		LocalDateTime arrivalTime= departureTime.plusHours(1).plusMinutes(36);
+		
 		BookingCreateDto dto = new BookingCreateDto();
 		dto.setMemberId("9");
 		dto.setAircraftId(1);
 		dto.setDescription("Dummy");
-		dto.setDepartureTime(testDate);
-		dto.setDuration(1.5);
+		dto.setDepartureTime(departureTime);
+		dto.setDuration(1.6);
 		
 		Booking expected = new Booking();
 		expected.setMemberId("9");
 		expected.setDescription("Dummy");
-		expected.setDepartureTime(testDate);
+		expected.setDepartureTime(departureTime);
+		expected.setArrivalTime(arrivalTime);
 				
 		// act
 		Booking actual = converterUnderTest.convertDtoToEntity(dto);
 		
 		// assert
-		assertThat(actual).isEqualToComparingFieldByField(expected);
+		assertThat(actual.getMemberId()).isEqualTo(expected.getMemberId());
+		assertThat(actual.getAircraftId()).isEqualTo(expected.getAircraftId());
+		assertThat(actual.getDescription()).isEqualTo(expected.getDescription());
+		assertThat(actual.getDepartureTime()).isEqualTo(expected.getDepartureTime());
+		assertThat(actual.getArrivalTime()).isEqualTo(expected.getArrivalTime());
+		assertThat(actual.isClosed()).isEqualTo(expected.isClosed());
 	}
 	
 	@Test

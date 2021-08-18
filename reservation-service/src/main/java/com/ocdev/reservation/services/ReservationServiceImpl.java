@@ -116,12 +116,6 @@ public class ReservationServiceImpl implements ReservationService
 		Booking booking = _bookingCreateDtoConverter.convertDtoToEntity(bookingCreateDto);
 		booking.setAircraftId(aircraft.getId());
 		
-		int hours = (int)bookingCreateDto.getDuration();
-		int minutes = (int)((bookingCreateDto.getDuration() - hours) * 60);
-		LocalDateTime startTime = bookingCreateDto.getDepartureTime();
-		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
-		booking.setArrivalTime(arrivalTime);
-		
 		return _reservationRepository.save(booking);
 	}
 

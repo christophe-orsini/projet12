@@ -1,5 +1,7 @@
 package com.ocdev.reservation.converters;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +12,22 @@ import com.ocdev.reservation.dto.BookingCreateDto;
 public class BookingCreateDtoConverter implements IDtoConverter<Booking, BookingCreateDto>
 {
 	@Override
-	public Booking convertDtoToEntity(BookingCreateDto bookingDto)
+	public Booking convertDtoToEntity(BookingCreateDto dto)
 	{
-		Booking reservation = new Booking();
+		Booking entity = new Booking();
 		
-		reservation.setMemberId(bookingDto.getMemberId());
-		reservation.setDescription(bookingDto.getDescription());
-		reservation.setDepartureTime(bookingDto.getDepartureTime());
+		entity.setMemberId(dto.getMemberId());
+		entity.setDescription(dto.getDescription());
 		
-		return reservation;
+		int hours = (int)dto.getDuration();
+		int minutes = (int)((dto.getDuration() - hours) * 60);
+		LocalDateTime departureTime = dto.getDepartureTime();
+		LocalDateTime arrivalTime = departureTime.plusHours(hours).plusMinutes(minutes);
+		
+		entity.setDepartureTime(departureTime);
+		entity.setArrivalTime(arrivalTime);
+		
+		return entity;
 	}
 
 	@Override
