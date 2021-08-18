@@ -9,7 +9,7 @@
 			<p class="h3">Erreur</p>
 		</div>
 		<div class="col-12">
-			<p th:text="${exceptionMessage.getMessage()}">Message d'erreur</p>
+			<p th:text="${exceptionMessage?.getMessage()}">Message d'erreur</p>
 			<a class="col-3 btn btn-primary" href="#" th:href="@{/member/planning}" role="button">Retour</a>
 		</div>	
 	</section>
