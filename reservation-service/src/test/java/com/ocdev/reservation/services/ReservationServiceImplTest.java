@@ -39,7 +39,8 @@ public class ReservationServiceImplTest
 	private AutoCloseable _closeable;
 	@Mock private ReservationRepository _reservationRepositoryMock;
 	@Mock private HangarProxy _hangarProxyMock;
-	@Mock private IDtoConverter<Booking, BookingCreateDto> _bookingDtoConverterMock;
+	@Mock private IDtoConverter<Booking, BookingCreateDto> _bookingCreateConverterMock;
+	@Mock private IDtoConverter<Booking, BookingCloseDto> _bookingCloseConverterMock;
 	@Mock private AmqpTemplate _rabbitTemplateMock;
 	
 	@BeforeEach
@@ -49,7 +50,8 @@ public class ReservationServiceImplTest
 		 _systemUnderTest = new ReservationServiceImpl(
 				 _reservationRepositoryMock,
 				 _hangarProxyMock, 
-				 _bookingDtoConverterMock,
+				 _bookingCreateConverterMock,
+				 _bookingCloseConverterMock,
 				 _rabbitTemplateMock);
 	}
 	
@@ -271,7 +273,7 @@ public class ReservationServiceImplTest
 		booking.setDescription("Dummy");
 		booking.setDepartureTime(testDate);
 		booking.setArrivalTime(testDate.plusHours(1).plusMinutes(30));
-		Mockito.when(_bookingDtoConverterMock.convertDtoToEntity(Mockito.any(BookingCreateDto.class))).thenReturn(booking);
+		Mockito.when(_bookingCreateConverterMock.convertDtoToEntity(Mockito.any(BookingCreateDto.class))).thenReturn(booking);
 		Mockito.when(_reservationRepositoryMock.save(Mockito.any(Booking.class))).thenReturn(booking);
 		
 		LocalDateTime arrivalTime = testDate.plusHours(1).plusMinutes(30);
@@ -414,8 +416,10 @@ public class ReservationServiceImplTest
 		LocalDateTime today = LocalDateTime.now();
 		BookingCloseDto bookingCloseDto = new BookingCloseDto("Dummy", today, 1.3);
 		
-		Booking reservation = new Booking("9", 1, "Dummy", today, 1.5);
-		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation));
+		Booking booking = new Booking("9", 1, "Dummy", today, 1.5);
+		Mockito.when(_reservationRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(booking));
+		
+		Mockito.when(_bookingCloseConverterMock.convertDtoToEntity(Mockito.any(BookingCloseDto.class))).thenReturn(booking);
 		
 		Aircraft aircraft = new Aircraft();
 		aircraft.setId(1);
