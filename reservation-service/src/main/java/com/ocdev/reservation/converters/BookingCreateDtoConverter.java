@@ -7,7 +7,7 @@ import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.dto.BookingCreateDto;
 
 @Component
-public class ReservationCreateDtoConverter implements IDtoConverter<Booking, BookingCreateDto>
+public class BookingCreateDtoConverter implements IDtoConverter<Booking, BookingCreateDto>
 {
 	@Override
 	public Booking convertDtoToEntity(BookingCreateDto bookingDto)

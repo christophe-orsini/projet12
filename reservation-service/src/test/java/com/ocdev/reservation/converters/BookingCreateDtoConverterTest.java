@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import com.ocdev.reservation.entities.Booking;
 import com.ocdev.reservation.dto.BookingCreateDto;
 
-public class ReservationCreateDtoConverterTest
+public class BookingCreateDtoConverterTest
 {
 	private IDtoConverter<Booking, BookingCreateDto> converterUnderTest;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		  converterUnderTest = new ReservationCreateDtoConverter();
+		  converterUnderTest = new BookingCreateDtoConverter();
 	}
 	
 	@SuppressWarnings("deprecation")
