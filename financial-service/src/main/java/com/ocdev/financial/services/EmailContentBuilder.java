@@ -42,6 +42,10 @@ public class EmailContentBuilder
         context.setVariable("email", _emailContact);
         context.setVariable("invoice", invoice);
         
+        double unitPrice = invoice.getAmount() / invoice.getFlightHours();
+		unitPrice = Math.round(unitPrice * 100.0) / 100.0;
+		context.setVariable("unitPrice", unitPrice);
+		
         return templateEngine.process("invoice", context);
 	}
 }
