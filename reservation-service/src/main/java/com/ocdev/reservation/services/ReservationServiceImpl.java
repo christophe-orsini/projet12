@@ -40,17 +40,20 @@ public class ReservationServiceImpl implements ReservationService
 	private ReservationRepository _reservationRepository;
 	private HangarProxy _hangarProxy;
 	private IDtoConverter<Booking, BookingCreateDto> _bookingCreateDtoConverter;
+	private IDtoConverter<Booking, BookingCloseDto> _bookingCloseDtoConverter;
 	
 	private AmqpTemplate _rabbitTemplate;
 	
 	public ReservationServiceImpl(@Autowired ReservationRepository repository, 
 			@Autowired HangarProxy hangarProxy,
-			@Autowired IDtoConverter<Booking, BookingCreateDto> converter,
+			@Autowired IDtoConverter<Booking, BookingCreateDto> createConverter,
+			@Autowired IDtoConverter<Booking, BookingCloseDto> closeConverter,
 			@Autowired AmqpTemplate rabbitTemplate)
 	{
 		_reservationRepository = repository;
 		_hangarProxy = hangarProxy;
-		_bookingCreateDtoConverter = converter;
+		_bookingCreateDtoConverter = createConverter;
+		_bookingCloseDtoConverter = closeConverter;
 		_rabbitTemplate = rabbitTemplate;
 	}
 
@@ -116,12 +119,6 @@ public class ReservationServiceImpl implements ReservationService
 		Booking booking = _bookingCreateDtoConverter.convertDtoToEntity(bookingCreateDto);
 		booking.setAircraftId(aircraft.getId());
 		
-		int hours = (int)bookingCreateDto.getDuration();
-		int minutes = (int)((bookingCreateDto.getDuration() - hours) * 60);
-		LocalDateTime startTime = bookingCreateDto.getDepartureTime();
-		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
-		booking.setArrivalTime(arrivalTime);
-		
 		return _reservationRepository.save(booking);
 	}
 
@@ -152,15 +149,12 @@ public class ReservationServiceImpl implements ReservationService
 		
 		if (reservation.get().isClosed()) throw new EntityNotFoundException("Cette réservation est clôturée");
 		
-		// Cloturer la réservation
-		int hours = (int)bookingCloseDto.getDuration();
-		int minutes = (int)((bookingCloseDto.getDuration() - hours) * 60);
-		LocalDateTime startTime = bookingCloseDto.getDepartureTime();
-		LocalDateTime arrivalTime = startTime.plusHours(hours).plusMinutes(minutes);
-		reservation.get().setDepartureTime(startTime);
-		reservation.get().setArrivalTime(arrivalTime);
-		reservation.get().setDescription(bookingCloseDto.getDescription());
-		reservation.get().setClosed(true);
+		// process booking
+		Booking booking = _bookingCloseDtoConverter.convertDtoToEntity(bookingCloseDto);
+		booking.setId(reservation.get().getId());
+		booking.setMemberId(reservation.get().getMemberId());
+		booking.setAircraftId(reservation.get().getAircraftId());
+		booking.setClosed(true);
 		
 		// check if aircraft exists
 		Aircraft aircraft;
@@ -172,9 +166,8 @@ public class ReservationServiceImpl implements ReservationService
 			throw new EntityNotFoundException("Cet aéronef n'existe pas");
 		}
 		
-		AircraftTotalTimeMessage hangarMessage = new AircraftTotalTimeMessage(
-				aircraft.getId(),
-				bookingCloseDto.getDuration());
+		// send messages
+		AircraftTotalTimeMessage hangarMessage = new AircraftTotalTimeMessage(aircraft.getId(),	bookingCloseDto.getDuration());
 		updateAircraftTotalTime(hangarMessage);
 		
 		Date flightDate = Date.from(bookingCloseDto.getDepartureTime().toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -182,15 +175,16 @@ public class ReservationServiceImpl implements ReservationService
 				bookingCloseDto.getGivenName(),
 				bookingCloseDto.getFamilyName(),
 				bookingCloseDto.getEmail(),
-				reservation.get().getMemberId(),
+				booking.getMemberId(),
 				aircraft.getId(),
-				bookingCloseDto.getDescription(),
+				booking.getDescription(),
 				flightDate,
 				bookingCloseDto.getDuration(),
 				aircraft.getHourlyRate());
 		registerFlightInFinance(flight);
 		
-		return _reservationRepository.save(reservation.get());
+		// close booking
+		return _reservationRepository.save(booking);
 	}
 	
 	private void updateAircraftTotalTime(AircraftTotalTimeMessage message)

@@ -45,7 +45,7 @@
 						<td th:text="${invoice.lineItem}">Description</td>
 						<td th:text="${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
 						<td style="text-align: center" th:text="${invoice.flightHours}">1.0</td>
-						<td style="text-align: right" th:text="${invoice.amount} / ${invoice.flightHours} + ' €'">999 €</td>					
+						<td style="text-align: right" th:text="${unitPrice} + ' €'">999 €</td>		
 						<td style="text-align: right" th:text="${invoice.amount} + ' €'">999 €</td>					
 					</tr>
 				</tbody>
@@ -64,7 +64,7 @@
 					</tr>
 					<tr style="text-align: right">
 						<th colspan="5">Reste dû</th>
-						<th th:text="${invoice.amount} - ${invoice.payment} + ' €'">999 €</th>
+						<th style="text-align: right" th:text="${stillDue}  + ' €'">999 €</th>
 					</tr>
 				</tfoot>
 			</table>

@@ -11,12 +11,12 @@
 			<p>Une erreur fatale s'est produite<br />
 			L'application ne peut plus fonctionner<br />
 			Veuillez contacter l'administrateur du site et lui communiquer les éléments :</p>
-			<p th:text="${exceptionMessage.getMessage()}">Message d'erreur fatale</p>
+			<p th:text="${exceptionMessage?.getMessage()}">Message d'erreur fatale</p>
 			<div class="border">
-				<p th:text="'Fichier : ' + ${exceptionMessage.getStackTrace()[0].getFileName()}">Fichier</p>
-				<p th:text="'Classe : ' + ${exceptionMessage.getStackTrace()[0].getClassName()}">Classe</p>
-				<p th:text="'Méthode : ' + ${exceptionMessage.getStackTrace()[0].getMethodName()}">Méthode</p>
-				<p th:text="'Ligne : ' +${exceptionMessage.getStackTrace()[0].getLineNumber()}">Ligne</p>
+				<p th:text="'Fichier : ' + ${exceptionMessage?.getStackTrace()[0]?.getFileName()}">Fichier</p>
+				<p th:text="'Classe : ' + ${exceptionMessage?.getStackTrace()[0]?.getClassName()}">Classe</p>
+				<p th:text="'Méthode : ' + ${exceptionMessage?.getStackTrace()[0]?.getMethodName()}">Méthode</p>
+				<p th:text="'Ligne : ' +${exceptionMessage?.getStackTrace()[0]?.getLineNumber()}">Ligne</p>
 			</div>
 		</div>
 	</section>

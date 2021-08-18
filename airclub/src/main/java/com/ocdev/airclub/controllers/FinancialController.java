@@ -93,7 +93,15 @@ public class FinancialController
 		
 		Flight invoice = _financialService.getInvoice(id);
 		model.addAttribute("invoice", invoice);
+
+		double unitPrice = invoice.getAmount() / invoice.getFlightHours();
+		unitPrice = Math.round(unitPrice * 100.0) / 100.0;
+		model.addAttribute("unitPrice", unitPrice);
 	    
+		double stillDue = invoice.getAmount() - invoice.getPayment();
+		stillDue = Math.round(stillDue * 100.0) / 100.0;
+		model.addAttribute("stillDue", stillDue);
+		
 		return "financial_invoice";
 	}
 	
@@ -118,6 +126,14 @@ public class FinancialController
         context.setVariable("email", email);
         context.setVariable("invoice", invoice);
         
+        double unitPrice = invoice.getAmount() / invoice.getFlightHours();
+		unitPrice = Math.round(unitPrice * 100.0) / 100.0;
+		context.setVariable("unitPrice", unitPrice);
+	    
+		double stillDue = invoice.getAmount() - invoice.getPayment();
+		stillDue = Math.round(stillDue * 100.0) / 100.0;
+		context.setVariable("stillDue", stillDue);
+		
         String invoiceHtml = _templateEngine.process("financial_invoice_pdf", context);
 
         /* Setup Source and target I/O streams */

@@ -21,8 +21,7 @@ public class FlightRecordDto
 	@ApiModelProperty(position = 1, required = true, value = "Id du membre effectuant le vol", example = "2ffe-5a55")
 	@NotBlank(message="L'id du membre est obligatoire")
 	private String memberId;
-	@ApiModelProperty(position = 2, required = true, value = "Immatriculation, marque et modèle de l'aéronef",
-			example = "F-GCNS CESSNA C152")
+	@ApiModelProperty(position = 2, required = true, value = "Immatriculation, marque et modèle de l'aéronef", example = "F-GCNS CESSNA C152")
 	@NotBlank(message="L'aéronef est obligatoire")
 	private String aircraft;
 	@ApiModelProperty(position = 3, required = true, value = "Description du vol", example = "Vol local")

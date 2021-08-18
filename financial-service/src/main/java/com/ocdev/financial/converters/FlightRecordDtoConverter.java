@@ -18,7 +18,9 @@ public class FlightRecordDtoConverter implements IDtoConverter<Flight, FlightRec
 		entity.setAircraft(dto.getAircraft());
 		entity.setLineItem(dto.getLineItem());
 		entity.setFlightDate(dto.getFlightDate());
-		entity.setFlightHours(dto.getFlightHours());
+		double duration = dto.getFlightHours();
+		duration = Math.round(duration * 10.0) / 10.0;
+		entity.setFlightHours(duration);
 		entity.setAmount(dto.getAmount());
 		
 		return entity;

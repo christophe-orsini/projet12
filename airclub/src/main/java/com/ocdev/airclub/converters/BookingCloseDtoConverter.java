@@ -24,7 +24,9 @@ public class BookingCloseDtoConverter implements IDtoConverter<BookingCloseDto, 
 		
 		LocalDateTime arrivalDate = LocalDateTime.of(dto.getArrivalDate(), dto.getArrivalTime());
 		
-		entity.setDuration(Duration.between(departureDate, arrivalDate).toMinutes() / 60.0);
+		double duration = Duration.between(departureDate, arrivalDate).toMinutes() / 60.0;
+		duration = Math.round(duration * 10.0) / 10.0;
+		entity.setDuration(duration);
 		
 		return entity;
 	}

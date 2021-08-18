@@ -19,7 +19,7 @@
 						<th class="col-2">Aéronef</th>
 						<th class="col-2">Description</th>
 						<th class="col-1">Date du vol</th>
-						<th class="col-1">Durée</th>
+						<th class="col-1 text-center">Durée</th>
 						<th class="col-1">Montant</th>
 						<th class="col-1">Payé le</th>
 					</tr>
@@ -30,18 +30,18 @@
 						<td th:text="${flight.aircraft}">Aéronef</td>
 						<td th:text="${flight.lineItem}">Description</td>
 						<td th:text="${#temporals.format(flight.flightDate, 'dd-MM-yyyy')}">15-08-2021</td>
-						<td th:text="${flight.flightHours}">2.0</td>
-						<td th:unless="${flight.closed}" th:text="${flight.amount} + ' €'">999 €</td>
+						<td style="text-align: center" th:text="${flight.flightHours}">2.0</td>
+						<td style="text-align: right" th:unless="${flight.closed}" th:text="${flight.amount} + ' €'">999 €</td>
 						<td th:unless="${flight.closed}">A régler</td>
-						<td th:if="${flight.closed}" th:text="${flight.payment} + ' €'">999 €</td>
+						<td style="text-align: right" th:if="${flight.closed}" th:text="${flight.payment} + ' €'">999 €</td>
 						<td th:if="${flight.closed}" th:text="${flight.paymentDate}">16-08-2021</td>	
 					</tr>
 				</tbody>
 				<tfoot>
 					<tr>
 						<td colspan="4">Totaux</td>
-						<td th:text="${totalTime}">2.0</td>
-						<td th:text="${totalAmount} + ' €'">999 €</td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(totalTime, 0, 1)}">2.0</td>
+						<td style="text-align: right" th:text="${#numbers.formatDecimal(totalAmount, 0, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>
 						<td></td>
 					</tr>
 				</tfoot>

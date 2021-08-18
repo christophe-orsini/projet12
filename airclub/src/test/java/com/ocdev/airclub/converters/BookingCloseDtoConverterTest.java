@@ -28,9 +28,9 @@ public class BookingCloseDtoConverterTest
 	{
 		// arrange
 		LocalDate departureDate= LocalDate.of(2021, 8, 13);
-		LocalTime departureTime = LocalTime.of(16, 01, 0);
+		LocalTime departureTime = LocalTime.of(16, 10, 0);
 		LocalDate arrivalDate= LocalDate.of(2021, 8, 13);
-		LocalTime arrivalTime = LocalTime.of(18, 0, 0);
+		LocalTime arrivalTime = LocalTime.of(18, 5, 0);
 		
 		BookingDisplayCloseDto dto = new BookingDisplayCloseDto();
 		dto.setId(1);
@@ -46,7 +46,7 @@ public class BookingCloseDtoConverterTest
 		// assert
 		assertThat(actual.getDescription()).isEqualTo("Dummy");
 		assertThat(actual.getDepartureTime()).isEqualTo(LocalDateTime.of(departureDate, departureTime));
-		assertThat(actual.getDuration()).isEqualTo(1.98,  within(0.016));
+		assertThat(actual.getDuration()).isEqualTo(1.9,  within(0.1));
 	}
 	
 	@Test
