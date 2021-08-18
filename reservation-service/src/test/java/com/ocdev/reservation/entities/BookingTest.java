@@ -19,8 +19,23 @@ public class BookingTest
 		entityUnderTest.setAircraftId(8);
 		entityUnderTest.setDescription("Dummy");
 		entityUnderTest.setDepartureTime(date);
-		entityUnderTest.setArrivalTime(date);
-		String expected = "Booking [memberId=9, aircraftId=8, description=Dummy, departureTime=2021-06-15 10:30, arrivalTime=2021-06-15 10:30]"; 
+		entityUnderTest.setArrivalTime(date.plusHours(1).plusMinutes(15));
+		String expected = "Booking [memberId=9, aircraftId=8, description=Dummy, departureTime=2021-06-15 10:30, arrivalTime=2021-06-15 11:45]"; 
+				
+		// act
+		String actual = entityUnderTest.toString();
+		
+		// assert
+		assertThat(actual).isEqualTo(expected);
+	}
+	
+	@Test
+	void toString_withCtor_returnsString()
+	{
+		// arrange
+		LocalDateTime  date = LocalDateTime.of(2021, 6, 15, 10, 30, 00);
+		Booking entityUnderTest = new Booking("9", 8, "Dummy", date, 1.6);
+		String expected = "Booking [memberId=9, aircraftId=8, description=Dummy, departureTime=2021-06-15 10:30, arrivalTime=2021-06-15 12:06]"; 
 				
 		// act
 		String actual = entityUnderTest.toString();
