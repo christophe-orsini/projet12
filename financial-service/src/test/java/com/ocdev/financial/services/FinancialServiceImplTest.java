@@ -3,6 +3,7 @@ package com.ocdev.financial.services;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
@@ -40,12 +41,15 @@ public class FinancialServiceImplTest
 	@Mock private SubscriptionRepository _subscriptionRepositoryMock;
 	@Mock private IDtoConverter<Flight, FlightRecordDto> _flightDtoConverterMock;
 	@Mock private HangarProxy _hangarProxyMock;
+	@Mock private EmailService _emailServiceMock;
+	@Mock private EmailContentBuilder _emailContentBuilderMock;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock, _hangarProxyMock);
+		 systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock,
+				 _hangarProxyMock, _emailServiceMock, _emailContentBuilderMock);
 	}
 	
 	@AfterEach public void releaseMocks() throws Exception
@@ -209,19 +213,24 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		LocalDate now = LocalDate.now();
-		RegisterFlightMessage message = new RegisterFlightMessage();
-		message.setMemberId("9");
-		message.setAircraftId(8);
+		RegisterFlightMessage message = new RegisterFlightMessage("Johne", "Doe", "dummy@domain.tld", "9", 8, "Dummy", new Date(), 1.5, 129);
+				
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		Flight flight = new Flight("9", "", now, 1.5);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
+		Mockito.when(_emailContentBuilderMock.buildInvoiceEmail(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Flight.class)))
+			.thenReturn("");
+		
+		Mockito.doNothing().when(_emailServiceMock).sendEmailHtml(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());		
+		
 		// act
 		systemUnderTest.registerEndedFlight(message);
 		
 		// assert
 		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
+		Mockito.verify(_emailServiceMock, Mockito.times(1)).sendEmailHtml("dummy@domain.tld", "", "", "");	
 	}
 }

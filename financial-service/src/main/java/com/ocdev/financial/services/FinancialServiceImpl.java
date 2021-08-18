@@ -31,12 +31,6 @@ import com.ocdev.financial.proxies.HangarProxy;
 @Service
 public class FinancialServiceImpl implements FinancialService
 {
-	@Autowired 
-	private EmailService _emailService;
-	
-	@Autowired 
-	private EmailContentBuilder _contentBuilder;
-	
 	@Value("${financial.subscription.amount}")
 	private double _charge;
 	
@@ -50,17 +44,23 @@ public class FinancialServiceImpl implements FinancialService
 	private SubscriptionRepository _subscriptionRepository;
 	private IDtoConverter<Flight, FlightRecordDto> _flightRecordDtoConverter;
 	private HangarProxy _hangarProxy;
+	private EmailService _emailService;
+	private EmailContentBuilder _emailContentBuilder;
 	
 	public FinancialServiceImpl(
 			@Autowired FlightRepository flightRepository, 
 			@Autowired SubscriptionRepository subscriptionRepository,
 			@Autowired IDtoConverter<Flight, FlightRecordDto> flightRecordDtoConverter,
-			@Autowired HangarProxy hangarProxy)
+			@Autowired HangarProxy hangarProxy,
+			@Autowired EmailService emailService,
+			@Autowired EmailContentBuilder emailContentBuilder)
 	{
 		_flightRepository = flightRepository;
 		_subscriptionRepository = subscriptionRepository;
 		_flightRecordDtoConverter = flightRecordDtoConverter;
 		_hangarProxy = hangarProxy;
+		_emailService = emailService;
+		_emailContentBuilder = emailContentBuilder;
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class FinancialServiceImpl implements FinancialService
 		
 		try
 		{
-			String emailContent = _contentBuilder.buildInvoiceEmail(message.getGivenName(), message.getFamilyName(), _emailContact, flight);
+			String emailContent = _emailContentBuilder.buildInvoiceEmail(message.getGivenName(), message.getFamilyName(), _emailContact, flight);
 			_emailService.sendEmailHtml(
 					message.getEmail(),
 					emailContent,
