@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -202,7 +204,7 @@ public class FinancialServiceImplTest
 	}
 	
 	@Test
-	void registerEndedFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException, ProxyException
+	void registerEndedFlight_ShouldSuccess_WhenOK() throws EntityNotFoundException, ProxyException, MessagingException
 	{
 		//arrange
 		// TODO refactor when User defined

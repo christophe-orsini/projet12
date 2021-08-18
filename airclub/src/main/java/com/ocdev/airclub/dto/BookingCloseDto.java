@@ -16,6 +16,9 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class BookingCloseDto implements Serializable
 {
+	private String givenName;
+	private String familyName;
+	private String email;
 	@NotBlank(message="La description du vol est obligatoire")
 	private String description;
 	@Past
@@ -35,6 +38,36 @@ public class BookingCloseDto implements Serializable
 		this.description = description;
 		this.departureTime = departureTime;
 		this.duration = duration;
+	}
+
+	public String getGivenName()
+	{
+		return givenName;
+	}
+
+	public void setGivenName(String givenName)
+	{
+		this.givenName = givenName;
+	}
+
+	public String getFamilyName()
+	{
+		return familyName;
+	}
+
+	public void setFamilyName(String familyName)
+	{
+		this.familyName = familyName;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String email)
+	{
+		this.email = email;
 	}
 
 	public String getDescription()

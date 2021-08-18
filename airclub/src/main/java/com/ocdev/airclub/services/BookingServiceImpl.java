@@ -199,11 +199,14 @@ public class BookingServiceImpl implements BookingService
 	}
 
 	@Override
-	public void closeBooking(BookingDisplayCloseDto closedBooking)
+	public void closeBooking(String givenName, String familyName, String email, BookingDisplayCloseDto closedBooking)
 	{
 		Duration timeout = Duration.ofSeconds(10);
 		
 		BookingCloseDto bookingToClose = _bookingCloseDtoConverter.convertDtoToEntity(closedBooking);
+		bookingToClose.setGivenName(givenName);
+		bookingToClose.setFamilyName(familyName);
+		bookingToClose.setEmail(email);
 		
 		webclient
 			.put()

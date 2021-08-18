@@ -179,6 +179,9 @@ public class ReservationServiceImpl implements ReservationService
 		
 		Date flightDate = Date.from(bookingCloseDto.getDepartureTime().toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
 		RegisterFlightMessage flight = new RegisterFlightMessage(
+				bookingCloseDto.getGivenName(),
+				bookingCloseDto.getFamilyName(),
+				bookingCloseDto.getEmail(),
 				reservation.get().getMemberId(),
 				aircraft.getId(),
 				bookingCloseDto.getDescription(),

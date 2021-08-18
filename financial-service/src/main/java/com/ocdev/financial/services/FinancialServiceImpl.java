@@ -7,6 +7,8 @@ import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +31,20 @@ import com.ocdev.financial.proxies.HangarProxy;
 @Service
 public class FinancialServiceImpl implements FinancialService
 {
+	@Autowired 
+	private EmailService _emailService;
+	
+	@Autowired 
+	private EmailContentBuilder _contentBuilder;
+	
 	@Value("${financial.subscription.amount}")
 	private double _charge;
+	
+	@Value("${app.param.emailcontact}") 
+	private String _emailContact="";
+	
+	@Value("${app.param.emailsubject}") 
+	private String _emailSubject="";
 	
 	private FlightRepository _flightRepository;
 	private SubscriptionRepository _subscriptionRepository;
@@ -112,7 +126,7 @@ public class FinancialServiceImpl implements FinancialService
 	}
 	
 	@RabbitListener(queues = "${finance.rabbitmq.queue}")
-	public void registerEndedFlight(RegisterFlightMessage message) throws EntityNotFoundException, ProxyException
+	public void registerEndedFlight(RegisterFlightMessage message) throws EntityNotFoundException, ProxyException, MessagingException
 	{
 		// TODO check if memberId exists
 		if (message.getMemberId() == null) throw new EntityNotFoundException("Ce membre n'existe pas");
@@ -123,8 +137,23 @@ public class FinancialServiceImpl implements FinancialService
 		LocalDateTime flightDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getFlightDate().getTime()), ZoneOffset.UTC);
 		Flight flight = new Flight(message.getMemberId(), message.getDescription(), flightDate.toLocalDate(), message.getDuration());
 		flight.setAircraft(aircraft.getRegistration() + " " + aircraft.getMake() + " " + aircraft.getModel());
-		flight.setAmount(message.getDuration() * message.getHourlyRate());
+		double duration = Math.round(message.getDuration()*10)/10.0;
+		flight.setAmount(Math.round(message.getDuration()*10)/10.0 * message.getHourlyRate());
 		
 		_flightRepository.save(flight);
+		
+		try
+		{
+			String emailContent = _contentBuilder.buildInvoiceEmail(message.getGivenName(), message.getFamilyName(), _emailContact, flight);
+			_emailService.envoiEmailHtml(
+					message.getEmail(),
+					emailContent,
+					_emailSubject,
+					_emailContact);
+		}
+		catch (Exception e)
+		{
+			// do nothing
+		}
 	}
 }
