@@ -16,16 +16,22 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class BookingCloseDto implements Serializable
 {
+	@ApiModelProperty(position = 1, required = true, value = "Prénom du membre", example = "John")
+	@NotBlank(message="Le prénom du membre est obligatoire")
 	private String givenName;
+	@ApiModelProperty(position = 2, required = true, value = "Nom du membre", example = "Doe")
+	@NotBlank(message="Le nom du membre est obligatoire")
 	private String familyName;
+	@ApiModelProperty(position = 3, required = true, value = "Adresse email du membre", example = "dummy@domain.tld")
+	@NotBlank(message="L'adresse email du membre est obligatoire")
 	private String email;
-	@ApiModelProperty(position = 1, required = true, value = "Description du vol", example = "Vol local")
+	@ApiModelProperty(position = 4, required = true, value = "Description du vol", example = "Vol local")
 	@NotBlank(message="La description du vol est obligatoire")
 	private String description;
-	@ApiModelProperty(position = 2, required = true, value = "Date et heure du départ", example = "2021-05-23T10:30")
+	@ApiModelProperty(position = 5, required = true, value = "Date et heure du départ", example = "2021-05-23T10:30")
 	@DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm")
 	private LocalDateTime departureTime;
-	@ApiModelProperty(position = 3, required = true, value = "Durée du vol en décimal", example = "1.5")
+	@ApiModelProperty(position = 6, required = true, value = "Durée du vol en décimal", example = "1.5")
 	private double duration;
 	
 	public BookingCloseDto()
