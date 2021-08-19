@@ -3,25 +3,32 @@ package com.ocdev.financial.controllers;
 import java.util.Collection;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ocdev.financial.dto.FlightRecordDto;
+import com.ocdev.financial.dto.InvoicePayDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
 import com.ocdev.financial.errors.EntityNotFoundException;
+import com.ocdev.financial.errors.ErrorMessage;
 import com.ocdev.financial.services.FinancialService;
 
 import io.swagger.annotations.Api;
@@ -39,7 +46,7 @@ public class FinancialController
 	@Autowired 
 	private FinancialService _financialService;
 	
-	@ApiOperation(value = "Enregistrement d'un vol", notes = "Enregsitrement d'un nouveau vol")
+	@ApiOperation(value = "Enregistrement d'un vol", notes = "Enregistrement d'un nouveau vol")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Le vol est enregistré"),
 			@ApiResponse(code = 401, message = "Authentification requise"),
@@ -111,6 +118,30 @@ public class FinancialController
 	{
 		Subscription subscription = _financialService.getLastSubscription(memberId);
 		return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Payer une facture", notes = "Payer la facture correspondant à un vol")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Le paiement de la facture est enregistré"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "La facture n'existe pas"),
+			@ApiResponse(code = 460, message = "La facture est déjà payée")
+			})
+	@PutMapping(value = "/flights/pay/{invoiceId}", produces = "application/json")
+	public  ResponseEntity<?> payInvoice(
+			@ApiParam(value = "Id de la facture", required = true, example = "1") 
+			@PathVariable @Positive final long invoiceId,
+			@Valid @RequestBody final InvoicePayDto invoicePayDto) throws EntityNotFoundException, AlreadyExistsException, BindException
+	{
+		if (invoicePayDto.getInvoiceNumber() != invoiceId)
+		{
+			HttpStatus status = HttpStatus.BAD_REQUEST;
+			ErrorMessage error = new ErrorMessage(status.value(), status.name(), "Incohérence entre le paramètre de la requète et le champs 'invoiceNumber'");
+			return ResponseEntity.status(status.value()).body(error);
+		}
+		
+		Flight flight = _financialService.payInvoice(invoicePayDto);
+		return new ResponseEntity<Flight>(flight, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Enregistrer une cotisation", notes = "Enregistrer la cotisation d'un membre")

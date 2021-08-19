@@ -19,6 +19,7 @@ import com.ocdev.financial.converters.IDtoConverter;
 import com.ocdev.financial.dao.FlightRepository;
 import com.ocdev.financial.dao.SubscriptionRepository;
 import com.ocdev.financial.dto.FlightRecordDto;
+import com.ocdev.financial.dto.InvoicePayDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
@@ -157,5 +158,27 @@ public class FinancialServiceImpl implements FinancialService
 		{
 			// do nothing
 		}
+	}
+
+	@Override
+	public Flight payInvoice(InvoicePayDto invoiceDto) throws EntityNotFoundException, AlreadyExistsException
+	{
+		Optional<Flight> invoice = _flightRepository.findById(invoiceDto.getInvoiceNumber());
+		if (!invoice.isPresent() || invoice.get().isClosed()) throw new EntityNotFoundException("Cette facture n'existe pas");
+		
+		double balance = invoice.get().getAmount() - invoice.get().getPayment();
+		if(balance <= 0.0) throw new AlreadyExistsException("Cette facture est soldée");
+		if(balance < invoiceDto.getAmount()) throw new AlreadyExistsException("Le montant payé est supérieur au solde de la facture");
+		
+		invoice.get().setPaymentDate(invoiceDto.getPaymentDate());
+		invoice.get().setPayment(invoice.get().getPayment() + invoiceDto.getAmount());
+			
+		balance = invoice.get().getAmount() - invoice.get().getPayment();
+		if (balance <= 0.0)
+		{
+			invoice.get().setClosed(true);
+		}
+		
+		return _flightRepository.save(invoice.get());
 	}
 }
