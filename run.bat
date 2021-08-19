@@ -29,7 +29,7 @@ if not exist .\register-service\target\register-service-1.0.0.jar (
 	echo ********** Démarrage du microservice d'enregistrement
 	start "register-service" /MIN java -jar .\register-service\target\register-service-1.0.0.jar
 	echo Attente du démarrage du microservice
-	timeout /t 20 /NOBREAK 
+	timeout /t 15 /NOBREAK 
 )
 if not exist .\hangar-service\target\hangar-service-1.0.0.jar (
 	echo **************************************************************************************
@@ -89,7 +89,7 @@ if not exist .\gateway-service\target\gateway-service-1.0.0.jar (
 	echo ********** Démarrage du gateway
 	start "gateway-service" /MIN java -jar .\gateway-service\target\gateway-service-1.0.0.jar
 	echo Attente du démarrage du gateway
-	timeout /t 15 /NOBREAK 
+	timeout /t 20 /NOBREAK 
 )
 if not exist .\airclub\target\airclub-webapp-1.0.0.jar (
 	echo **************************************************************************************
@@ -104,7 +104,7 @@ if not exist .\airclub\target\airclub-webapp-1.0.0.jar (
 	echo ********** Démarrage du serveur d'application web
 	start "airclub" /MIN java -jar .\airclub\target\airclub-webapp-1.0.0.jar
 	echo Attente du démarrage du serveur d'application
-	timeout /t 20 /NOBREAK 
+	timeout /t 10 /NOBREAK 
 )
 cls
 echo *********** L'application est prête à être utilisée
