@@ -22,6 +22,7 @@ import com.ocdev.financial.converters.IDtoConverter;
 import com.ocdev.financial.dao.FlightRepository;
 import com.ocdev.financial.dao.SubscriptionRepository;
 import com.ocdev.financial.dto.FlightRecordDto;
+import com.ocdev.financial.dto.InvoicePayDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
@@ -34,7 +35,7 @@ import com.ocdev.financial.proxies.HangarProxy;
 @ExtendWith(MockitoExtension.class)
 public class FinancialServiceImplTest
 {
-	private FinancialServiceImpl systemUnderTest;
+	private FinancialServiceImpl _systemUnderTest;
 	
 	private AutoCloseable _closeable;
 	@Mock private FlightRepository _flightRepositoryMock;
@@ -48,7 +49,7 @@ public class FinancialServiceImplTest
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock,
+		 _systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock,
 				 _hangarProxyMock, _emailServiceMock, _emailContentBuilderMock);
 	}
 	
@@ -69,7 +70,7 @@ public class FinancialServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			systemUnderTest.recordSubscription(dto);
+			_systemUnderTest.recordSubscription(dto);
 		}).withMessage("Ce membre n'existe pas");
 	}
 	
@@ -89,7 +90,7 @@ public class FinancialServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
 		{
-			systemUnderTest.recordSubscription(dto);
+			_systemUnderTest.recordSubscription(dto);
 		}).withMessage("Ce membre a déjà une cotisation valide");
 	}
 	
@@ -107,7 +108,7 @@ public class FinancialServiceImplTest
 		dto.setAmount(123.45);
 		
 		// act
-		systemUnderTest.recordSubscription(dto);
+		_systemUnderTest.recordSubscription(dto);
 		
 		// assert
 		Mockito.verify(_subscriptionRepositoryMock, Mockito.times(1)).save(Mockito.any(Subscription.class));
@@ -128,7 +129,7 @@ public class FinancialServiceImplTest
 		Mockito.when(_subscriptionRepositoryMock.save(Mockito.any(Subscription.class))).thenReturn(subscription);
 		
 		// act
-		systemUnderTest.recordSubscription(dto);
+		_systemUnderTest.recordSubscription(dto);
 		
 		// assert
 		Mockito.verify(_subscriptionRepositoryMock, Mockito.times(1)).save(Mockito.any(Subscription.class));
@@ -145,7 +146,7 @@ public class FinancialServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			systemUnderTest.recordFlight(dto);
+			_systemUnderTest.recordFlight(dto);
 		}).withMessage("Ce membre n'existe pas");
 	}
 	
@@ -168,7 +169,7 @@ public class FinancialServiceImplTest
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
 		// act
-		Flight actual = systemUnderTest.recordFlight(dto);
+		Flight actual = _systemUnderTest.recordFlight(dto);
 		
 		// assert
 		assertThat(actual.getAmount()).isEqualTo(258.0);
@@ -186,7 +187,7 @@ public class FinancialServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
-			systemUnderTest.registerEndedFlight(message);
+			_systemUnderTest.registerEndedFlight(message);
 		}).withMessage("Ce membre n'existe pas");
 	}
 	
@@ -203,7 +204,7 @@ public class FinancialServiceImplTest
 		// act & assert
 		assertThatExceptionOfType(ProxyException.class).isThrownBy(() ->
 		{
-			systemUnderTest.registerEndedFlight(message);
+			_systemUnderTest.registerEndedFlight(message);
 		});
 	}
 	
@@ -227,10 +228,107 @@ public class FinancialServiceImplTest
 		Mockito.doNothing().when(_emailServiceMock).sendEmailHtml(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());		
 		
 		// act
-		systemUnderTest.registerEndedFlight(message);
+		_systemUnderTest.registerEndedFlight(message);
 		
 		// assert
 		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
 		Mockito.verify(_emailServiceMock, Mockito.times(1)).sendEmailHtml("dummy@domain.tld", "", "", "");	
+	}
+	
+	@Test
+	void payInvoice_shouldRaiseEntityNotFoundException_whenInvoiceNotExist()
+	{
+		// arrange
+		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		InvoicePayDto dto = new InvoicePayDto(9, null, 0);
+		
+		// act & assert
+				assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+				{
+					_systemUnderTest.payInvoice(dto);
+				}).withMessage("Cette facture n'existe pas");
+	}
+	
+	@Test
+	void payInvoice_shouldRaiseEntityNotFoundException_whenInvoiceIsClosed()
+	{
+		// arrange
+		LocalDate date = LocalDate.of(2021, 8, 19);
+		Flight invoice = new Flight("8", "Dummy", date, 1.0);
+		invoice.setId(9);
+		invoice.setClosed(true);
+		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
+		
+		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150);
+		
+		// act & assert
+				assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+				{
+					_systemUnderTest.payInvoice(dto);
+				}).withMessage("Cette facture n'existe pas");
+	}
+	
+	@Test
+	void payInvoice_shouldRaiseAlreadyExistsException_whenInvoiceIsPaid()
+	{
+		// arrange
+		LocalDate date = LocalDate.of(2021, 8, 19);
+		Flight invoice = new Flight("8", "Dummy", date, 1.0);
+		invoice.setId(9);
+		invoice.setClosed(false);
+		invoice.setAmount(150.0);
+		invoice.setPayment(150.0);
+		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
+		
+		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150);
+		
+		// act & assert
+				assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
+				{
+					_systemUnderTest.payInvoice(dto);
+				}).withMessage("Cette facture est soldée");
+	}
+	
+	@Test
+	void payInvoice_shouldRaiseAlreadyExistsException_whenAmountIsTooMuch()
+	{
+		// arrange
+		LocalDate date = LocalDate.of(2021, 8, 19);
+		Flight invoice = new Flight("8", "Dummy", date, 1.0);
+		invoice.setId(9);
+		invoice.setClosed(false);
+		invoice.setAmount(150.0);
+		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
+		
+		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150.1);
+		
+		// act & assert
+				assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
+				{
+					_systemUnderTest.payInvoice(dto);
+				}).withMessage("Le montant payé est supérieur au solde de la facture");
+	}
+	
+	@Test
+	void payInvoice_shouldReturnsFlight_whenSuccess() throws EntityNotFoundException, AlreadyExistsException
+	{
+		// arrange
+		LocalDate date = LocalDate.of(2021, 8, 19);
+		Flight invoice = new Flight("8", "Dummy", date, 1.0);
+		invoice.setId(9);
+		invoice.setClosed(false);
+		invoice.setAmount(150.0);
+		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
+		
+		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150.0);
+		
+		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(invoice);
+		
+		// act
+		_systemUnderTest.payInvoice(dto);
+		
+		// assert
+		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
 	}
 }
