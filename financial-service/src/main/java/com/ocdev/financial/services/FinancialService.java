@@ -3,6 +3,7 @@ package com.ocdev.financial.services;
 import java.util.Collection;
 
 import com.ocdev.financial.dto.FlightRecordDto;
+import com.ocdev.financial.dto.InvoicePayDto;
 import com.ocdev.financial.dto.SubscriptionDto;
 import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
@@ -60,4 +61,5 @@ public interface FinancialService
 	 * @See {@link com.ocdev.financial.entities.FlightRecordDto}
 	 */
 	public Flight recordFlight(FlightRecordDto flightDto) throws EntityNotFoundException;
+	public Flight payInvoice(InvoicePayDto invoiceDto) throws EntityNotFoundException, AlreadyExistsException;
 }
