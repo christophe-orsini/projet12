@@ -250,7 +250,7 @@ public class ReservationServiceImplTest
 		assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
 		{
 			_systemUnderTest.createBooking(bookingCreateDto);
-		}).withMessage("Cet aéronef est déjà réservé pour la période demandée");
+		}).withMessage("Cet aéronef est indisponible pour la période demandée");
 	}
 	
 	@Test
