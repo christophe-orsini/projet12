@@ -16,7 +16,7 @@
 		<div class="col-12 row">
 			<div class="col-6">
 				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
-				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">16/08/2021</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
 			</div>
 			<div class="col-6 row">
 				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>

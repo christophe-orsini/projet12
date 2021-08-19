@@ -29,12 +29,12 @@
 						<td><a href="#" th:href="@{/financial/invoice/pdf/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
 						<td th:text="${flight.aircraft}">Aéronef</td>
 						<td th:text="${flight.lineItem}">Description</td>
-						<td th:text="${#temporals.format(flight.flightDate, 'dd-MM-yyyy')}">15-08-2021</td>
+						<td th:text="${#temporals.format(flight.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
 						<td style="text-align: center" th:text="${flight.flightHours}">2.0</td>
 						<td style="text-align: right" th:unless="${flight.closed}" th:text="${flight.amount} + ' €'">999 €</td>
 						<td th:unless="${flight.closed}">A régler</td>
 						<td style="text-align: right" th:if="${flight.closed}" th:text="${flight.payment} + ' €'">999 €</td>
-						<td th:if="${flight.closed}" th:text="${flight.paymentDate}">16-08-2021</td>	
+						<td th:if="${flight.closed}" th:text="${#temporals.format(flight.paymentDate, 'dd/MM/yyyy')}">16/08/2021</td>	
 					</tr>
 				</tbody>
 				<tfoot>

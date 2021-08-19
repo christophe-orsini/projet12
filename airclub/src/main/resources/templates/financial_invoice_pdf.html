@@ -25,7 +25,7 @@
 		<div style="clear: both;">
 			<div style="float: left;">
 				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
-				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">16/08/2021</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
 			</div>
 			<div style="float: right;">
 				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>
