@@ -10,7 +10,7 @@
  	<br />
     <p th:text="'Bonjour ' + ${givenName} + ' ' + ${familyName}"></p>
 
-    <p>Veuillez trouver ci dessous le détail de fotre facture</p>
+    <p>Veuillez trouver ci dessous le détail de votre facture</p>
     <table border="1">
     	<caption>* : Prix unitaire HT = Tarif HT de l'heure de vol</caption>
     	<tr>
@@ -27,7 +27,7 @@
 			<td th:text="${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
 			<td style="text-align: center" th:text="*{flightHours}">1.0</td>
 			<td style="text-align: right" th:text="${unitPrice} + ' €'">999 €</td>
-			<td style="text-align: right" th:text="${#numbers.formatDecimal(invoice.amount, 0, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>							
+			<td style="text-align: right" th:text="${#numbers.formatDecimal(invoice.amount, 1, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>							
 		</tr>
     </table> 
     	

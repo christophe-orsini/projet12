@@ -40,8 +40,8 @@
 				<tfoot>
 					<tr>
 						<td colspan="4">Totaux</td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(totalTime, 0, 1)}">2.0</td>
-						<td style="text-align: right" th:text="${#numbers.formatDecimal(totalAmount, 0, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(totalTime, 1, 1)}">2.0</td>
+						<td style="text-align: right" th:text="${#numbers.formatDecimal(totalAmount, 1, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>
 						<td></td>
 					</tr>
 				</tfoot>
