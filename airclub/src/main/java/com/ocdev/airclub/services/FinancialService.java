@@ -3,7 +3,6 @@ package com.ocdev.airclub.services;
 import java.util.List;
 
 import com.ocdev.airclub.dto.Flight;
-import com.ocdev.airclub.dto.InvoicePayDto;
 
 public interface FinancialService
 {
@@ -11,5 +10,5 @@ public interface FinancialService
 	public Flight getInvoice(long id);
 	public double totalTime(List<Flight> flights);
 	public double totalAmount(List<Flight> flights, boolean paid);
-	public Flight payInvoice(long invoiceId, InvoicePayDto invoicePayDto);
+	public Flight payInvoice(long invoiceId, double amount);
 }

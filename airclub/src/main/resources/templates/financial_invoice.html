@@ -77,6 +77,9 @@
 		</div>
 		<div class="col-12 row">
 			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/pdf/{invoiceId}(invoiceId=${invoice.id})}" role="button">Télécharger</a>
+			<span class="col-1"></span>
+			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/{invoiceId}/pay/{amount}(invoiceId=${invoice.id}, amount=${stillDue})}"
+				 role="button" th:unless="${invoice.closed}">Payer en ligne</a>
 		</div>
 	</section>
 </body>

@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ocdev.airclub.dto.Flight;
 import com.ocdev.airclub.dto.InvoicePayDto;
+import com.ocdev.airclub.errors.AlreadyExistsException;
 import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.errors.ProxyException;
 
@@ -95,9 +96,11 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Flight payInvoice(long invoiceId, InvoicePayDto invoicePayDto)
+	public Flight payInvoice(long invoiceId, double amount)
 	{
 		Duration timeout = Duration.ofSeconds(10);
+		
+		InvoicePayDto invoicePayDto = new InvoicePayDto(amount);
 		
 		return webclient
 				.put()
@@ -107,6 +110,8 @@ public class FinancialServiceImpl implements FinancialService
 				.retrieve()
 				.onStatus(code -> code == HttpStatus.NOT_FOUND, clientResponse -> Mono.error(new EntityNotFoundException("La facture n'existe pas")))
 				.onStatus(code -> code == HttpStatus.BAD_GATEWAY, clientResponse -> Mono.error(new ProxyException("Le service Finance n'est pas accessible")))
+				.onRawStatus(value -> value == 460, clientResponse -> 
+					Mono.error(new AlreadyExistsException("Cette facture est soldée ou le montant payé est trop important")))
 				.bodyToMono(Flight.class)
 				.block(timeout);
 		
