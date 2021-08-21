@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -24,6 +25,7 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.ocdev.airclub.dto.Flight;
+import com.ocdev.airclub.dto.InvoicePayDto;
 import com.ocdev.airclub.errors.EntityNotFoundException;
 import com.ocdev.airclub.services.FinancialService;
 
@@ -103,6 +105,16 @@ public class FinancialController
 		model.addAttribute("stillDue", stillDue);
 		
 		return "financial_invoice";
+	}
+	
+	@GetMapping("/invoice/pay/{id}")
+	public String payInvoice(Model model, Principal principal,
+			@PathVariable long id,
+			@RequestBody final InvoicePayDto invoicePayDto) throws EntityNotFoundException
+	{
+		_financialService.payInvoice(id, invoicePayDto);
+		
+		return "redirect:/financial/invoices";
 	}
 	
 	@RequestMapping(path = "/invoice/pdf/{id}")
