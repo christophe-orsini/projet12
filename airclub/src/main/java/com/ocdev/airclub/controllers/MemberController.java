@@ -2,6 +2,7 @@ package com.ocdev.airclub.controllers;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -130,6 +131,9 @@ public class MemberController
 		model.addAttribute("btn_1", "active");
 		model.addAttribute("btn_2", "");
 	    
+		LocalDateTime now = LocalDateTime.now();
+		model.addAttribute("now", now);
+		
 		return "member_bookings";
 	}
 	
