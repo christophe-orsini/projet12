@@ -161,17 +161,18 @@ public class FinancialServiceImpl implements FinancialService
 	}
 
 	@Override
-	public Flight payInvoice(InvoicePayDto invoiceDto) throws EntityNotFoundException, AlreadyExistsException
+	public Flight payInvoice(long invoiceId, InvoicePayDto invoicePayDto) throws EntityNotFoundException, AlreadyExistsException
 	{
-		Optional<Flight> invoice = _flightRepository.findById(invoiceDto.getInvoiceNumber());
+		Optional<Flight> invoice = _flightRepository.findById(invoiceId);
 		if (!invoice.isPresent() || invoice.get().isClosed()) throw new EntityNotFoundException("Cette facture n'existe pas");
 		
 		double balance = invoice.get().getAmount() - invoice.get().getPayment();
 		if(balance <= 0.0) throw new AlreadyExistsException("Cette facture est soldée");
-		if(balance < invoiceDto.getAmount()) throw new AlreadyExistsException("Le montant payé est supérieur au solde de la facture");
+		if(balance < invoicePayDto.getAmount()) throw new AlreadyExistsException("Le montant payé est supérieur au solde de la facture");
 		
-		invoice.get().setPaymentDate(invoiceDto.getPaymentDate());
-		invoice.get().setPayment(invoice.get().getPayment() + invoiceDto.getAmount());
+		LocalDate today = LocalDate.now();
+		invoice.get().setPaymentDate(today);
+		invoice.get().setPayment(invoice.get().getPayment() + invoicePayDto.getAmount());
 			
 		balance = invoice.get().getAmount() - invoice.get().getPayment();
 		if (balance <= 0.0)
