@@ -12,7 +12,7 @@
 		</div>
 		<div class="col-12 table-responsive">
 			<table class="table table-sm table-striped table-bordered caption-top">
-			<caption>Cliquer sur un numéro pour charger la facture en pdf</caption>
+			<caption>Cliquer sur un numéro pour visualiser la facture</caption>
 				<thead>
 					<tr>
 						<th class="col-1">Numéro</th>
@@ -26,7 +26,7 @@
 				</thead>	
 				<tbody>
 					<tr th:each="flight : ${flights}">
-						<td><a href="#" th:href="@{/financial/invoice/pdf/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
+						<td><a href="#" th:href="@{/financial/invoice/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
 						<td th:text="${flight.aircraft}">Aéronef</td>
 						<td th:text="${flight.lineItem}">Description</td>
 						<td th:text="${#temporals.format(flight.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
