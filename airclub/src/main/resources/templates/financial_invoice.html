@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="themes::head"></head>
+<body class="container">
+	 <header th:insert="themes::header"></header>
+	<nav th:insert="themes::menu"></nav>
+	<section class="col-10 row justify-content-center">	
+		<div class="col-12 row">
+			<div class="col-6">
+				<p class="h3">Aéroclub de Valence</p>
+				<p>Adresse</p>
+				<p>CP, Ville</p>
+			</div>
+			<div class="col-6">
+				<p class="h3">Facture</p>
+			</div>
+		</div>
+		<div class="col-12 row">
+			<div class="col-6">
+				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
+			</div>
+			<div class="col-6 row">
+				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>
+				<p th:text="'Email : ' + ${email}"></p>
+			</div>
+		</div>
+		<div class="col-12 row">
+			<div class="col-12">
+				<p class="h4">Détail de la facture</p>
+			</div>
+			<div class="col-12 table-responsive">
+			<table class="table table-sm table-striped table-bordered">
+				<thead>
+					<tr>
+						<th class="col-2">Aéronef</th>
+						<th class="col-3">Description</th>
+						<th class="col-1">Date du vol</th>
+						<th class="col-1 text-center">Durée</th>
+						<th class="col-1">Montant unitaire HT</th>
+						<th class="col-1">Montant total HT</th>
+					</tr>
+				</thead>	
+				<tbody>
+					<tr>
+						<td th:text="${invoice.aircraft}">Aéronef</td>
+						<td th:text="${invoice.lineItem}">Description</td>
+						<td th:text="${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
+						<td style="text-align: center" th:text="${invoice.flightHours}">1.0</td>
+						<td style="text-align: right" th:text="${unitPrice} + ' €'">999 €</td>		
+						<td style="text-align: right" th:text="${invoice.amount} + ' €'">999 €</td>					
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr style="text-align: right" >
+						<td colspan="5">Total HT</td>
+						<td th:text="${invoice.amount} + ' €'">999 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<td colspan="5">Total TTC</td>
+						<td th:text="${invoice.amount} + ' €'">999 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<td colspan="5">Déjà payé</td>
+						<td th:text="${invoice.payment} + ' €'">0 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<th colspan="5">Reste dû</th>
+						<th style="text-align: right" th:text="${stillDue}  + ' €'">999 €</th>
+					</tr>
+				</tfoot>
+			</table>
+			</div>
+		</div>
+		<div class="col-12 row">
+			<p>Facture en Euros : TVA non applicable en vertu de l'article 293B du CGI.</p>
+		</div>
+		<div class="col-12 row">
+			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/pdf/{invoiceId}(invoiceId=${invoice.id})}" role="button">Télécharger</a>
+			<span class="col-1"></span>
+			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/{invoiceId}/pay/{amount}(invoiceId=${invoice.id}, amount=${stillDue})}"
+				 role="button" th:unless="${invoice.closed}">Payer en ligne</a>
+		</div>
+	</section>
+</body>
+</html>

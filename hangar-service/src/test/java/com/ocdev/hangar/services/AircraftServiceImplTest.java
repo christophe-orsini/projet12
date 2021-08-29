@@ -19,6 +19,7 @@ import com.ocdev.hangar.dto.AircraftDto;
 import com.ocdev.hangar.entities.Aircraft;
 import com.ocdev.hangar.errors.AlreadyExistsException;
 import com.ocdev.hangar.errors.EntityNotFoundException;
+import com.ocdev.hangar.messages.AircraftTotalTimeMessage;
 
 @ExtendWith(MockitoExtension.class)
 public class AircraftServiceImplTest
@@ -86,9 +87,6 @@ public class AircraftServiceImplTest
 		//arrange
 		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findByRegistration(Mockito.anyString())).thenReturn(Optional.empty());
 		
-		AircraftDto aircraftDto = new AircraftDto();
-		aircraftDto.setRegistration("F-GHNY");
-		
 		// act & assert
 		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 		{
@@ -110,6 +108,35 @@ public class AircraftServiceImplTest
 		// assert
 		assertThat(actual.getRegistration()).isEqualTo(aircraft.getRegistration());
 		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findByRegistration(aircraft.getRegistration());
+	}
+	
+	@Test
+	void getById_ShouldRaiseEntityNotFoundException_WhenNotAircraftExists()
+	{
+		//arrange
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		// act & assert
+		assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
+		{
+			systemUnderTest.getById(9);
+		}).withMessage("Cet aéronef n'existe pas");
+	}
+	
+	@Test
+	void getById_ShouldReturnAircraft_WhenAircraftExists() throws EntityNotFoundException
+	{
+		//arrange
+		Aircraft aircraft = new Aircraft();
+		aircraft.setId(9);
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(aircraft));
+		
+		// act
+		Aircraft actual = systemUnderTest.getById(9);
+		
+		// assert
+		assertThat(actual.getId()).isEqualTo(aircraft.getId());
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findById(aircraft.getId());
 	}
 	
 	@Test
@@ -320,5 +347,36 @@ public class AircraftServiceImplTest
 		
 		// assert
 		assertThat(actual).isEqualTo(-20f);
+	}
+	
+	@Test
+	void updateFlightHours_ShouldDoNothing_WhenAircraftNotExists()
+	{
+		//arrange
+		AircraftTotalTimeMessage message = new AircraftTotalTimeMessage(9L,  2.0);
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		
+		// act
+		systemUnderTest.updateFlightHours(message);
+		
+		// assert
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findById(9L);
+		Mockito.verify(_aircraftRepositoryMock, Mockito.never()).save(Mockito.any(Aircraft.class));
+	}
+	
+	@Test
+	void updateFlightHours_ShouldUpdate_WhenAircraftExists()
+	{
+		//arrange
+		AircraftTotalTimeMessage message = new AircraftTotalTimeMessage(9L,  2.0);
+		Aircraft aircraft = new Aircraft();
+		Mockito.<Optional<Aircraft>>when(_aircraftRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(aircraft));
+		
+		// act
+		systemUnderTest.updateFlightHours(message);
+		
+		// assert
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).findById(9L);
+		Mockito.verify(_aircraftRepositoryMock, Mockito.times(1)).save(aircraft);
 	}
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Facture</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+ <body>
+ 	<h1 th:text="${societe}"></h1> 
+ 	<br />
+    <p th:text="'Bonjour ' + ${givenName} + ' ' + ${familyName}"></p>
+
+    <p>Veuillez trouver ci dessous le détail de votre facture</p>
+    <table border="1">
+    	<caption>* : Prix unitaire HT = Tarif HT de l'heure de vol</caption>
+    	<tr>
+    		<th>Aéronef</th>
+			<th>Description</th>
+			<th>Date du vol</th>
+			<th class=" text-center">Durée</th>
+			<th>PUHT*</th>
+			<th>Total HT</th>
+    	</tr>
+    	<tr th:object="${invoice}">
+    		<td th:text="*{aircraft}">Aéronef</td>
+			<td th:text="*{lineItem}">Description</td>
+			<td th:text="${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
+			<td style="text-align: center" th:text="*{flightHours}">1.0</td>
+			<td style="text-align: right" th:text="${unitPrice} + ' €'">999 €</td>
+			<td style="text-align: right" th:text="${#numbers.formatDecimal(invoice.amount, 1, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>							
+		</tr>
+    </table> 
+    	
+    <p>Pour toutes questions ou en cas de difficulté, vous pouvez nous contacter par email à cette adresse
+    	<a href="#" th:href="@{'mailto:' + ${email}}" th:text="${email}">info@domain.tld</a>	
+    </p>
+    <p>Cordialement<br /><br />
+      L'équipe
+    </p>
+  </body>
+</html>

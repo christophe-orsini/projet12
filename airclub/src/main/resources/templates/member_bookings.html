@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="themes::head"></head>
+<body class="container">
+	<header th:insert="themes::header"></header>
+	<nav th:insert="themes::menu"></nav>
+	<section class="row justify-content-center">	
+		<div class="col-12 row">
+			<p class="col-8 h3">Liste de vos réservations</p>
+			<a class="col-2 btn btn-secondary" th:classappend="${btn_1}" href="#" th:href="@{/member/bookings}" role="button">En cours</a>
+			<a class="col-2 btn btn-secondary" th:classappend="${btn_2}" href="#" th:href="@{/member/bookings/closed}" role="button">Terminées</a>
+		</div>
+		<div class="col-12 table-responsive">
+			<table class="table table-sm table-striped table-bordered">
+				<thead>
+					<tr>
+						<th class="col-1">Numéro</th>
+						<th class="col-2">Aéronef</th>
+						<th class="col-2">Description</th>
+						<th class="col-1">Heure départ</th>
+						<th class="col-1">Heure retour</th>
+						<th class="col-2"></th>
+					</tr>
+				</thead>	
+				<tbody>
+					<tr th:each="booking : ${bookings}">
+						<td th:text="${booking.id}">Id</td>
+						<td th:text="${booking.aircraft}">Aircraft</td>
+						<td th:text="${booking.description}">Description</td>
+						<td th:text="${#temporals.format(booking.departureTime, 'dd/MM HH:mm')}">15/08 14:00</td>
+						<td th:text="${#temporals.format(booking.arrivalTime, 'dd/MM HH:mm')}">15/08 15:00</td>
+						<td th:unless="${booking.closed}">
+								<a class="col-5 btn btn-primary" href="#"
+									 th:href="@{/member/bookings/close/{bookingId}(bookingId=${booking.id})}" role="button"
+									 th:if="${booking.departureTime < now}">Clôturer</a>
+								<a class="col-5 btn btn-primary" href="#" th:if="${booking.canCancel}"
+									th:href="@{/member/bookings/delete/{bookingId}(bookingId=${booking.id})}" role="button">Annuler</a>
+						</td>
+						<td th:if="${booking.closed}">Terminée</td>		
+					</tr>
+					
+				</tbody>
+			</table>
+		</div>
+	</section>
+	<footer th:insert="themes::footer"></footer>
+</body>
+</html>

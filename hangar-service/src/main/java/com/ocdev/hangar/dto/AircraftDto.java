@@ -11,10 +11,10 @@ import io.swagger.annotations.ApiModelProperty;
  * @author PC_ASUS
  *
  */
-@ApiModel(value = "AircraftCreateDto", description = "Modèle DTO pour la création d'un aéronef")
+@ApiModel(value = "AircraftDto", description = "Modèle DTO pour la création/modification d'un aéronef")
 public class AircraftDto
 {
-	@ApiModelProperty(position = 1, required = true, value = "Immatriculation de l'aéronef")
+	@ApiModelProperty(position = 1, required = true, value = "Immatriculation de l'aéronef", example = "F-GHNY")
 	@NotBlank(message="L'immatriculation est obligatoire")
 	private String registration;
 	@ApiModelProperty(position = 2, required = true, value = "Marque de l'aéronef")

@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="themes::head"></head>
+<body class="container">
+	<header th:insert="themes::header"></header>
+	<section class="row">
+		<div class="col-12">
+			<p class="h3">Erreur fatale</p>
+		</div>	
+		<div class="col-12">
+			<p>Une erreur fatale s'est produite<br />
+			L'application ne peut plus fonctionner<br />
+			Veuillez contacter l'administrateur du site et lui communiquer les éléments :</p>
+			<p th:text="${exceptionMessage?.getMessage()}">Message d'erreur fatale</p>
+			<div class="border">
+				<p th:text="'Fichier : ' + ${exceptionMessage?.getStackTrace()[0]?.getFileName()}">Fichier</p>
+				<p th:text="'Classe : ' + ${exceptionMessage?.getStackTrace()[0]?.getClassName()}">Classe</p>
+				<p th:text="'Méthode : ' + ${exceptionMessage?.getStackTrace()[0]?.getMethodName()}">Méthode</p>
+				<p th:text="'Ligne : ' +${exceptionMessage?.getStackTrace()[0]?.getLineNumber()}">Ligne</p>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+	<meta charset="UTF-8">
+	<title>Aéroclub de Valence</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<section>	
+		<div>
+			<div style="float: left;">
+				<p class="h3">Aéroclub de ...</p>
+				<p>Adresse</p>
+				<p>CP, Ville</p>
+			</div>
+			<div style="float: right;">
+				<p class="h3">Facture</p>
+			</div>
+		</div>
+		<div style="clear: both;">
+			<div style="float: left;">
+				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
+			</div>
+			<div style="float: right;">
+				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>
+				<p th:text="'Email : ' + ${email}"></p>
+			</div>
+		</div>
+		<div style="clear: both;">
+			<div>
+				<p class="h4">Détail de la facture</p>
+			</div>
+			<div class="table-responsive">
+			<table class="table table-sm table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Aéronef</th>
+						<th>Description</th>
+						<th>Date du vol</th>
+						<th class=" text-center">Durée</th>
+						<th>Prix HT</th>
+						<th>Total HT</th>
+					</tr>
+				</thead>	
+				<tbody>
+					<tr>
+						<td th:text="${invoice.aircraft}">Aéronef</td>
+						<td th:text="${invoice.lineItem}">Description</td>
+						<td th:text="${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
+						<td style="text-align: center" th:text="${invoice.flightHours}">1.0</td>
+						<td style="text-align: right" th:text="${unitPrice} + ' €'">999 €</td>						
+						<td style="text-align: right" th:text="${invoice.amount} + ' €'">999 €</td>					
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr style="text-align: right" >
+						<td colspan="5">Total HT</td>
+						<td th:text="${invoice.amount} + ' €'">999 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<td colspan="5">Total TTC</td>
+						<td th:text="${invoice.amount} + ' €'">999 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<td colspan="5">Déjà payé</td>
+						<td th:text="${invoice.payment} + ' €'">0 €</td>
+					</tr>
+					<tr style="text-align: right">
+						<th colspan="5">Reste dû</th>
+						<th style="text-align: right" th:text="${stillDue}  + ' €'">999 €</th>
+					</tr>
+				</tfoot>
+			</table>
+			</div>
+		</div>
+		<div>
+			<p>Facture en Euros : TVA non applicable en vertu de l'article 293B du CGI.</p>
+		</div>
+	</section>
+</body>
+</html>

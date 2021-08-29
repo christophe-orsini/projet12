@@ -4,6 +4,8 @@ import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -23,16 +25,18 @@ import com.ocdev.hangar.entities.Aircraft;
 import com.ocdev.hangar.errors.AlreadyExistsException;
 import com.ocdev.hangar.errors.EntityNotFoundException;
 import com.ocdev.hangar.services.AircraftService;
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-//@FeignClient(contextId="dummies", name="proxy-service")
 @RefreshScope
 @RequestMapping("/aircrafts")
 @RestController
 @Validated
+@Api(tags = {"API d'accès au hangar aéronefs"})
 public class AircraftController
 {
 	@Autowired 
@@ -50,6 +54,21 @@ public class AircraftController
 			throws EntityNotFoundException
 	{
 		Aircraft aircraft = _aircraftService.getByRegistration(registration);
+		return new ResponseEntity<Aircraft>(aircraft, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "Obtenir un aéronef par son Id", notes = "Obtenir un aéronef à partir de son id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "L'aéronef est retourné dans le corps de la réponse"),
+			@ApiResponse(code = 401, message = "Authentification requise"),
+			@ApiResponse(code = 404, message = "L'aéronef n'existe pas")
+			})
+	@GetMapping(value = "/id/{aircraftId}", produces = "application/json")
+	public ResponseEntity<Aircraft> getAircraftById(
+			@ApiParam(value = "Id de l'aéronef", required = true, example = "1") @PathVariable @Positive final long aircraftId)
+			throws EntityNotFoundException
+	{
+		Aircraft aircraft = _aircraftService.getById(aircraftId);
 		return new ResponseEntity<Aircraft>(aircraft, HttpStatus.OK);
 	}
 	
