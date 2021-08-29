@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
 	<meta charset="UTF-8">
-	<title>Aéroclub de ...</title>
+	<title>Aéroclub de Valence</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -25,7 +25,7 @@
 		<div style="clear: both;">
 			<div style="float: left;">
 				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
-				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">16/08/2021</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
 			</div>
 			<div style="float: right;">
 				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>

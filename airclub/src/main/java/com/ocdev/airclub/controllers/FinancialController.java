@@ -105,6 +105,16 @@ public class FinancialController
 		return "financial_invoice";
 	}
 	
+	@GetMapping("/invoice/{invoiceId}/pay/{amount}")
+	public String payInvoice(Model model, Principal principal,
+			@PathVariable final long invoiceId,
+			@PathVariable final double amount) throws EntityNotFoundException
+	{
+		_financialService.payInvoice(invoiceId, amount);
+		
+		return "redirect:/financial/invoices";
+	}
+	
 	@RequestMapping(path = "/invoice/pdf/{id}")
     public ResponseEntity<?> getPDF(HttpServletRequest request, HttpServletResponse response, Principal principal, @PathVariable long id)
     		throws IOException

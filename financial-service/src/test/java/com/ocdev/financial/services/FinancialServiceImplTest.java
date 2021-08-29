@@ -1,8 +1,9 @@
-package com.ocdev.financial.services;
+﻿package com.ocdev.financial.services;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
@@ -41,12 +42,15 @@ public class FinancialServiceImplTest
 	@Mock private SubscriptionRepository _subscriptionRepositoryMock;
 	@Mock private IDtoConverter<Flight, FlightRecordDto> _flightDtoConverterMock;
 	@Mock private HangarProxy _hangarProxyMock;
+	@Mock private EmailService _emailServiceMock;
+	@Mock private EmailContentBuilder _emailContentBuilderMock;
 	
 	@BeforeEach
 	void setUp() throws Exception
 	{
 		 _closeable = MockitoAnnotations.openMocks(this);
-		 _systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock, _hangarProxyMock);
+		 _systemUnderTest = new FinancialServiceImpl(_flightRepositoryMock, _subscriptionRepositoryMock, _flightDtoConverterMock,
+				 _hangarProxyMock, _emailServiceMock, _emailContentBuilderMock);
 	}
 	
 	@AfterEach public void releaseMocks() throws Exception
@@ -210,20 +214,25 @@ public class FinancialServiceImplTest
 		//arrange
 		// TODO refactor when User defined
 		LocalDate now = LocalDate.now();
-		RegisterFlightMessage message = new RegisterFlightMessage();
-		message.setMemberId("9");
-		message.setAircraftId(8);
+		RegisterFlightMessage message = new RegisterFlightMessage("Johne", "Doe", "dummy@domain.tld", "9", 8, "Dummy", new Date(), 1.5, 129);
+				
 		Aircraft aircraft = new Aircraft();
 		Mockito.when(_hangarProxyMock.getAircraftById(Mockito.anyLong())).thenReturn(aircraft);
 		
 		Flight flight = new Flight("9", "", now, 1.5);
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(flight);
 		
+		Mockito.when(_emailContentBuilderMock.buildInvoiceEmail(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(Flight.class)))
+			.thenReturn("");
+		
+		Mockito.doNothing().when(_emailServiceMock).sendEmailHtml(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());		
+		
 		// act
 		_systemUnderTest.registerEndedFlight(message);
 		
 		// assert
 		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));
+		Mockito.verify(_emailServiceMock, Mockito.times(1)).sendEmailHtml("dummy@domain.tld", "", "", "");	
 	}
 	
 	@Test
@@ -232,12 +241,12 @@ public class FinancialServiceImplTest
 		// arrange
 		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 		
-		InvoicePayDto dto = new InvoicePayDto(9, null, 0);
+		InvoicePayDto dto = new InvoicePayDto(0);
 		
 		// act & assert
 				assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 				{
-					_systemUnderTest.payInvoice(dto);
+					_systemUnderTest.payInvoice(9, dto);
 				}).withMessage("Cette facture n'existe pas");
 	}
 	
@@ -251,12 +260,12 @@ public class FinancialServiceImplTest
 		invoice.setClosed(true);
 		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
 		
-		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150);
+		InvoicePayDto dto = new InvoicePayDto(150);
 		
 		// act & assert
 				assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() ->
 				{
-					_systemUnderTest.payInvoice(dto);
+					_systemUnderTest.payInvoice(9, dto);
 				}).withMessage("Cette facture n'existe pas");
 	}
 	
@@ -272,12 +281,12 @@ public class FinancialServiceImplTest
 		invoice.setPayment(150.0);
 		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
 		
-		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150);
+		InvoicePayDto dto = new InvoicePayDto(150);
 		
 		// act & assert
 				assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
 				{
-					_systemUnderTest.payInvoice(dto);
+					_systemUnderTest.payInvoice(9, dto);
 				}).withMessage("Cette facture est soldée");
 	}
 	
@@ -292,12 +301,12 @@ public class FinancialServiceImplTest
 		invoice.setAmount(150.0);
 		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
 		
-		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150.1);
+		InvoicePayDto dto = new InvoicePayDto(150.1);
 		
 		// act & assert
 				assertThatExceptionOfType(AlreadyExistsException.class).isThrownBy(() ->
 				{
-					_systemUnderTest.payInvoice(dto);
+					_systemUnderTest.payInvoice(9, dto);
 				}).withMessage("Le montant payé est supérieur au solde de la facture");
 	}
 	
@@ -312,12 +321,12 @@ public class FinancialServiceImplTest
 		invoice.setAmount(150.0);
 		Mockito.when(_flightRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(invoice));
 		
-		InvoicePayDto dto = new InvoicePayDto(9, date.plusDays(7), 150.0);
+		InvoicePayDto dto = new InvoicePayDto(150.0);
 		
 		Mockito.when(_flightRepositoryMock.save(Mockito.any(Flight.class))).thenReturn(invoice);
 		
 		// act
-		_systemUnderTest.payInvoice(dto);
+		_systemUnderTest.payInvoice(9, dto);
 		
 		// assert
 		Mockito.verify(_flightRepositoryMock, Mockito.times(1)).save(Mockito.any(Flight.class));

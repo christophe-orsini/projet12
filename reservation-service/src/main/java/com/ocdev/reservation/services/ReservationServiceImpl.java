@@ -114,7 +114,7 @@ public class ReservationServiceImpl implements ReservationService
 		
 		// check if aircraft is available
 		boolean available = isAircaftAvailable(bookingCreateDto.getAircraftId(), bookingCreateDto.getDepartureTime(), bookingCreateDto.getDuration());
-		if (!available) throw new AlreadyExistsException("Cet aéronef est déjà réservé pour la période demandée");
+		if (!available) throw new AlreadyExistsException("Cet aéronef est indisponible pour la période demandée");
 		
 		Booking booking = _bookingCreateDtoConverter.convertDtoToEntity(bookingCreateDto);
 		booking.setAircraftId(aircraft.getId());

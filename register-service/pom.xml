@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ocdev.services</groupId>
 	<artifactId>register-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>register-service</name>
 	<description>Service d'enregistrement des microservices de l'application airclub</description>
 	<properties>

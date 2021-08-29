@@ -1,4 +1,4 @@
-﻿package com.ocdev.airclub.converters;
+package com.ocdev.airclub.converters;
 
 import static org.assertj.core.api.Assertions.*;
 

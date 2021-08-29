@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +25,6 @@ import com.ocdev.financial.entities.Flight;
 import com.ocdev.financial.entities.Subscription;
 import com.ocdev.financial.errors.AlreadyExistsException;
 import com.ocdev.financial.errors.EntityNotFoundException;
-import com.ocdev.financial.errors.ErrorMessage;
 import com.ocdev.financial.services.FinancialService;
 
 import io.swagger.annotations.Api;
@@ -128,19 +124,13 @@ public class FinancialController
 			@ApiResponse(code = 460, message = "La facture est déjà payée")
 			})
 	@PutMapping(value = "/flights/pay/{invoiceId}", produces = "application/json")
-	public  ResponseEntity<?> payInvoice(
+	public  ResponseEntity<Flight> payInvoice(
 			@ApiParam(value = "Id de la facture", required = true, example = "1") 
 			@PathVariable @Positive final long invoiceId,
-			@Valid @RequestBody final InvoicePayDto invoicePayDto) throws EntityNotFoundException, AlreadyExistsException, BindException
+			@Valid @RequestBody final InvoicePayDto invoicePayDto) throws EntityNotFoundException, AlreadyExistsException
 	{
-		if (invoicePayDto.getInvoiceNumber() != invoiceId)
-		{
-			HttpStatus status = HttpStatus.BAD_REQUEST;
-			ErrorMessage error = new ErrorMessage(status.value(), status.name(), "Incohérence entre le paramètre de la requète et le champs 'invoiceNumber'");
-			return ResponseEntity.status(status.value()).body(error);
-		}
-		
-		Flight flight = _financialService.payInvoice(invoicePayDto);
+			
+		Flight flight = _financialService.payInvoice(invoiceId, invoicePayDto);
 		return new ResponseEntity<Flight>(flight, HttpStatus.OK);
 	}
 

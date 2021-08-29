@@ -12,7 +12,7 @@
 		</div>
 		<div class="col-12 table-responsive">
 			<table class="table table-sm table-striped table-bordered caption-top">
-			<caption>Cliquer sur un numéro pour charger la facture en pdf</caption>
+			<caption>Cliquer sur un numéro pour visualiser la facture</caption>
 				<thead>
 					<tr>
 						<th class="col-1">Numéro</th>
@@ -26,22 +26,22 @@
 				</thead>	
 				<tbody>
 					<tr th:each="flight : ${flights}">
-						<td><a href="#" th:href="@{/financial/invoice/pdf/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
+						<td><a href="#" th:href="@{/financial/invoice/{flightId}(flightId=${flight.id})}" th:text="'N° ' + ${flight.id}">Numéro du vol</a></td>
 						<td th:text="${flight.aircraft}">Aéronef</td>
 						<td th:text="${flight.lineItem}">Description</td>
-						<td th:text="${#temporals.format(flight.flightDate, 'dd-MM-yyyy')}">15-08-2021</td>
+						<td th:text="${#temporals.format(flight.flightDate, 'dd/MM/yyyy')}">15/08/2021</td>
 						<td style="text-align: center" th:text="${flight.flightHours}">2.0</td>
 						<td style="text-align: right" th:unless="${flight.closed}" th:text="${flight.amount} + ' €'">999 €</td>
 						<td th:unless="${flight.closed}">A régler</td>
 						<td style="text-align: right" th:if="${flight.closed}" th:text="${flight.payment} + ' €'">999 €</td>
-						<td th:if="${flight.closed}" th:text="${flight.paymentDate}">16-08-2021</td>	
+						<td th:if="${flight.closed}" th:text="${#temporals.format(flight.paymentDate, 'dd/MM/yyyy')}">16/08/2021</td>	
 					</tr>
 				</tbody>
 				<tfoot>
 					<tr>
 						<td colspan="4">Totaux</td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(totalTime, 0, 1)}">2.0</td>
-						<td style="text-align: right" th:text="${#numbers.formatDecimal(totalAmount, 0, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(totalTime, 1, 1)}">2.0</td>
+						<td style="text-align: right" th:text="${#numbers.formatDecimal(totalAmount, 1, 'WHITESPACE', 2, 'POINT') + ' €'}">999 €</td>
 						<td></td>
 					</tr>
 				</tfoot>

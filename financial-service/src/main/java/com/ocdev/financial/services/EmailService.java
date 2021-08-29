@@ -12,5 +12,5 @@ public interface EmailService
 	 * @param from L'expediteur
 	 * @throws MessagingException
 	 */
-	public void envoiEmailHtml(String to, String content, String subject, String from) throws MessagingException;
+	public void sendEmailHtml(String to, String content, String subject, String from) throws MessagingException;
 }

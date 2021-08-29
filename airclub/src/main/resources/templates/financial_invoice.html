@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="themes::head"></head>
 <body class="container">
+	 <header th:insert="themes::header"></header>
+	<nav th:insert="themes::menu"></nav>
 	<section class="col-10 row justify-content-center">	
 		<div class="col-12 row">
 			<div class="col-6">
-				<p class="h3">Aéroclub de ...</p>
+				<p class="h3">Aéroclub de Valence</p>
 				<p>Adresse</p>
 				<p>CP, Ville</p>
 			</div>
@@ -16,7 +18,7 @@
 		<div class="col-12 row">
 			<div class="col-6">
 				<p th:text="'Numéro : ' + ${invoice.id}">Numéro :</p>
-				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">16/08/2021</p>
+				<p th:text="'Date : ' + ${#temporals.format(invoice.flightDate, 'dd/MM/yyyy')}">Date : 16/08/2021</p>
 			</div>
 			<div class="col-6 row">
 				<p class="h3" th:text="${givenName} + ' ' + ${familyName}">John Doe</p>
@@ -72,6 +74,12 @@
 		</div>
 		<div class="col-12 row">
 			<p>Facture en Euros : TVA non applicable en vertu de l'article 293B du CGI.</p>
+		</div>
+		<div class="col-12 row">
+			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/pdf/{invoiceId}(invoiceId=${invoice.id})}" role="button">Télécharger</a>
+			<span class="col-1"></span>
+			<a class="col-2 btn btn-primary"  href="#" th:href="@{/financial/invoice/{invoiceId}/pay/{amount}(invoiceId=${invoice.id}, amount=${stillDue})}"
+				 role="button" th:unless="${invoice.closed}">Payer en ligne</a>
 		</div>
 	</section>
 </body>

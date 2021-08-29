@@ -1,7 +1,6 @@
-package com.ocdev.financial.dto;
+package com.ocdev.airclub.dto;
 
 import java.io.Serializable;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * InvoicePayDto représente la classe DTO pour le paiement d'une facture.
@@ -10,7 +9,6 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class InvoicePayDto implements Serializable
 {
-	@ApiModelProperty(position = 1, required = true, value = "Montant payé", example = "129.0")
 	private double amount;
 	
 	public InvoicePayDto()

@@ -10,4 +10,5 @@ public interface FinancialService
 	public Flight getInvoice(long id);
 	public double totalTime(List<Flight> flights);
 	public double totalAmount(List<Flight> flights, boolean paid);
+	public Flight payInvoice(long invoiceId, double amount);
 }

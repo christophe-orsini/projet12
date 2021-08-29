@@ -52,7 +52,7 @@ public interface FinancialService
 	 */
 	public Subscription recordSubscription(SubscriptionDto subscriptionDto) throws EntityNotFoundException, AlreadyExistsException;
 	/**
-	 * Vette méthode enregistre un vol.
+	 * Cette méthode enregistre un vol.
 	 * 
 	 * @param flightDto : Le DTO d'enregistrement du vol
 	 * @return Le nouveau vol
@@ -61,5 +61,13 @@ public interface FinancialService
 	 * @See {@link com.ocdev.financial.entities.FlightRecordDto}
 	 */
 	public Flight recordFlight(FlightRecordDto flightDto) throws EntityNotFoundException;
-	public Flight payInvoice(InvoicePayDto invoiceDto) throws EntityNotFoundException, AlreadyExistsException;
+	/**
+	 * Cette méthode enregistre le paiemnt d'une facture
+	 * @param invoiceId : Id de la facture
+	 * @param invoicePayDto : Le dto contenant le montant payé
+	 * @return : La facture
+	 * @throws EntityNotFoundException levée si la facture n'existe pas
+	 * @throws AlreadyExistsException levée si la facture est déjà payée ou si le montant est trop important
+	 */
+	public Flight payInvoice(long invoiceId, InvoicePayDto invoicePayDto) throws EntityNotFoundException, AlreadyExistsException;
 }
